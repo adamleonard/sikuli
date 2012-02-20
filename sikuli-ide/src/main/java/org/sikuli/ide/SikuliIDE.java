@@ -47,6 +47,7 @@ import org.apache.commons.cli.CommandLine;
 
 import com.explodingpixels.macwidgets.MacUtils;
 
+import edu.mit.blocks.controller.WorkspaceController;
 
 public class SikuliIDE extends JFrame {
    final static boolean ENABLE_RECORDING = false;
@@ -201,6 +202,9 @@ public class SikuliIDE extends JFrame {
       _fileMenu.add( createMenuItem(_I("menuFileNew"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, scMask),
                new FileAction(FileAction.NEW)));
+      _fileMenu.add( createMenuItem(_I("menuFileNewBlocks"), 
+               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, scMask),
+               new FileAction(FileAction.NEW_BLOCKS)));
       _fileMenu.add( createMenuItem(_I("menuFileOpen"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, scMask),
                new FileAction(FileAction.OPEN)));
@@ -1194,7 +1198,7 @@ public class SikuliIDE extends JFrame {
       }
 
       public void openAsk(ActionEvent ae){
-         openURL("https://answers.launchpad.net/sikuli");
+         openURL("http://answers.launchpad.net/sikuli");
       }
 
       public void openBugReport(ActionEvent ae){
@@ -1355,6 +1359,7 @@ public class SikuliIDE extends JFrame {
 
    class FileAction extends MenuAction {
       static final String NEW = "doNew";
+      static final String NEW_BLOCKS = "doNewBlocks";
       static final String OPEN = "doLoad";
       static final String SAVE = "doSave";
       static final String SAVE_AS = "doSaveAs";
@@ -1404,6 +1409,18 @@ public class SikuliIDE extends JFrame {
          
          });
          codePane.requestFocus();
+      }
+      
+      public void doNewBlocks(ActionEvent ae){
+         try{
+            WorkspaceController wc = new WorkspaceController();
+            wc.setLangDefStream(SikuliIDE.class.getResourceAsStream("/icons/lang_def.xml"));
+        	wc.loadFreshWorkspace();
+         	wc.createAndShowGUI();
+         }
+         catch(Exception ex){
+            ex.printStackTrace();
+         }
       }
       
       public void doLoad(ActionEvent ae){
