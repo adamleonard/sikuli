@@ -1,0 +1,2743 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE BlockLangDef SYSTEM "support/lang_def.dtd">
+
+<!-- 
+
+
+This describes every BlockGenus, BlockDrawer, BlockFamilies in Starlogo-TNG.
+
+Note: For BlockGenus, if genus A relies on another genus B, that genus B must be 
+specified in the xml file before genus A is specified.  We impose this requirement so 
+that sanity checks can be made regarding the validity of a default argument when the
+BlockGenuses are first loaded. 
+
+-->
+
+<BlockLangDef>
+
+	<BlockConnectorShapes>
+		<BlockConnectorShape shape-type="number" shape-number="1"></BlockConnectorShape>
+		<BlockConnectorShape shape-type="number-list" shape-number="2"></BlockConnectorShape>
+		<BlockConnectorShape shape-type="number-inv" shape-number="3"></BlockConnectorShape>
+		<BlockConnectorShape shape-type="boolean" shape-number="4"></BlockConnectorShape>
+		<BlockConnectorShape shape-type="boolean-list" shape-number="5"></BlockConnectorShape>
+		<BlockConnectorShape shape-type="boolean-inv" shape-number="6"></BlockConnectorShape>
+		<BlockConnectorShape shape-type="string" shape-number="7"></BlockConnectorShape>
+		<BlockConnectorShape shape-type="string-list" shape-number="8"></BlockConnectorShape>
+		<BlockConnectorShape shape-type="string-inv" shape-number="9"></BlockConnectorShape>
+		<BlockConnectorShape shape-type="screenshot" shape-number="10"></BlockConnectorShape>
+		<BlockConnectorShape shape-type="variable" shape-number="11"></BlockConnectorShape>
+		<BlockConnectorShape shape-type="proc-param" shape-number="13"></BlockConnectorShape>
+		<BlockConnectorShape shape-type="cmd" shape-number="14"></BlockConnectorShape>
+	</BlockConnectorShapes>
+	
+	<BlockGenuses>
+		<!-- Stub Genuses 
+			Do not remove unless you would like to remove the stub feature all together
+		-->
+		
+		<BlockGenus name="getter" kind="data" initlabel="" color="34 76 117" >
+			<description>
+				<text>
+					Reports the value of the variable.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="poly" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+			</LangSpecProperties>	
+		</BlockGenus>
+		
+		<BlockGenus name="setter" kind="command" initlabel="" color="34 76 117" label-prefix="set ">
+			<description>
+				<text>
+					Sets the value of the variable.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="poly" position-type="single"></BlockConnector>
+			</BlockConnectors>
+		</BlockGenus>
+		
+		<BlockGenus name="caller" kind="command" initlabel="" color="34 76 117">
+			<description>
+				<text>
+					Calls the procedure of the specified name.
+				</text>
+			</description>
+		</BlockGenus>
+
+		<BlockGenus name="inc" kind="command" initlabel="" color="34 76 117" label-prefix="inc ">
+			<description>
+				<text>
+					Increments the value of the variable number.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="number" position-type="single"></BlockConnector>
+			</BlockConnectors>		
+		</BlockGenus>
+		
+		<BlockGenus name="agent" kind="function" initlabel="" color="34 76 117" label-suffix=" of" is-starter="yes" is-terminator="yes">
+			<description>
+				<text>
+					Gets the value of the variable of the agent ID.
+				</text>
+			</description>
+			<BlockConnectors>
+			    <BlockConnector connector-kind="plug" connector-type="poly" position-type="single"></BlockConnector>
+				<BlockConnector label="ID" connector-kind="socket" connector-type="number" position-type="single"></BlockConnector>
+			</BlockConnectors>	
+			<LangSpecProperties>
+				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+			</LangSpecProperties>			
+		</BlockGenus>
+		
+		<!-- End of Stub Genuses -->
+	
+		<BlockGenus name="number" kind="data" initlabel="1" editable-label="yes" is-label-value="yes" color="40 100 175">
+			<description>
+				<text>
+					Reports the number shown.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="number"></LangSpecProperty>
+				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="string" kind="data" initlabel="abc" editable-label="yes" is-label-value="yes" color="40 100 175">
+			<description>
+				<text>
+					Reports the text shown.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>		
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="string"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="variable" kind="data" initlabel="variable" editable-label="yes" is-label-value="yes" color="40 100 175">
+			<description>
+				<text>
+					A variable that can be used with a getter or setter.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="variable" position-type="mirror"></BlockConnector>		
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="variable"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="true" kind="data" initlabel="True" color="40 100 175">
+			<description>
+				<text>
+					Reports the boolean true.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="boolean" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="true"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="false" kind="data" initlabel="False" color="40 100 175">
+			<description>
+				<text>
+					Reports the boolean false.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="boolean" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="false"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<!-- SCREENSHOT -->
+		<BlockGenus name="screenshot-block" kind="screenshot" initlabel="" is-starter="yes" is-terminator="yes" color="40 100 175">
+			<description>
+				<text>
+					FIXME
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="screenshot"></BlockConnector>
+			</BlockConnectors>
+			<Images>
+				<Image block-location="center" image-editable="yes" width="16" height="12">
+					<FileLocation>support/capture-small.png</FileLocation>
+				</Image>
+			</Images>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="screenshot"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+
+		<!-- FIND -->
+		<BlockGenus name="exists" kind="function" initlabel="exists" color="34 76 118">
+			<description>
+				<text>
+					If <arg n="1"/> exists on the screen, the agent will run the blocks attached to <arg n="2"/>
+				</text>
+				<arg-description n="1" name="test">
+					The screenshot to find.
+				</arg-description>
+				
+				<arg-description n="2" name="then">
+					The set of instructions that is done when the condition is true.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="boolean"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="screenshot">
+					<DefaultArg genus-name="screenshot-block" label="" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="exists"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="find" kind="screenshot" initlabel="find" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="screenshot">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="screenshot">
+					<DefaultArg genus-name="screenshot-block" label="" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="find"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="find-all" kind="screenshot" initlabel="find all" color="34 76 118"> <!-- FIXME: return screenshot array -->
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="screenshot">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="screenshot">
+					<DefaultArg genus-name="screenshot-block" label="" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="find-all"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="wait" kind="command" initlabel="wait until appears" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="screenshot">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="screenshot">
+					<DefaultArg genus-name="screenshot-block" label="" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="wait"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="wait-vanish" kind="command" initlabel="wait until disappears" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="screenshot">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="screenshot">
+					<DefaultArg genus-name="screenshot-block" label="" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="wait-vanish"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<!-- MOUSE -->
+		<BlockGenus name="click" kind="command" initlabel="click" color="34 76 118">
+			<description>
+				<text>
+					Click on <arg n="1"/>
+				</text>
+				<arg-description n="1" name="screenshot">
+					The screenshot to click on.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="screenshot">
+					<DefaultArg genus-name="screenshot-block" label="" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="click"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="double-click" kind="command" initlabel="double-click" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="screenshot">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="screenshot">
+					<DefaultArg genus-name="screenshot-block" label="" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="doubleClick"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="right-click" kind="command" initlabel="right click" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="screenshot">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="screenshot">
+					<DefaultArg genus-name="screenshot-block" label="" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="rightClick"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="hover" kind="command" initlabel="hover" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="screenshot">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="screenshot">
+					<DefaultArg genus-name="screenshot-block" label="" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="hover"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="drag-drop" kind="command" initlabel="drag and drop" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="screenshot-from">
+					FIXME
+				</arg-description>
+				<arg-description n="2" name="screenshot-to">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="from" connector-kind="socket" connector-type="screenshot">
+					<DefaultArg genus-name="screenshot-block" label="" />
+				</BlockConnector>
+				<BlockConnector label="to" connector-kind="socket" connector-type="screenshot">
+					<DefaultArg genus-name="screenshot-block" label="" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="dragDrop"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<!-- KEYBOARD -->
+		<BlockGenus name="type" kind="command" initlabel="type" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="text">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="string">
+					<DefaultArg genus-name="string" label="text" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="type"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="type-in" kind="command" initlabel="type" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="screenshot">
+					FIXME
+				</arg-description>
+				<arg-description n="2" name="text">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="in" connector-kind="socket" connector-type="screenshot">
+					<DefaultArg genus-name="screenshot-block" label="" />
+				</BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="string">
+					<DefaultArg genus-name="string" label="text" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="typeIn"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="paste" kind="command" initlabel="paste" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="text">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="string">
+					<DefaultArg genus-name="string" label="text" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="paste"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="paste-in" kind="command" initlabel="paste" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="screenshot">
+					FIXME
+				</arg-description>
+				<arg-description n="2" name="text">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="in" connector-kind="socket" connector-type="screenshot">
+					<DefaultArg genus-name="screenshot-block" label="" />
+				</BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="string">
+					<DefaultArg genus-name="string" label="text" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="pasteIn"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<!-- SPECIAL KEYS -->
+		<BlockGenus name="enter-key" kind="function" initlabel="enter key" color="40 100 175">
+			<description>
+				<text>
+					The Enter key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="enterKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="tab-key" kind="function" initlabel="tab key" color="40 100 175">
+			<description>
+				<text>
+					The Tab key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="tabKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="escape-key" kind="function" initlabel="escape key" color="40 100 175">
+			<description>
+				<text>
+					The Escape key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="escapeKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+
+		<BlockGenus name="backspace-key" kind="function" initlabel="backspace key" color="40 100 175">
+			<description>
+				<text>
+					The Backspace key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="backspaceKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="delete-key" kind="function" initlabel="delete key" color="40 100 175">
+			<description>
+				<text>
+					The Delete key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="deleteKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+
+		<BlockGenus name="insert-key" kind="function" initlabel="insert key" color="40 100 175">
+			<description>
+				<text>
+					The Insert key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="insertKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="space-key" kind="function" initlabel="space key" color="40 100 175">
+			<description>
+				<text>
+					The Space key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="spaceKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+
+		<BlockGenus name="function-key" kind="function" initlabel="function key #" color="40 100 175">
+			<description>
+				<text>
+					A function key (F1- F15)
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="number">
+					<DefaultArg genus-name="number" label="1" />
+				</BlockConnector>
+				<BlockConnector connector-kind="plug" connector-type="string"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="functionKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+						
+		<BlockGenus name="home-key" kind="function" initlabel="home key" color="40 100 175">
+			<description>
+				<text>
+					The Space key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="homeKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+
+		<BlockGenus name="end-key" kind="function" initlabel="end key" color="40 100 175">
+			<description>
+				<text>
+					The End key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="endKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="left-key" kind="function" initlabel="left arrow key" color="40 100 175">
+			<description>
+				<text>
+					The Left Arrow key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="leftKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+
+		<BlockGenus name="right-key" kind="function" initlabel="right arrow key" color="40 100 175">
+			<description>
+				<text>
+					The Right Arrow key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="rightKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+
+		<BlockGenus name="up-key" kind="function" initlabel="up arrow key" color="40 100 175">
+			<description>
+				<text>
+					The Up Arrow key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="upKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+
+		<BlockGenus name="down-key" kind="function" initlabel="down arrow key" color="40 100 175">
+			<description>
+				<text>
+					The Down Arrow key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="downKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+
+		<BlockGenus name="page-up-key" kind="function" initlabel="page up key" color="40 100 175">
+			<description>
+				<text>
+					The Page Up key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="pageUpKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+
+		<BlockGenus name="page-down-key" kind="function" initlabel="page down key" color="40 100 175">
+			<description>
+				<text>
+					The Page Down key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="pageDownKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+
+		
+		<!-- USER CONTROL -->
+		<BlockGenus name="popup" kind="command" initlabel="show popup" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="text">
+					FIXME
+				</arg-description>
+				<arg-description n="2" name="title">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="text" connector-kind="socket" connector-type="string">
+					<DefaultArg genus-name="string" label="Message to display" />
+				</BlockConnector>
+				<BlockConnector label="title" connector-kind="socket" connector-type="string">
+					<DefaultArg genus-name="string" label="Sikuli" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="popup"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="input" kind="function" initlabel="ask question" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="text">
+					FIXME
+				</arg-description>
+				<arg-description n="2" name="default">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string"></BlockConnector>
+				<BlockConnector label="question" connector-kind="socket" connector-type="string">
+					<DefaultArg genus-name="string" label="Question" />
+				</BlockConnector>
+				<BlockConnector label="default" connector-kind="socket" connector-type="string">
+					<DefaultArg genus-name="string" label="Default Answer" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="input"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<!-- APPLICATIONS -->
+		
+		<BlockGenus name="open-app" kind="command" initlabel="open app" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="text">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="string">
+					<DefaultArg genus-name="string" label="Application Name" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="openApp"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="switch-app" kind="command" initlabel="switch to app" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="text">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="string">
+					<DefaultArg genus-name="string" label="Application Name" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="switchApp"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="close-app" kind="command" initlabel="close app" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="text">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="string">
+					<DefaultArg genus-name="string" label="Application Name" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="closeApp"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="run-command" kind="command" initlabel="run command" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="text">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="string">
+					<DefaultArg genus-name="string" label="command" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="runCommand"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		
+		<!-- TESTING -->
+		
+		<BlockGenus name="print" kind="command" initlabel="print" color="34 76 117">
+			<description>
+				<text>
+					Prints the provided text to the console.
+				</text>
+				<arg-description n="1" name="text">
+				The text to print.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="string">
+					<DefaultArg genus-name="string" label="text" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="print"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="assert" kind="command" initlabel="assert" color="34 76 117">
+			<description>
+				<text>
+					Raises an exception if the provided condition is false.
+				</text>
+				<arg-description n="1" name="test">
+				The condition to check
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="boolean"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="assert"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<!-- LOGIC -->
+		
+		<BlockGenus name="if" kind="command" initlabel="if" color="19 46 81">
+			<description>
+				<text>
+					If <arg n="1"/> is true, the agent will run the blocks attached to <arg n="2"/>
+				</text>
+				<arg-description n="1" name="test">
+					The condition being tested.
+				</arg-description>
+				
+				<arg-description n="2" name="then">
+					The set of instructions that is done when the condition is true.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="test" connector-kind="socket" connector-type="boolean"></BlockConnector>
+				<BlockConnector label="then" connector-kind="socket" connector-type="cmd"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="if"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="ifelse" kind="command" initlabel="ifelse" color="19 46 81">
+			<description>
+				<text>
+					Does the first set of commands if the condition specified is true, otherwise it will do the second set of commands.
+				</text>
+				<arg-description n="1" name="test">
+					The condition being tested.
+				</arg-description>
+				
+				<arg-description n="2" name="then">
+					The set of instructions that is done when the condition is true.
+				</arg-description>
+				
+				<arg-description n="3" name="else">
+					The set of instructions that is done when the condition is false.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="test" connector-kind="socket" connector-type="boolean"></BlockConnector>
+				<BlockConnector label="then" connector-kind="socket" connector-type="cmd"></BlockConnector>
+				<BlockConnector label="else" connector-kind="socket" connector-type="cmd"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="ifelse"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="repeat" kind="command" initlabel="repeat" color="19 46 81">
+			<description>
+				<text>
+					Repeats some commands <arg n="1"/> times.
+				</text>
+				<arg-description n="1" name="times">
+					The number of times to repeat the command.
+				</arg-description>
+				
+				<arg-description n="2" name="do">
+					The commands to do.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="times" connector-kind="socket" connector-type="number"></BlockConnector>
+				<BlockConnector label="do" connector-kind="socket" connector-type="cmd"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="repeat"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="while" kind="command" initlabel="while" color="19 46 81">
+			<description>
+				<text>
+					Repeats some commands while <arg n="1"/> is true.
+				</text>
+				<arg-description n="1" name="test">
+					The condition being tested
+				</arg-description>
+				
+				<arg-description n="2" name="do">
+					The commands to do while the condition is true.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="test" connector-kind="socket" connector-type="boolean"></BlockConnector>
+				<BlockConnector label="do" connector-kind="socket" connector-type="cmd"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="while"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+			
+			
+		<BlockGenus name="or" kind="function" initlabel="or" color="34 76 117">
+			<description>
+				<text>
+					Reports true if one or both of the two conditions are true.
+				</text>
+				<arg-description n="2" doc-name="condition 1">
+					The first condition that must be true.
+				</arg-description>
+				<arg-description n="3" doc-name="condition 2">
+					The second condition that must be true.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="boolean" position-type="mirror"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="boolean" position-type="bottom"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="boolean" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="or"></LangSpecProperty>
+				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="and" kind="function" initlabel="and" color="34 76 117">
+			<description>
+				<text>
+					Reports true if both of the two conditions are true.
+				</text>
+				<arg-description n="2" doc-name="condition 1">
+					The first condition that must be true.
+				</arg-description>
+					<arg-description n="3" doc-name="condition 2">
+					The second condition that must be true.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="boolean" position-type="mirror"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="boolean" position-type="bottom"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="boolean" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="and"></LangSpecProperty>
+				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="not" kind="function" initlabel="not" color="34 76 117">
+			<description>
+				<text>
+					Reports the opposite of <arg n="1"/>.
+				</text>
+				<arg-description n="1" doc-name="boolean">
+					The boolean (<em>true</em> or <em>false</em>) that should be inverted.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="boolean"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="boolean"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="not"></LangSpecProperty>
+				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="break" kind="command" initlabel="break out of loop" color="34 76 117">
+			<description>
+				<text>
+					FIXME
+				</text>
+			</description>
+			<BlockConnectors>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="break"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="continue" kind="command" initlabel="continue" color="34 76 117"> <!--  FIXME: better label -->
+			<description>
+				<text>
+					FIXME
+				</text>
+			</description>
+			<BlockConnectors>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="continue"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="count-everyone-with" kind="function" initlabel="count everyone with" color="34 76 117">
+			<description>
+				<text>
+					Counts all agents that satisfy a certain condition.
+				</text>
+				<arg-description n="1" name="condition" doc-name="condition">
+					The condition an agent must satisfy to be counted
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="boolean"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="count-everyone-with"></LangSpecProperty>
+				<LangSpecProperty key="inline-arg" value="0"></LangSpecProperty>
+				<LangSpecProperty key="inline-stack-type" value="breed"></LangSpecProperty>
+				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="ask-arg" value="0"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="count-everyone" kind="function" initlabel="count everyone" color="34 76 117">
+			<description>
+				<text>
+					Reports the number of agents that are currently alive.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" position-type="mirror" connector-type="number"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="count-everyone"></LangSpecProperty>
+				<LangSpecProperty key="inline-arg" value="0"></LangSpecProperty>
+				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<!-- String Functions or Commands -->
+		
+		<BlockGenus name="say" kind="command" initlabel="say" color="34 76 117">
+			<description>
+				<text>
+					Causes this agent to "say" the supplied text by popping up a speech bubble in SpaceLand.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="poly"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="say"></LangSpecProperty>
+				<LangSpecProperty key="stack-type" value="breed"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="set-status" kind="command" initlabel="set status" color="34 76 117">
+			<description>
+				<text>
+					Displays the text attached to this block in the bottom panel of Spaceland.  
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="string"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="set-status"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="play" kind="command" initlabel="play sound" color="150 255 107">
+			<description>
+				<text>
+					Causes agent to play a sound with the following <arg n="1"/>.  Select a sound from the Sounds drawer and attach to this block.  
+				</text>
+				<arg-description n="1" name="name">
+					The text name of the sound to play.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="string"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="play"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>	
+		
+		<BlockGenus name="number-to-string" kind="function" initlabel="to text" color="34 76 117">
+			<description>
+				<text>
+					Returns a text representation of the given number.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="" connector-kind="plug" connector-type="string"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="number-to-string"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>	
+		
+		<BlockGenus name="string-append" kind="function" initlabel="+" color="34 76 117">
+			<description>
+				<text>
+					Appends <arg n="3"/> to the end of <arg n="2"/>.
+				</text>
+				<arg-description n="2" doc-name="first">
+					The text to which to append <arg n="3"/>.
+				</arg-description>
+				<arg-description n="3" doc-name="second">
+					The text to append to <arg n="2"/>.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="string" position-type="bottom"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="string" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="appendString"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>	
+		
+	
+		<!-- MATH -->
+		
+		<BlockGenus name="pi" kind="function" initlabel="π" color="40 100 175">
+			<description>
+				<text>
+					Reports the value of PI (approximately 3.14).
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="pi"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="e" kind="function" initlabel="e" color="40 100 175">
+			<description>
+				<text>
+					Reports the mathematical number <em>e</em>, which is about 2.718.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="e"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="sum" kind="function" initlabel="+" color="34 76 117">
+			<description>
+				<text>
+					Reports the sum of two numbers (<arg n="1"/> + <arg n="2"/>).
+				</text>
+				<arg-description n="1" doc-name="left number">
+				</arg-description>
+				<arg-description n="2" doc-name="right number">
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="" connector-kind="plug" connector-type="number" position-type="mirror"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="sum"></LangSpecProperty>
+				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="difference" kind="function" initlabel="-" color="34 76 117">
+			<description>
+				<text>
+					Reports the difference of two numbers (<arg n="1"/> - <arg n="2"/>).
+				</text>
+				<arg-description n="1" doc-name="left number">
+				</arg-description>
+				<arg-description n="2" doc-name="right number">
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="" connector-kind="plug" connector-type="number" position-type="mirror"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="difference"></LangSpecProperty>
+				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="product" kind="function" initlabel="x" color="34 76 117">
+			<description>
+				<text>
+					Reports the product of  two numbers (<arg n="1"/> x <arg n="2"/>).
+				</text>
+				<arg-description n="1" doc-name="left value">
+				</arg-description>
+				<arg-description n="2" doc-name="right value">
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="" connector-kind="plug" connector-type="number" position-type="mirror"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="product"></LangSpecProperty>
+				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="quotient" kind="function" initlabel="÷" color="34 76 117">
+			<description>
+				<text>
+					Reports the quotient of  two numbers (<arg n="1"/> ÷ <arg n="2"/>).
+				</text>
+				<arg-description n="1" doc-name="left value">
+				</arg-description>
+				<arg-description n="2" doc-name="right value">
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="" connector-kind="plug" connector-type="number" position-type="mirror"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="quotient"></LangSpecProperty>
+				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="string-equals" kind="function" initlabel="=" color="34 76 117">
+			<description>
+				<text>
+					Determines if two pieces of text are equal (<arg n="1"/> = <arg n="2"/>).
+				</text>
+				<arg-description n="1" doc-name="left value">
+				</arg-description>
+				<arg-description n="2" doc-name="right value">
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="" connector-kind="plug" connector-type="boolean" position-type="mirror"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="string" position-type="bottom"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="string" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="string-equals"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="number-equals" kind="function" initlabel="=" color="34 76 117">
+			<description>
+				<text>
+					Determines if two numbers are equal (<arg n="1"/> = <arg n="2"/>).
+				</text>
+				<arg-description n="1" doc-name="left value">
+				</arg-description>
+				<arg-description n="2" doc-name="right value">
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="" connector-kind="plug" connector-type="boolean" position-type="mirror"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="number-equals"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="string-not-equals" kind="function" initlabel="≠" color="34 76 117">
+			<description>
+				<text>
+					Determines if two pieces of text are different (<arg n="1"/> != <arg n="2"/>).
+				</text>
+				<arg-description n="1" doc-name="left value">
+				The first thing to compare.
+				</arg-description>
+				<arg-description n="2" doc-name="right value">
+				The second thing to compare.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="" connector-kind="plug" connector-type="boolean" position-type="mirror"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="string" position-type="bottom"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="string" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="string-not-equals"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="number-not-equals" kind="function" initlabel="≠" color="34 76 117">
+			<description>
+				<text>
+					Determines if two numbers are different (<arg n="1"/> != <arg n="2"/>).
+				</text>
+				<arg-description n="1" doc-name="left value">
+				The first thing to compare.
+				</arg-description>
+				<arg-description n="2" doc-name="right value">
+				The second thing to compare.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="" connector-kind="plug" connector-type="boolean" position-type="mirror"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="number-not-equals"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="lessthan" kind="function" initlabel="&lt;" color="34 76 117">
+			<description>
+				<text>
+					Reports whether the <arg n="1"/> is less than the <arg n="2"/>.
+				</text>
+				<arg-description n="1" doc-name="left value">
+				The first thing to compare.
+				</arg-description>
+				<arg-description n="2" doc-name="right value">
+				The second thing to compare.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="" connector-kind="plug" connector-type="boolean" position-type="mirror"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="less-than"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="lessthanorequalto" kind="function" initlabel="≤" color="34 76 117">
+			<description>
+				<text>
+					Reports whether the <arg n="1"/> is less than or equal to the <arg n="2"/>.
+				</text>
+				<arg-description n="1" doc-name="left value">
+				The first thing to compare.
+				</arg-description>
+				<arg-description n="2" doc-name="right value">
+				The second thing to compare.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="" connector-kind="plug" connector-type="boolean" position-type="mirror"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="less-than-or-equal-to"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="greaterthan" kind="function" initlabel="&gt;" color="34 76 117">
+			<description>
+				<text>
+					Reports whether the <arg n="1"/> is greater than the <arg n="2"/>.
+				</text>
+				<arg-description n="1" doc-name="left value">
+				The first thing to compare.
+				</arg-description>
+				<arg-description n="2" doc-name="right value">
+				The second thing to compare.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="" connector-kind="plug" connector-type="boolean" position-type="mirror"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="greater-than"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="greaterthanorequalto" kind="function" initlabel="≥" color="34 76 117">
+			<description>
+				<text>
+					Reports whether the <arg n="1"/> is greater than or equal to the <arg n="2"/>.
+				</text>
+				<arg-description n="1" doc-name="left value">
+				The first thing to compare.
+				</arg-description>
+				<arg-description n="2" doc-name="right value">
+				The second thing to compare.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="boolean" position-type="mirror"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="greater-than-or-equal-to"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="atan" kind="function" initlabel="atan" color="34 76 117">
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
+				<BlockConnector label="x" connector-kind="socket" connector-type="number"></BlockConnector>
+				<BlockConnector label="y" connector-kind="socket" connector-type="number"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="atan"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="random" kind="function" initlabel="random" color="34 76 117">
+			<description>
+				<text>
+					Reports a random integer greater than or equal to <arg n="1"></arg> and less than or equal to <arg n="2"/>.
+				</text>
+				<arg-description n="1" name="lower">
+					The lower integer in the range.
+				</arg-description>
+				<arg-description n="2" name="upper">
+					The upper integer in the range.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number">
+					<DefaultArg genus-name="number" label="1" />
+				</BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number">
+					<DefaultArg genus-name="number" label="10" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="random"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="round" kind="function" initlabel="round" color="34 76 117">
+			<description>
+				<text>
+					Rounds <arg n="1"/> to the nearest integer.
+				</text>
+				<arg-description n="1" doc-name="number">
+					The number to round.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="round"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="int" kind="function" initlabel="int" color="34 76 117">
+			<description>
+				<text>
+					Reports the whole number part of the number.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="int"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="remainder" kind="function" initlabel="remainder" color="34 76 117">
+			<description>
+				<text>
+					Reports the integer remainder of <arg n="2"/> divided by <arg n="3"/>.
+				</text>
+				<arg-description n="2" doc-name="first">
+					The number to divide.
+				</arg-description>
+				
+				<arg-description n="3" doc-name="second">
+					The number by which to divide.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number" position-type="mirror"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="remainder"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="min" kind="function" initlabel="min" color="34 76 117">
+			<description>
+				<text>
+					Reports the smaller value of the two numbers.	
+				</text>
+				<arg-description n="2" doc-name="number 1">
+					The first number to compare.
+				</arg-description>
+				<arg-description n="3" doc-name="number 2">
+					The second number to compare.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number" position-type="mirror"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="min"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="max" kind="function" initlabel="max" color="34 76 117">
+			<description>
+				<text>
+					Reports the greatest value of the two numbers.	
+				</text>
+				<arg-description n="2" doc-name="number 1">
+					The first number to compare.
+				</arg-description>
+				<arg-description n="3" doc-name="number 2">
+					The second number to compare.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number" position-type="mirror"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="max"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="power" kind="function" initlabel="power" color="34 76 117">
+			<description>
+				<text>
+					Reports the power of one number raised to another (<arg n="1"/> ^ <arg n="2"/>).
+				</text>
+				<arg-description n="1" doc-name="base">
+				</arg-description>
+				<arg-description n="2" doc-name="exponent">
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number" position-type="mirror"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number" position-type="bottom"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="power"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="abs" kind="function" initlabel="abs" color="34 76 117">
+			<description>
+				<text>
+				Reports the absolute value of a number.
+				</text>
+				<arg-description n="1" doc-name="number">
+					A number from which to get the absolute value.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="abs"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="sqrt" kind="function" initlabel="sqrt" color="34 76 117">
+			<description>
+				<text>
+					Reports the square root of <arg n="1"/>.
+				</text>
+				<arg-description n="1" doc-name="number">
+					The number whose square root to take.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="sqrt"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="sin" kind="function" initlabel="sin" color="34 76 117">
+			<description>
+				<text>
+					A Trigonmetric function that reports the sine of the specified angle. 
+				</text>
+				<arg-description n="1" name="degs">
+					The angle in degrees for which the sine will be reported.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
+				<BlockConnector label="degs" connector-kind="socket" connector-type="number"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="sin"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="cos" kind="function" initlabel="cos" color="34 76 117">
+			<description>
+				<text>
+					A Trigonmetric function that reports the cosine of the specified angle. 
+				</text>
+				<arg-description n="1" name="degs">
+					The angle in degrees for which the cosine will be reported.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
+				<BlockConnector label="degs" connector-kind="socket" connector-type="number"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="cos"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="tan" kind="function" initlabel="tan" color="34 76 117">
+			<description>
+				<text>
+					A Trigonmetric function that reports the tangent of the specified angle. 
+				</text>
+				<arg-description n="1" name="degs">
+					The angle in degrees for which the tangent will be reported.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
+				<BlockConnector label="degs" connector-kind="socket" connector-type="number"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="tan"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="asin" kind="function" initlabel="asin" color="34 76 117">
+			<description>
+				<text>
+					Trigonometric function that reports the arcsine of the specified number.  All angles are reported in degrees.
+				</text>
+				<arg-description n="1" doc-name="number">
+					A number from which to get the arcsine.
+				</arg-description>
+				</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="asin"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="acos" kind="function" initlabel="acos" color="34 76 117">
+			<description>
+				<text>
+					Trigonometric function that reports the arccosine of the specified number.  All angles are reported in degrees.
+				</text>
+				<arg-description n="1" doc-name="number">
+					A number from which to get the arccosine.
+				</arg-description>
+				</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="acos"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="log" kind="function" initlabel="log" color="34 76 117">
+			<description>
+				<text>
+					Reports the logarithm base 10 of <arg n="1"/>. <note>The return value <i>x</i> will be the number for which 10 to the power of <i>x</i> is equal to <arg n="1"/>.</note>
+				</text>
+				<arg-description n="1" doc-name="number">
+					The number of which to take the natural logarithm
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="log"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="ln" kind="function" initlabel="ln" color="34 76 117">
+			<description>
+				<text>
+					Reports the natural logarithm of <arg n="1"/>. <note>The return value <i>x</i> will be the number for which the mathematical constant e, which is about 2.718, to the power of <i>x</i> is equal to <arg n="1"/>.</note>
+				</text>
+				<arg-description n="1" doc-name="number">
+					The number of which to take the natural logarithm
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="ln"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+				
+		<!-- Procedure and parameters -->
+		
+		<BlockGenus name="procedure" kind="procedure" initlabel="Procedure" editable-label="yes" label-unique="yes" page-label-enabled="yes" is-starter="yes" color="19 46 81">
+			<description>
+				<text>
+					Defines a section of blocks as a procedure that can be called from other sections of blocks.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="poly" is-expandable="yes"></BlockConnector>
+			</BlockConnectors>
+			<Stubs>
+				<Stub stub-genus="caller">
+					<LangSpecProperties>
+						<LangSpecProperty key="command-type" value="eval-procedure"></LangSpecProperty>
+						<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
+						<LangSpecProperty key="is-breed-set-by-canvas" value="yes"></LangSpecProperty>
+						<LangSpecProperty key="stack-type" value="breed"></LangSpecProperty>
+					</LangSpecProperties>
+				</Stub>
+			</Stubs>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="eval-procedure"></LangSpecProperty>
+				<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="is-breed-set-by-canvas" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="stack-type" value="breed-procedure"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="on-appear-procedure" kind="procedure" initlabel="on appear" label-unique="yes" is-starter="yes" is-terminator="yes" color="19 46 81">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" doc-name="number">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="" connector-kind="socket" connector-type="screenshot">
+					<DefaultArg genus-name="screenshot-block" label="" />
+				</BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="cmd"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="on-appear-procedure"></LangSpecProperty>
+				<LangSpecProperty key="is-root-block" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="on-vanish-procedure" kind="procedure" initlabel="on vanish" label-unique="yes" is-starter="yes" is-terminator="yes" color="19 46 81">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" doc-name="number">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="" connector-kind="socket" connector-type="screenshot">
+					<DefaultArg genus-name="screenshot-block" label="" />
+				</BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="cmd"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="on-vanish-procedure"></LangSpecProperty>
+				<LangSpecProperty key="is-root-block" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="on-change-procedure" kind="procedure" initlabel="on change" label-unique="yes" is-starter="yes" is-terminator="yes" color="19 46 81">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" doc-name="number">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="" connector-kind="socket" connector-type="screenshot">
+					<DefaultArg genus-name="screenshot-block" label="" />
+				</BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="cmd"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="on-change-procedure"></LangSpecProperty>
+				<LangSpecProperty key="is-root-block" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="observe" kind="command" initlabel="observe" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="seconds">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="seconds" connector-kind="socket" connector-type="number"></BlockConnector>
+				<BlockConnector label="background" connector-kind="socket" connector-type="boolean">
+						<DefaultArg genus-name="false" label="False"/>
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="observe"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="proc-param-number" kind="param" initlabel="number param" editable-label="yes" label-unique="yes" is-starter="yes" is-terminator="yes" color="34 76 117">
+			<description>
+				<text>
+					Adds a number parameter to a procedure.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
+			</BlockConnectors>
+			<Stubs>
+				<Stub stub-genus="getter">
+					<LangSpecProperties>
+						<LangSpecProperty key="command-type" value="eval-local"></LangSpecProperty>
+						<LangSpecProperty key="scope" value="local"></LangSpecProperty>
+						<LangSpecProperty key="stack-type" value="breed-procedure"></LangSpecProperty>
+					</LangSpecProperties>	
+				</Stub>
+			</Stubs>
+			<LangSpecProperties>
+				<LangSpecProperty key="type" value="number"></LangSpecProperty>
+				<LangSpecProperty key="stack-type" value="breed-procedure"></LangSpecProperty>
+			</LangSpecProperties>	
+		</BlockGenus>
+		
+		<BlockGenus name="proc-param-boolean" kind="param" initlabel="boolean param" editable-label="yes" label-unique="yes" is-starter="yes" is-terminator="yes" color="34 76 117">
+			<description>
+				<text>
+					Adds a boolean parameter to a procedure.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="boolean"></BlockConnector>
+			</BlockConnectors>
+			<Stubs>
+				<Stub stub-genus="getter">
+					<LangSpecProperties>
+						<LangSpecProperty key="command-type" value="eval-local"></LangSpecProperty>
+						<LangSpecProperty key="scope" value="local"></LangSpecProperty>
+						<LangSpecProperty key="stack-type" value="breed-procedure"></LangSpecProperty>
+					</LangSpecProperties>	
+				</Stub>
+			</Stubs>
+			<LangSpecProperties>
+				<LangSpecProperty key="type" value="boolean"></LangSpecProperty>
+				<LangSpecProperty key="stack-type" value="breed-procedure"></LangSpecProperty>
+			</LangSpecProperties>	
+		</BlockGenus>
+		
+		<BlockGenus name="proc-param-string" kind="param" initlabel="text param" editable-label="yes" label-unique="yes" is-starter="yes" is-terminator="yes" color="34 76 117">
+			<description>
+				<text>
+					Adds a text parameter to a procedure.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string"></BlockConnector>
+			</BlockConnectors>
+			<Stubs>
+				<Stub stub-genus="getter">
+					<LangSpecProperties>
+						<LangSpecProperty key="command-type" value="eval-local"></LangSpecProperty>
+						<LangSpecProperty key="scope" value="local"></LangSpecProperty>
+						<LangSpecProperty key="stack-type" value="breed-procedure"></LangSpecProperty>
+					</LangSpecProperties>	
+				</Stub>
+			</Stubs>
+			<LangSpecProperties>
+				<LangSpecProperty key="type" value="string"></LangSpecProperty>
+				<LangSpecProperty key="stack-type" value="breed-procedure"></LangSpecProperty>
+			</LangSpecProperties>	
+		</BlockGenus>
+		
+		<BlockGenus name="proc-param-list" kind="param" initlabel="list param" editable-label="yes" label-unique="yes" is-starter="yes" is-terminator="yes" color="34 76 117">
+			<description>
+				<text>
+					Adds a list parameter to a procedure.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="poly-list"></BlockConnector>
+			</BlockConnectors>
+			<Stubs>
+				<Stub stub-genus="getter">
+					<LangSpecProperties>
+						<LangSpecProperty key="command-type" value="eval-local"></LangSpecProperty>
+						<LangSpecProperty key="scope" value="local"></LangSpecProperty>
+						<LangSpecProperty key="stack-type" value="breed-procedure"></LangSpecProperty>
+					</LangSpecProperties>	
+				</Stub>
+			</Stubs>
+			<LangSpecProperties>
+				<LangSpecProperty key="type" value="list"></LangSpecProperty>
+				<LangSpecProperty key="stack-type" value="breed-procedure"></LangSpecProperty>
+			</LangSpecProperties>	
+		</BlockGenus>
+		
+		<!--  VARIABLES  -->
+		
+		<BlockGenus name="set-screenshot" kind="command" initlabel="set screenshot" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="variable">
+					FIXME
+				</arg-description>
+				<arg-description n="1" name="value">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="variable" label="variable">
+					<DefaultArg genus-name="variable" label="myVariable" />
+				</BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="screenshot" label="value">
+					<DefaultArg genus-name="screenshot-block" label="" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="setScreenshot"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="get-screenshot" kind="function" initlabel="get screenshot" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="variable">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="variable" label="variable">
+					<DefaultArg genus-name="variable" label="myVariable" />
+				</BlockConnector>
+				<BlockConnector connector-kind="plug" connector-type="screenshot"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="getScreenshot"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>	
+		
+		<BlockGenus name="set-string" kind="command" initlabel="set text" color="34 76 117">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="variable">
+					FIXME
+				</arg-description>
+				<arg-description n="2" name="value">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="variable" label="variable">
+					<DefaultArg genus-name="variable" label="myVariable" />
+				</BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="string" label="value">
+					<DefaultArg genus-name="string" label="text" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="setString"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="get-string" kind="function" initlabel="get text" color="34 76 117">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="variable">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="variable" label="variable">
+					<DefaultArg genus-name="variable" label="myVariable" />
+				</BlockConnector>
+				<BlockConnector connector-kind="plug" connector-type="string"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="getString"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>	
+
+		<BlockGenus name="set-number" kind="command" initlabel="set number" color="34 76 117">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="variable">
+					FIXME
+				</arg-description>
+				<arg-description n="2" name="value">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="variable" label="variable">
+					<DefaultArg genus-name="variable" label="myVariable" />
+				</BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="number" label="value">
+					<DefaultArg genus-name="number" label="1" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="setNumber"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="get-number" kind="function" initlabel="get number" color="34 76 117">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="variable">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="variable" label="variable">
+					<DefaultArg genus-name="variable" label="myVariable" />
+				</BlockConnector>
+				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="getNumber"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>			
+		
+		<BlockGenus name="set-boolean" kind="command" initlabel="set boolean" color="34 76 117">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="variable">
+					FIXME
+				</arg-description>
+				<arg-description n="2" name="value">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="variable" label="variable">
+					<DefaultArg genus-name="variable" label="myVariable" />
+				</BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="boolean" label="value">
+					<DefaultArg genus-name="boolean" label="False" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="setBoolean"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="get-boolean" kind="function" initlabel="get boolean" color="34 76 117">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="variable">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="variable" label="variable">
+					<DefaultArg genus-name="variable" label="myVariable" />
+				</BlockConnector>
+				<BlockConnector connector-kind="plug" connector-type="boolean"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="getBoolean"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>			
+		
+		<!-- SETUP AND RUNTIME BLOCKS -->
+		
+		<!-- NOTE: The genus names "forever", "runonce", and "runforsometime" is duplicated in RunBlockManager.java, 
+			if you change this name, make sure to change it there too.  -->
+		<BlockGenus name="forever" kind="command" initlabel="forever" editable-label="yes" label-unique="yes" is-starter="yes" is-terminator="yes" color="19 46 81">
+			<description>
+				<text>
+					When switched on, agents do commands over and over. <note>There are different commands for each breed.</note>
+				</text>
+				<arg-description n="1" name="agents" doc-name="breed">
+					The breed of the agents performing the commands attached here.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="" connector-kind="socket" connector-type="cmd"></BlockConnector>
+			</BlockConnectors>
+			<Images>
+				<Image block-location="southwest" image-editable="yes" width="15" height="15">
+					<FileLocation>support/forever_switch_on.png</FileLocation>
+				</Image>
+			</Images>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="forever"></LangSpecProperty>
+				<LangSpecProperty key="is-root-block" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="runtime-forever" kind="command" initlabel="forever" is-starter="yes" is-terminator="yes" color="19 46 81">
+			<description>
+				<text>
+					When switched on, agents do commands over and over. <note>There are different commands for each breed.</note>
+				</text>
+			</description>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="forever"></LangSpecProperty>
+				<LangSpecProperty key="is-root-block" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="runonce" kind="command" initlabel="run once" editable-label="yes" label-unique="yes" is-starter="yes" is-terminator="yes" color="19 46 81">
+			<description>
+				<text>
+					When switched on, agents do commands once. <note>There are different commands for each breed.</note>
+				</text>
+				<arg-description n="1" name="agents" doc-name="breed">
+					The breed of the agents performing the commands attached here.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="" connector-kind="socket" connector-type="cmd"></BlockConnector>
+			</BlockConnectors>
+			<Images>
+				<Image block-location="southwest" image-editable="yes" width="15" height="15">
+					<FileLocation>support/forever_switch_on.png</FileLocation>
+				</Image>
+			</Images>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="runOnce"></LangSpecProperty>
+				<LangSpecProperty key="is-root-block" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="runtime-once" kind="command" initlabel="run once" is-starter="yes" is-terminator="yes" color="19 46 81">
+			<description>
+				<text>
+					When switched on, agents do commands once. <note>There are different commands for each breed.</note>
+				</text>
+			</description>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="runOnce"></LangSpecProperty>
+				<LangSpecProperty key="is-root-block" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="runforsometime" kind="command" initlabel="run" editable-label="yes" label-unique="yes" is-starter="yes" is-terminator="yes" color="19 46 81">
+			<description>
+				<text>
+					When switched on, agents do commands over and over for <arg n="1"/> seconds. <note>There are different commands for each breed.</note>
+				</text>
+				
+				<arg-description n="1" name="secs">
+					The number of seconds for which the commands are run when switched on.
+				</arg-description>
+				
+				<arg-description n="2" name="agents" doc-name="breed">
+					The breed of the agents performing the commands attached here.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+			    <BlockConnector label="secs" connector-kind="socket" connector-type="number">
+			    </BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="cmd"></BlockConnector>
+			</BlockConnectors>
+			<Images>
+				<Image block-location="southwest" image-editable="yes" width="15" height="15">
+					<FileLocation>support/forever_switch_on.png</FileLocation>
+				</Image>
+			</Images>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="runForSometime"></LangSpecProperty>
+				<LangSpecProperty key="is-root-block" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="runtime-sometime" kind="command" initlabel="run" is-starter="yes" is-terminator="yes" color="19 46 81">
+			<description>
+				<text>
+					When switched on, agents do commands over and over for a number of seconds. <note>There are different commands for each breed.</note>
+				</text>
+			</description>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="runForSometime"></LangSpecProperty>
+				<LangSpecProperty key="is-root-block" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="setup" kind="command" initlabel="setup" editable-label="yes" label-unique="yes" is-starter="yes" is-terminator="yes" color="19 46 81">
+			<description>
+				<text>
+					This block serves as a wrapper around blocks that set up a model.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="cmd"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="is-setup" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="is-root-block" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="command-type" value="setup"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<!-- BREED SPECIFIC BLOCKS -->
+		
+		<BlockGenus name="create-agents" kind="command" initlabel="" label-prefix="create " color="34 76 117">
+			<description>
+				<text>
+				Creates <arg n="1"/> number of agents of the given breed.
+				</text>
+				<arg-description n="1" name="num">
+					The number of agents to create.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="num" connector-kind="socket" connector-type="number">
+					<DefaultArg genus-name="number" label="10" />
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="command-type" value="crt-breed"></LangSpecProperty>
+				<LangSpecProperty key="is-setup-block" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="include-breed" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="include-breed-shape" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="stack-type" value="setup"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="create-and-do" kind="command" initlabel="" label-prefix="create " color="34 76 117">
+			<description>
+				<text>
+				Creates <arg n="1"/> number of agents of the given breed and has each do the specified commands.
+				</text>
+				<arg-description n="1" name="num">
+					The number of agents to create.
+				</arg-description>
+				<arg-description n="2" name="cmd">
+					The commands for each agent to do.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="num" connector-kind="socket" connector-type="number">
+					<DefaultArg genus-name="number" label="10" />
+				</BlockConnector>
+				<BlockConnector label="do" connector-kind="socket" connector-type="cmd"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="command-type" value="crt-breed-do"></LangSpecProperty>
+				<LangSpecProperty key="is-setup-block" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="inline-arg" value="1"></LangSpecProperty>
+				<LangSpecProperty key="include-breed" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="include-breed-shape" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="stack-type" value="setup"></LangSpecProperty>
+				<LangSpecProperty key="inline-stack-type" value="breed-forever"></LangSpecProperty>
+				<LangSpecProperty key="ask-arg" value="1"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="breed-string" kind="function" initlabel="" label-prefix="breed: "  color="34 76 117">
+			<description>
+				<text>
+				  	Reports the name of the given breed.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror">
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="command-type" value="nop"></LangSpecProperty>
+				<LangSpecProperty key="include-breed" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="count-breeds" kind="function" initlabel="" label-prefix="count "  color="128 30 255">
+			<description>
+				<text>
+				  	Reports the number agents of this breed.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number" position-type="mirror">
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="command-type" value="count-breeds"></LangSpecProperty>
+				<LangSpecProperty key="include-breed" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="count-breeds-with" kind="function" initlabel="" label-prefix="count "  label-suffix=" with" color="128 30 255">
+			<description>
+				<text>
+				  	Reports the number agents of this breed that satisfy the given condition.
+				</text>
+				<arg-description n="1" doc-name="condition">
+					A condition that must be true of the counted agents.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
+				<BlockConnector label="condition" connector-kind="socket" connector-type="boolean"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="command-type" value="count-breeds-with"></LangSpecProperty>
+				<LangSpecProperty key="include-breed" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="inline-arg" value="0"></LangSpecProperty>
+				<LangSpecProperty key="inline-stack-type" value="breed"></LangSpecProperty>
+				<LangSpecProperty key="ask-arg" value="0"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="scatter-breeds" kind="command" initlabel="" label-prefix="scatter "  color="34 76 117">
+			<description>
+				<text>
+				  	Scatters agents of this breed across SpaceLand.
+				</text>
+			</description>
+			<LangSpecProperties>
+				<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="command-type" value="scatter-agents"></LangSpecProperty>
+				<LangSpecProperty key="include-breed" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="stack-type" value="setup"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="clear-breeds" kind="command" initlabel="" label-prefix="clear "  color="34 76 117">
+			<description>
+				<text>
+				  	Clears all agents of this breed.
+				</text>
+			</description>
+			<LangSpecProperties>
+				<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="command-type" value="clear-breeds"></LangSpecProperty>
+				<LangSpecProperty key="include-breed" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="stack-type" value="setup"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="collision" kind="command" initlabel="Collision" color="34 76 118" is-starter="yes" is-terminator="yes" page-label-enabled="yes">
+			<description>
+				<text>Constantly checks for collisions between agents.  If a collision occurs, causes the collider to run the <arg n="1"/> code, and the collidee to run the <arg n="2"/> code.  Which agent is the collidee and which is the collider depends on the block.  For example, if a Turtle and Frog collide, the collision block with "Turtles" as the first port and "Frogs" as the second port will assume that the Turtle is the collider and the Frog is the collidee.</text>
+				<arg-description n="1" name="me">
+				This is the code that the collider runs.
+				</arg-description>
+				
+				<arg-description n="2" name="agents">
+					This is the code that the collidee runs.  The label of this port determines which breed will be assumed to be collidee.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="cmd"></BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="cmd"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="is-collision" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="stack-type" value="breed-collision"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+
+		<!-- SHAPES (see ShapeBlocksGenerator) -->
+		
+		<BlockGenus name="random-shape" kind="function" initlabel="random shape" color="255 252 138">
+			<description>
+				<text>
+					Selects a random shape.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="random-shape"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<!-- DYNAMIC BLOCKS -->
+		
+		<BlockGenus name="ashape" kind="data" initlabel="" color="255 252 138">
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string"></BlockConnector>
+			</BlockConnectors>
+			<Images>
+				<Image width="64" height="64">
+					<FileLocation>/models/animals/turtle/default_icon.png</FileLocation>
+				</Image>
+			</Images>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="eval-num"></LangSpecProperty>
+				<LangSpecProperty key="special-value" value="animals/turtle-default"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="bshape" kind="data" initlabel="" color="255 252 138">
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string"></BlockConnector>
+			</BlockConnectors>
+			<Images>
+				<Image width="64" height="64">
+					<FileLocation>/models/animals/sonic/sonic_icon.png</FileLocation>
+				</Image>
+			</Images>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="eval-num"></LangSpecProperty>
+				<LangSpecProperty key="special-value" value="animals/sonic-sonic"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+	</BlockGenuses>
+	
+	<BlockFamilies>
+		<BlockFamily>
+			<FamilyMember>true</FamilyMember>
+			<FamilyMember>false</FamilyMember>
+		</BlockFamily>
+		<BlockFamily>
+			<FamilyMember>min</FamilyMember>
+			<FamilyMember>max</FamilyMember>
+		</BlockFamily>
+		<BlockFamily>
+			<FamilyMember>round</FamilyMember>
+			<FamilyMember>int</FamilyMember>
+		</BlockFamily>
+		<BlockFamily>
+			<FamilyMember>sin</FamilyMember>
+			<FamilyMember>cos</FamilyMember>
+			<FamilyMember>tan</FamilyMember>
+		</BlockFamily>
+		<BlockFamily>
+			<FamilyMember>log</FamilyMember>
+			<FamilyMember>ln</FamilyMember>
+		</BlockFamily>
+		<BlockFamily>
+			<FamilyMember>string-equals</FamilyMember>
+			<FamilyMember>string-not-equals</FamilyMember>
+		</BlockFamily>
+		<BlockFamily>
+			<FamilyMember>number-equals</FamilyMember>
+			<FamilyMember>number-not-equals</FamilyMember>
+			<FamilyMember>lessthan</FamilyMember>
+			<FamilyMember>greaterthan</FamilyMember>
+			<FamilyMember>lessthanorequalto</FamilyMember>
+			<FamilyMember>greaterthanorequalto</FamilyMember>
+		</BlockFamily>
+		<BlockFamily>
+			<FamilyMember>and</FamilyMember>
+			<FamilyMember>or</FamilyMember>
+		</BlockFamily>
+		<BlockFamily>
+			<FamilyMember>sum</FamilyMember>
+			<FamilyMember>difference</FamilyMember>
+			<FamilyMember>quotient</FamilyMember>
+			<FamilyMember>product</FamilyMember>
+		</BlockFamily>
+	</BlockFamilies>
+
+	<BlockDrawerSets>	
+		<BlockDrawerSet name="factory" type="stack" location="southwest" window-per-drawer="no" drawer-draggable="no" >
+			<BlockDrawer name="Find" type="factory" button-color="34 76 118">
+				<BlockGenusMember>exists</BlockGenusMember>
+				<BlockGenusMember>find</BlockGenusMember>
+				<BlockGenusMember>find-all</BlockGenusMember>
+				<BlockGenusMember>wait</BlockGenusMember>
+				<BlockGenusMember>wait-vanish</BlockGenusMember>
+				<BlockGenusMember>screenshot-block</BlockGenusMember>
+			</BlockDrawer>
+			<BlockDrawer name="Mouse" type="factory" button-color="34 76 118">
+				<BlockGenusMember>click</BlockGenusMember>
+				<BlockGenusMember>double-click</BlockGenusMember>
+				<BlockGenusMember>right-click</BlockGenusMember>
+				<BlockGenusMember>hover</BlockGenusMember>
+				<BlockGenusMember>drag-drop</BlockGenusMember>
+				<BlockGenusMember>screenshot-block</BlockGenusMember>
+			</BlockDrawer>
+			<BlockDrawer name="Keyboard" type="factory" button-color="34 76 118">
+				<BlockGenusMember>type</BlockGenusMember>
+				<BlockGenusMember>type-in</BlockGenusMember>
+				<BlockGenusMember>paste</BlockGenusMember>
+				<BlockGenusMember>paste-in</BlockGenusMember>
+				<BlockGenusMember>screenshot-block</BlockGenusMember>
+			</BlockDrawer>
+			<BlockDrawer name="Special Keys" type="factory" button-color="34 76 118">
+				<BlockGenusMember>enter-key</BlockGenusMember>
+				<BlockGenusMember>tab-key</BlockGenusMember>
+				<BlockGenusMember>escape-key</BlockGenusMember>
+				<BlockGenusMember>backspace-key</BlockGenusMember>
+				<BlockGenusMember>delete-key</BlockGenusMember>
+				<BlockGenusMember>insert-key</BlockGenusMember>
+				<BlockGenusMember>space-key</BlockGenusMember>
+				<BlockGenusMember>function-key</BlockGenusMember>
+				<BlockGenusMember>home-key</BlockGenusMember>
+				<BlockGenusMember>end-key</BlockGenusMember>
+				<BlockGenusMember>left-key</BlockGenusMember>
+				<BlockGenusMember>right-key</BlockGenusMember>
+				<BlockGenusMember>down-key</BlockGenusMember>
+				<BlockGenusMember>up-key</BlockGenusMember>
+				<BlockGenusMember>page-down-key</BlockGenusMember>
+				<BlockGenusMember>page-up-key</BlockGenusMember>
+			</BlockDrawer>
+			<BlockDrawer name="Applications" type="factory" button-color="34 76 118">
+				<BlockGenusMember>open-app</BlockGenusMember>
+				<BlockGenusMember>switch-app</BlockGenusMember>
+				<BlockGenusMember>close-app</BlockGenusMember>
+				<BlockGenusMember>run-command</BlockGenusMember>
+			</BlockDrawer>
+			<BlockDrawer name="User Control" type="factory" button-color="34 76 118">
+				<BlockGenusMember>popup</BlockGenusMember>
+				<BlockGenusMember>input</BlockGenusMember>
+			</BlockDrawer>
+			<BlockDrawer name="Variables" type="factory" button-color="34 76 117">
+				<BlockGenusMember>get-screenshot</BlockGenusMember>
+				<BlockGenusMember>set-screenshot</BlockGenusMember>
+				<BlockGenusMember>get-string</BlockGenusMember>
+				<BlockGenusMember>set-string</BlockGenusMember>
+				<BlockGenusMember>get-number</BlockGenusMember>
+				<BlockGenusMember>set-number</BlockGenusMember>
+				<BlockGenusMember>get-boolean</BlockGenusMember>
+				<BlockGenusMember>set-boolean</BlockGenusMember>
+				<BlockGenusMember>variable</BlockGenusMember>
+			</BlockDrawer>
+			<BlockDrawer name="Procedure" type="factory" button-color="34 76 117">
+				<BlockGenusMember>procedure</BlockGenusMember>
+				<BlockGenusMember>on-appear-procedure</BlockGenusMember>
+				<BlockGenusMember>on-vanish-procedure</BlockGenusMember>
+				<BlockGenusMember>on-change-procedure</BlockGenusMember>
+				<BlockGenusMember>observe</BlockGenusMember>
+			</BlockDrawer>
+			<BlockDrawer name="Setup and Run" type="factory" is-open="yes" button-color="34 76 117">
+				<BlockGenusMember>runforsometime</BlockGenusMember>
+				<BlockGenusMember>runonce</BlockGenusMember>
+			</BlockDrawer>
+			<BlockDrawer name="Logic" type="factory" button-color="34 76 117">
+				<BlockGenusMember>if</BlockGenusMember>
+				<BlockGenusMember>ifelse</BlockGenusMember>
+				<BlockGenusMember>repeat</BlockGenusMember>
+				<BlockGenusMember>while</BlockGenusMember>
+				<BlockGenusMember>break</BlockGenusMember>
+				<BlockGenusMember>continue</BlockGenusMember>
+				<BlockGenusMember>and</BlockGenusMember>
+				<BlockGenusMember>or</BlockGenusMember>
+				<BlockGenusMember>not</BlockGenusMember>
+				<BlockGenusMember>true</BlockGenusMember>
+				<BlockGenusMember>false</BlockGenusMember>
+			</BlockDrawer>
+			<BlockDrawer name="Text" type="factory" button-color="34 76 117">
+				<BlockGenusMember>string</BlockGenusMember>
+				<BlockGenusMember>string-append</BlockGenusMember>
+				<BlockGenusMember>string-equals</BlockGenusMember>
+				<BlockGenusMember>string-not-equals</BlockGenusMember>
+			</BlockDrawer>
+			<BlockDrawer name="Testing" type="factory" button-color="34 76 117">
+				<BlockGenusMember>print</BlockGenusMember>
+				<BlockGenusMember>assert</BlockGenusMember>
+			</BlockDrawer>
+			<BlockDrawer name="Math" type="factory" button-color="34 76 117">
+				<BlockGenusMember>number</BlockGenusMember>
+				<BlockGenusMember>pi</BlockGenusMember>
+				<BlockGenusMember>e</BlockGenusMember>
+				<BlockGenusMember>number-to-string</BlockGenusMember>
+				<BlockGenusMember>sum</BlockGenusMember>
+				<BlockGenusMember>difference</BlockGenusMember>
+				<BlockGenusMember>product</BlockGenusMember>
+				<BlockGenusMember>quotient</BlockGenusMember>
+				<BlockGenusMember>number-equals</BlockGenusMember>
+				<BlockGenusMember>number-not-equals</BlockGenusMember>
+				<BlockGenusMember>lessthan</BlockGenusMember>
+				<BlockGenusMember>greaterthan</BlockGenusMember>
+				<BlockGenusMember>lessthanorequalto</BlockGenusMember>
+				<BlockGenusMember>greaterthanorequalto</BlockGenusMember>
+				<BlockGenusMember>atan</BlockGenusMember>
+				<BlockGenusMember>random</BlockGenusMember>
+				<BlockGenusMember>round</BlockGenusMember>
+				<BlockGenusMember>int</BlockGenusMember>
+				<BlockGenusMember>min</BlockGenusMember>
+				<BlockGenusMember>max</BlockGenusMember>
+				<BlockGenusMember>remainder</BlockGenusMember>
+				<BlockGenusMember>power</BlockGenusMember>
+				<BlockGenusMember>abs</BlockGenusMember>
+				<BlockGenusMember>sqrt</BlockGenusMember>
+				<BlockGenusMember>sin</BlockGenusMember>
+				<BlockGenusMember>cos</BlockGenusMember>
+				<BlockGenusMember>tan</BlockGenusMember>
+				<BlockGenusMember>asin</BlockGenusMember>
+				<BlockGenusMember>acos</BlockGenusMember>
+				<BlockGenusMember>log</BlockGenusMember>
+				<BlockGenusMember>ln</BlockGenusMember>
+			</BlockDrawer>
+
+			<!-- Shapes are automatically loaded as blocks in the Shapes drawer
+				 (see slcodeblocks.ShapeBlocksGenerator for details)  -->
+			<!-- Sound blocks reside in the auto-generated String drawer.  
+				 (see slcodeblocks.SoundBlocksGenerator for details)  -->
+		</BlockDrawerSet>
+	</BlockDrawerSets>
+
+	<Pages drawer-with-page="yes">
+		<Page page-name="" page-width="400"></Page>
+		<!-- 
+		<Page page-name="Everyone" page-width="400"></Page>
+		<Page page-name="Setup" page-width="400"></Page>
+		<Page page-name="Runtime" page-width="400"></Page>
+		 -->
+	</Pages>
+
+	<TrashCan>
+		<OpenTrashImage>/support/images/trash_open.png</OpenTrashImage>
+		<ClosedTrashImage>/support/images/trash.png</ClosedTrashImage>
+	</TrashCan>
+	
+	<BreedShapeMappings>
+		<BtoSMapping>
+			<BreedName>Turtles</BreedName>
+			<BreedShape>animals/turtle-default</BreedShape>
+		</BtoSMapping>
+	</BreedShapeMappings>
+	
+</BlockLangDef>
