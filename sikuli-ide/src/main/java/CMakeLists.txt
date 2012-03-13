@@ -8,11 +8,16 @@ ELSEIF(WIN32)
    SET(OS_EXTRA_SOURCE_FILES org/sikuli/ide/NativeLayerForWindows.java)
 ENDIF()
 
+SET(CMAKE_OSX_ARCHITECTURES x86_64)
+
 SET(JAVA_SOURCE_FILES 
          ${OS_EXTRA_SOURCE_FILES}
          org/sikuli/ide/AutoUpdater.java
          org/sikuli/ide/ButtonGenCommand.java
+         org/sikuli/ide/BlockCompiler.java
+         org/sikuli/ide/BlocksWorkspaceController.java
          org/sikuli/ide/CaptureButton.java
+         org/sikuli/ide/CaptureController.java
          org/sikuli/ide/CloseableTabbedPane.java
          org/sikuli/ide/CloseableTabbedPaneListener.java
          org/sikuli/ide/CommandArgs.java

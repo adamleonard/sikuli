@@ -7,6 +7,7 @@ package org.sikuli.ide;
 
 import org.sikuli.ide.extmanager.ExtensionManagerFrame;
 import org.sikuli.ide.sikuli_test.*;
+import org.sikuli.ide.BlocksWorkspaceController;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -94,6 +95,8 @@ public class SikuliIDE extends JFrame {
    private static Icon PY_SRC_ICON = getIconResource("/icons/py-src-16x16.png");
 
    private boolean _inited = false;
+   
+   private BlocksWorkspaceController _blocksWorkspaceController;
 
    static String _I(String key, Object... args){ 
       return I18N._I(key, args);
@@ -129,7 +132,10 @@ public class SikuliIDE extends JFrame {
 
    public void onQuickCapture(String arg){
       Debug.log(2, "QuickCapture");
-      _btnCapture.capture(0);
+      if(_blocksWorkspaceController != null)
+    	  _blocksWorkspaceController.capture(0);
+      else
+    	  _btnCapture.capture(0);
    }
 
    //FIXME: singleton lock
@@ -891,7 +897,7 @@ public class SikuliIDE extends JFrame {
       return runSikuli(sikuliDir.getAbsolutePath(), args);
    }
 
-   static String[] getPyArgs(){
+   public static String[] getPyArgs(){
       String[] pargs = _cmdLine.getArgs();
       if( _cmdLine.hasOption("args") ) 
          pargs = _cmdLine.getOptionValues("args");
@@ -1413,10 +1419,10 @@ public class SikuliIDE extends JFrame {
       
       public void doNewBlocks(ActionEvent ae){
          try{
-            WorkspaceController wc = new WorkspaceController();
-            wc.setLangDefStream(SikuliIDE.class.getResourceAsStream("/icons/lang_def.xml"));
-        	wc.loadFreshWorkspace();
-         	wc.createAndShowGUI();
+        	_blocksWorkspaceController = new BlocksWorkspaceController();
+        	_blocksWorkspaceController.setLangDefStream(SikuliIDE.class.getResourceAsStream("/icons/lang_def.xml"));
+        	_blocksWorkspaceController.loadFreshWorkspace();
+        	_blocksWorkspaceController.createAndShowGUI();
          }
          catch(Exception ex){
             ex.printStackTrace();
