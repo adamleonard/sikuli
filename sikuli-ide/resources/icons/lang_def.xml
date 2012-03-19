@@ -189,7 +189,7 @@ BlockGenuses are first loaded.
 				<text>
 					If <arg n="1"/> exists on the screen, the agent will run the blocks attached to <arg n="2"/>
 				</text>
-				<arg-description n="1" name="test">
+				<arg-description n="1" name="screenshot">
 					The screenshot to find.
 				</arg-description>
 				
@@ -987,7 +987,7 @@ BlockGenuses are first loaded.
 				<text>
 					If <arg n="1"/> is true, the agent will run the blocks attached to <arg n="2"/>
 				</text>
-				<arg-description n="1" name="test">
+				<arg-description n="1" name="if">
 					The condition being tested.
 				</arg-description>
 				
@@ -996,7 +996,7 @@ BlockGenuses are first loaded.
 				</arg-description>
 			</description>
 			<BlockConnectors>
-				<BlockConnector label="test" connector-kind="socket" connector-type="boolean"></BlockConnector>
+				<BlockConnector label="if" connector-kind="socket" connector-type="boolean"></BlockConnector>
 				<BlockConnector label="then" connector-kind="socket" connector-type="cmd"></BlockConnector>
 			</BlockConnectors>
 			<LangSpecProperties>
@@ -1009,7 +1009,7 @@ BlockGenuses are first loaded.
 				<text>
 					Does the first set of commands if the condition specified is true, otherwise it will do the second set of commands.
 				</text>
-				<arg-description n="1" name="test">
+				<arg-description n="1" name="if">
 					The condition being tested.
 				</arg-description>
 				
@@ -1022,7 +1022,7 @@ BlockGenuses are first loaded.
 				</arg-description>
 			</description>
 			<BlockConnectors>
-				<BlockConnector label="test" connector-kind="socket" connector-type="boolean"></BlockConnector>
+				<BlockConnector label="if" connector-kind="socket" connector-type="boolean"></BlockConnector>
 				<BlockConnector label="then" connector-kind="socket" connector-type="cmd"></BlockConnector>
 				<BlockConnector label="else" connector-kind="socket" connector-type="cmd"></BlockConnector>
 			</BlockConnectors>
@@ -1058,7 +1058,7 @@ BlockGenuses are first loaded.
 				<text>
 					Repeats some commands while <arg n="1"/> is true.
 				</text>
-				<arg-description n="1" name="test">
+				<arg-description n="1" name="while">
 					The condition being tested
 				</arg-description>
 				
@@ -1067,7 +1067,7 @@ BlockGenuses are first loaded.
 				</arg-description>
 			</description>
 			<BlockConnectors>
-				<BlockConnector label="test" connector-kind="socket" connector-type="boolean"></BlockConnector>
+				<BlockConnector label="while" connector-kind="socket" connector-type="boolean"></BlockConnector>
 				<BlockConnector label="do" connector-kind="socket" connector-type="cmd"></BlockConnector>
 			</BlockConnectors>
 			<LangSpecProperties>
