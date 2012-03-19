@@ -17,17 +17,11 @@ BlockGenuses are first loaded.
 
 	<BlockConnectorShapes>
 		<BlockConnectorShape shape-type="number" shape-number="1"></BlockConnectorShape>
-		<BlockConnectorShape shape-type="number-list" shape-number="2"></BlockConnectorShape>
-		<BlockConnectorShape shape-type="number-inv" shape-number="3"></BlockConnectorShape>
-		<BlockConnectorShape shape-type="boolean" shape-number="4"></BlockConnectorShape>
-		<BlockConnectorShape shape-type="boolean-list" shape-number="5"></BlockConnectorShape>
-		<BlockConnectorShape shape-type="boolean-inv" shape-number="6"></BlockConnectorShape>
+		<BlockConnectorShape shape-type="screenshot" shape-number="4"></BlockConnectorShape>
 		<BlockConnectorShape shape-type="string" shape-number="7"></BlockConnectorShape>
-		<BlockConnectorShape shape-type="string-list" shape-number="8"></BlockConnectorShape>
-		<BlockConnectorShape shape-type="string-inv" shape-number="9"></BlockConnectorShape>
-		<BlockConnectorShape shape-type="screenshot" shape-number="10"></BlockConnectorShape>
-		<BlockConnectorShape shape-type="variable" shape-number="11"></BlockConnectorShape>
-		<BlockConnectorShape shape-type="proc-param" shape-number="13"></BlockConnectorShape>
+		<BlockConnectorShape shape-type="boolean" shape-number="1"></BlockConnectorShape>
+		<BlockConnectorShape shape-type="any" shape-number="10"></BlockConnectorShape>
+		<BlockConnectorShape shape-type="variable" shape-number="13"></BlockConnectorShape>
 		<BlockConnectorShape shape-type="cmd" shape-number="14"></BlockConnectorShape>
 	</BlockConnectorShapes>
 	
@@ -437,6 +431,29 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
+		<BlockGenus name="type-modifiers" kind="command" initlabel="type" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="text">
+					FIXME
+				</arg-description>
+				<arg-description n="2" name="modifiers">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="string" label="text">
+					<DefaultArg genus-name="string" label="text" />
+				</BlockConnector>
+			<BlockConnector connector-kind="socket" connector-type="string" label="modifiers"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="typeModifiers"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
 		<BlockGenus name="paste" kind="command" initlabel="paste" color="34 76 118">
 			<description>
 				<text>
@@ -482,6 +499,90 @@ BlockGenuses are first loaded.
 		</BlockGenus>
 		
 		<!-- SPECIAL KEYS -->
+		<BlockGenus name="control-key" kind="function" initlabel="control key" color="40 100 175">
+			<description>
+				<text>
+					The Control key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="controlKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="shift-key" kind="function" initlabel="shift key" color="40 100 175">
+			<description>
+				<text>
+					The Shift key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="shiftKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+
+		<BlockGenus name="alt-key" kind="function" initlabel="alt key" color="40 100 175">
+			<description>
+				<text>
+					The Alt key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="altKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+
+		<BlockGenus name="meta-key" kind="function" initlabel="meta key" color="40 100 175">
+			<description>
+				<text>
+					The Meta key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="metaKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+
+		<BlockGenus name="command-key" kind="function" initlabel="command key" color="40 100 175">
+			<description>
+				<text>
+					The Command key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="commandKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+						
+		<BlockGenus name="windows-key" kind="function" initlabel="windows key" color="40 100 175">
+			<description>
+				<text>
+					The Windows key.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="windowsKey"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+						
 		<BlockGenus name="enter-key" kind="function" initlabel="enter key" color="40 100 175">
 			<description>
 				<text>
@@ -1674,13 +1775,13 @@ BlockGenuses are first loaded.
 				<text>
 					A Trigonmetric function that reports the sine of the specified angle. 
 				</text>
-				<arg-description n="1" name="degs">
-					The angle in degrees for which the sine will be reported.
+				<arg-description n="1" name="radians">
+					The angle in radians for which the sine will be reported.
 				</arg-description>
 			</description>
 			<BlockConnectors>
 				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
-				<BlockConnector label="degs" connector-kind="socket" connector-type="number"></BlockConnector>
+				<BlockConnector label="radians" connector-kind="socket" connector-type="number"></BlockConnector>
 			</BlockConnectors>
 			<LangSpecProperties>
 				<LangSpecProperty key="command-type" value="sin"></LangSpecProperty>
@@ -1692,13 +1793,13 @@ BlockGenuses are first loaded.
 				<text>
 					A Trigonmetric function that reports the cosine of the specified angle. 
 				</text>
-				<arg-description n="1" name="degs">
-					The angle in degrees for which the cosine will be reported.
+				<arg-description n="1" name="radians">
+					The angle in radians for which the cosine will be reported.
 				</arg-description>
 			</description>
 			<BlockConnectors>
 				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
-				<BlockConnector label="degs" connector-kind="socket" connector-type="number"></BlockConnector>
+				<BlockConnector label="radians" connector-kind="socket" connector-type="number"></BlockConnector>
 			</BlockConnectors>
 			<LangSpecProperties>
 				<LangSpecProperty key="command-type" value="cos"></LangSpecProperty>
@@ -1710,13 +1811,13 @@ BlockGenuses are first loaded.
 				<text>
 					A Trigonmetric function that reports the tangent of the specified angle. 
 				</text>
-				<arg-description n="1" name="degs">
-					The angle in degrees for which the tangent will be reported.
+				<arg-description n="1" name="radians">
+					The angle in radians for which the tangent will be reported.
 				</arg-description>
 			</description>
 			<BlockConnectors>
 				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
-				<BlockConnector label="degs" connector-kind="socket" connector-type="number"></BlockConnector>
+				<BlockConnector label="radians" connector-kind="socket" connector-type="number"></BlockConnector>
 			</BlockConnectors>
 			<LangSpecProperties>
 				<LangSpecProperty key="command-type" value="tan"></LangSpecProperty>
@@ -1726,7 +1827,7 @@ BlockGenuses are first loaded.
 		<BlockGenus name="asin" kind="function" initlabel="asin" color="34 76 117">
 			<description>
 				<text>
-					Trigonometric function that reports the arcsine of the specified number.  All angles are reported in degrees.
+					Trigonometric function that reports the arcsine of the specified number.  All angles are reported in radians.
 				</text>
 				<arg-description n="1" doc-name="number">
 					A number from which to get the arcsine.
@@ -1744,7 +1845,7 @@ BlockGenuses are first loaded.
 		<BlockGenus name="acos" kind="function" initlabel="acos" color="34 76 117">
 			<description>
 				<text>
-					Trigonometric function that reports the arccosine of the specified number.  All angles are reported in degrees.
+					Trigonometric function that reports the arccosine of the specified number.  All angles are reported in radians.
 				</text>
 				<arg-description n="1" doc-name="number">
 					A number from which to get the arccosine.
@@ -2004,6 +2105,70 @@ BlockGenuses are first loaded.
 		</BlockGenus>
 		
 		<!--  VARIABLES  -->
+		
+		<BlockGenus name="set-variable" kind="command" initlabel="set" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="variable">
+					FIXME
+				</arg-description>
+				<arg-description n="1" name="value">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="variable" label="variable">
+					<DefaultArg genus-name="variable" label="myVariable" />
+				</BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="any" label="value">
+				</BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="setVariable"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="get-variable" kind="function" initlabel="get" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="variable">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="variable" label="">
+					<DefaultArg genus-name="variable" label="myVariable" />
+				</BlockConnector>
+				<BlockConnector connector-kind="plug" connector-type="any"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="getVariable"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>	
+		
+		<BlockGenus name="get-screenshot" kind="function" initlabel="get screenshot" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="variable">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="variable" label="variable">
+					<DefaultArg genus-name="variable" label="myVariable" />
+				</BlockConnector>
+				<BlockConnector connector-kind="plug" connector-type="screenshot"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="getScreenshot"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>	
 		
 		<BlockGenus name="set-screenshot" kind="command" initlabel="set screenshot" color="34 76 118">
 			<description>
@@ -2601,11 +2766,18 @@ BlockGenuses are first loaded.
 			<BlockDrawer name="Keyboard" type="factory" button-color="34 76 118">
 				<BlockGenusMember>type</BlockGenusMember>
 				<BlockGenusMember>type-in</BlockGenusMember>
+				<BlockGenusMember>type-modifiers</BlockGenusMember>
 				<BlockGenusMember>paste</BlockGenusMember>
 				<BlockGenusMember>paste-in</BlockGenusMember>
 				<BlockGenusMember>screenshot-block</BlockGenusMember>
 			</BlockDrawer>
 			<BlockDrawer name="Special Keys" type="factory" button-color="34 76 118">
+				<BlockGenusMember>control-key</BlockGenusMember>
+				<BlockGenusMember>shift-key</BlockGenusMember>
+				<BlockGenusMember>alt-key</BlockGenusMember>
+				<BlockGenusMember>meta-key</BlockGenusMember>
+				<BlockGenusMember>command-key</BlockGenusMember>
+				<BlockGenusMember>windows-key</BlockGenusMember>
 				<BlockGenusMember>enter-key</BlockGenusMember>
 				<BlockGenusMember>tab-key</BlockGenusMember>
 				<BlockGenusMember>escape-key</BlockGenusMember>
@@ -2634,14 +2806,8 @@ BlockGenuses are first loaded.
 				<BlockGenusMember>input</BlockGenusMember>
 			</BlockDrawer>
 			<BlockDrawer name="Variables" type="factory" button-color="34 76 117">
-				<BlockGenusMember>get-screenshot</BlockGenusMember>
-				<BlockGenusMember>set-screenshot</BlockGenusMember>
-				<BlockGenusMember>get-string</BlockGenusMember>
-				<BlockGenusMember>set-string</BlockGenusMember>
-				<BlockGenusMember>get-number</BlockGenusMember>
-				<BlockGenusMember>set-number</BlockGenusMember>
-				<BlockGenusMember>get-boolean</BlockGenusMember>
-				<BlockGenusMember>set-boolean</BlockGenusMember>
+				<BlockGenusMember>get-variable</BlockGenusMember>
+				<BlockGenusMember>set-variable</BlockGenusMember>
 				<BlockGenusMember>variable</BlockGenusMember>
 			</BlockDrawer>
 			<BlockDrawer name="Procedure" type="factory" button-color="34 76 117">

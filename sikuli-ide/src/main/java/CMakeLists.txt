@@ -16,6 +16,7 @@ SET(JAVA_SOURCE_FILES
          org/sikuli/ide/ButtonGenCommand.java
          org/sikuli/ide/BlockCompiler.java
          org/sikuli/ide/BlocksWorkspaceController.java
+         org/sikuli/ide/AnyBlockSocketRule.java
          org/sikuli/ide/CaptureButton.java
          org/sikuli/ide/CaptureController.java
          org/sikuli/ide/CloseableTabbedPane.java

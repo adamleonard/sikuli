@@ -5,10 +5,9 @@
  */
 package org.sikuli.ide;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,13 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.lang.Iterable;
 
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -44,8 +37,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import javax.swing.*;
 
 import edu.mit.blocks.codeblocks.BlockConnectorShape;
 import edu.mit.blocks.codeblocks.BlockGenus;
@@ -173,6 +164,7 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
         //load rules
         BlockLinkChecker.addRule(workspace, new CommandRule(workspace));
         BlockLinkChecker.addRule(workspace, new SocketRule());
+        BlockLinkChecker.addRule(workspace, new AnyBlockSocketRule());
 
         //set the dirty flag for the language definition file
         //to false now that the lang file has been loaded
@@ -300,7 +292,7 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
         workspace.loadWorkspaceFrom(null, langDefRoot);
         workspaceLoaded = true;
         
-    	Block runonceBlock = new Block(workspace, "runonce", "Run Once", true);
+    	Block runonceBlock = new Block(workspace, "runonce", "run once", true);
     	RenderableBlock runonceRenderableBlock = BlockUtilities.cloneBlock(runonceBlock);
         workspace.getBlockCanvas().getCanvas().add(runonceRenderableBlock, 0);
         runonceRenderableBlock.setLocation(50, 25);
@@ -536,6 +528,22 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
             selectedFile = null;
             // delegate to save action
             saveAction.actionPerformed(e);
+        }
+    }
+    
+    /**
+     * Action bound to "Add Function..." button.
+     */
+    private class AddFunctionAction extends AbstractAction {
+        private static final long serialVersionUID = 1L;
+
+        AddFunctionAction() {
+            super("Add Function...");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+        	createAndShowAddFunctionDialog();
         }
     }
     
@@ -851,6 +859,9 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
         // Save as
         SaveAsAction saveAsAction = new SaveAsAction(saveAction);
         buttonPanel.add(new JButton(saveAsAction));
+        // Add Function
+        AddFunctionAction addFunctionAction = new AddFunctionAction();
+        buttonPanel.add(new JButton(addFunctionAction));
         // Capture Screenshot
         ScreenshotAction screenshotAction = new ScreenshotAction();
         buttonPanel.add(new JButton(screenshotAction));   
@@ -884,6 +895,92 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
     public Iterable<SearchableContainer> getAllSearchableContainers() {
         return workspace.getAllSearchableContainers();
     }
+    
+    private void createAndShowAddFunctionDialog() {
+    	JFrame dialog = new JFrame("Add Function");
+    	dialog.setSize(500, 250);
+    	
+    	Container content = dialog.getContentPane();
+    	content.setLayout(new GridBagLayout());
+    	GridBagConstraints c = new GridBagConstraints();
+    	
+    	c.anchor = GridBagConstraints.FIRST_LINE_START;
+    	c.ipadx = 12;
+
+    	final JLabel nameLabel = new JLabel("Function Name:", SwingConstants.RIGHT);
+    	nameLabel.setVerticalTextPosition(SwingConstants.CENTER);
+    	c.fill = GridBagConstraints.HORIZONTAL;
+    	c.gridx = 0;
+    	c.gridy = 0;
+    	c.weighty = 1;
+    	dialog.add(nameLabel, c);
+    	    	
+    	final JTextField nameField = new JTextField();
+    	c.fill = GridBagConstraints.HORIZONTAL;
+    	c.gridx = 1;
+    	c.gridy = 0;
+    	c.gridwidth = 2;
+    	//c.ipadx = 350;
+    	dialog.add(nameField, c);
+    	
+    	//c.ipadx = 0;
+    	c.gridwidth = 1;
+    	
+    	final JLabel parametersLabel = new JLabel("Parameters:", SwingConstants.LEFT);
+    	c.fill = GridBagConstraints.HORIZONTAL;
+    	c.gridx = 0;
+    	c.gridy = 1;
+    	dialog.add(parametersLabel, c);
+
+    	String[] data = {"one", "two", "three", "four"};
+    	final JList myList = new JList(data);
+    	c.fill = GridBagConstraints.HORIZONTAL;
+    	c.ipady = 50;
+    	c.gridwidth = 4;
+    	c.gridx = 0;
+    	c.gridy = 2;
+    	dialog.add(myList, c);
+    	
+    	c.ipady = 0;
+    	c.gridwidth = 1;
+    	
+    	final JButton addButton = new JButton("Add");
+    	c.fill = GridBagConstraints.HORIZONTAL;
+    	c.gridx = 0;
+    	c.gridy = 3;
+    	dialog.add(addButton, c);
+    	
+    	final JButton removeButton = new JButton("Remove");
+    	c.fill = GridBagConstraints.HORIZONTAL;
+    	c.gridx = 1;
+    	c.gridy = 3;
+    	dialog.add(removeButton, c);
+
+    	final Component spacer = Box.createHorizontalStrut(48);
+    	c.fill = GridBagConstraints.HORIZONTAL;
+    	c.ipadx = 48;
+    	c.gridx = 2;
+    	c.gridy = 3;
+    	dialog.add(spacer, c);
+    	
+    	c.ipadx = 12;
+    	
+    	final JButton cancelButton = new JButton("Cancel");
+    	c.fill = GridBagConstraints.HORIZONTAL;
+    	c.gridx = 3;
+    	c.gridy = 4;
+    	dialog.add(cancelButton, c);
+    	
+    	final JButton okButton = new JButton("Add Function");
+    	dialog.getRootPane().setDefaultButton(okButton);
+    	c.fill = GridBagConstraints.HORIZONTAL;
+    	c.gridx = 4;
+    	c.gridy = 4;
+    	dialog.add(okButton, c);
+    	
+    	
+    	dialog.setVisible(true);
+    }
 
     /**
      * Create the GUI and show it.  For thread safety, this method should be
@@ -899,7 +996,7 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
             sb.addSearchableContainer(con);
         }
         final JPanel topPane = new JPanel();
-        sb.getComponent().setPreferredSize(new Dimension(130, 23));
+        sb.getComponent().setPreferredSize(new Dimension(250, 23));
         topPane.add(sb.getComponent());
         frame.add(topPane, BorderLayout.PAGE_START);
         frame.add(getWorkspacePanel(), BorderLayout.CENTER);

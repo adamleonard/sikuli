@@ -44,6 +44,7 @@ public class BlockCompiler {
 		map.put("dragDrop",	 		new CompileAdapter() { public String compileBlock(Block block) { return compileDragDrop(block); } });
 		map.put("type",		 		new CompileAdapter() { public String compileBlock(Block block) { return compileType(block); } });
 		map.put("typeIn",	 		new CompileAdapter() { public String compileBlock(Block block) { return compileTypeIn(block); } });
+		map.put("typeModifiers",	new CompileAdapter() { public String compileBlock(Block block) { return compileTypeModifiers(block); } });
 		map.put("paste",	 		new CompileAdapter() { public String compileBlock(Block block) { return compileTypeIn(block); } });
 		map.put("pasteIn",	 		new CompileAdapter() { public String compileBlock(Block block) { return compileTypeIn(block); } });
 		map.put("screenshot", 		new CompileAdapter() { public String compileBlock(Block block) { return compileScreenshot(block); } });
@@ -105,6 +106,12 @@ public class BlockCompiler {
 		map.put("popup",			new CompileAdapter() { public String compileBlock(Block block) { return compilePopup(block); } });
 		map.put("input",			new CompileAdapter() { public String compileBlock(Block block) { return compileInput(block); } });
 		map.put("input",			new CompileAdapter() { public String compileBlock(Block block) { return compileInput(block); } });
+		map.put("controlKey",		new CompileAdapter() { public String compileBlock(Block block) { return compileConstant("KeyModifier.CTRL"); } });
+		map.put("shiftKey",			new CompileAdapter() { public String compileBlock(Block block) { return compileConstant("KeyModifier.SHIFT"); } });
+		map.put("altKey",			new CompileAdapter() { public String compileBlock(Block block) { return compileConstant("KeyModifier.ALT"); } });
+		map.put("metaKey",			new CompileAdapter() { public String compileBlock(Block block) { return compileConstant("KeyModifier.META"); } });
+		map.put("commandKey",		new CompileAdapter() { public String compileBlock(Block block) { return compileConstant("KeyModifier.CMD"); } });
+		map.put("windowsKey",		new CompileAdapter() { public String compileBlock(Block block) { return compileConstant("KeyModifier.WIN"); } });
 		map.put("enterKey",			new CompileAdapter() { public String compileBlock(Block block) { return compileConstant("Key.ENTER"); } });
 		map.put("tabKey",			new CompileAdapter() { public String compileBlock(Block block) { return compileConstant("Key.TAB"); } });
 		map.put("escapeKey",		new CompileAdapter() { public String compileBlock(Block block) { return compileConstant("Key.ESCAPE"); } });
@@ -132,6 +139,8 @@ public class BlockCompiler {
 		map.put("setNumber",		new CompileAdapter() { public String compileBlock(Block block) { return compileSetter(block); } });
 		map.put("getBoolean",		new CompileAdapter() { public String compileBlock(Block block) { return compileGetter(block); } });
 		map.put("setBoolean",		new CompileAdapter() { public String compileBlock(Block block) { return compileSetter(block); } });
+		map.put("getVariable",		new CompileAdapter() { public String compileBlock(Block block) { return compileGetter(block); } });
+		map.put("setVariable",		new CompileAdapter() { public String compileBlock(Block block) { return compileSetter(block); } });
 		_compilerAdapters = Collections.unmodifiableMap(map);
 	}
 	
@@ -328,6 +337,12 @@ public class BlockCompiler {
 		BlockConnector screenshotSocket = block.getSocketAt(0);
 		BlockConnector stringSocket = block.getSocketAt(1);
 		return compileFunction("type", screenshotSocket, stringSocket);
+	}
+	
+	private static String compileTypeModifiers(Block block) {
+		BlockConnector textSocket = block.getSocketAt(0);
+		BlockConnector modifiersSocket = block.getSocketAt(1);
+		return compileFunction("type", textSocket, modifiersSocket);
 	}
 	
 	private static String compilePaste(Block block) {
