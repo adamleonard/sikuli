@@ -461,7 +461,13 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
     		 if (link.getSocketBlockID() != null) {
     			 Block socketBlock = Block.getBlock(link.getSocketBlockID());
     			 String genusName = socketBlock.getGenusName();
-    			 if(genusName.equals("call-function") || genusName.equals("call-function-import") || genusName.equals("define-function")) {
+    			 //FIXME: clean this up a lot
+    			 if(genusName.equals("call-function") || 
+    					 genusName.equals("call-function-import") ||
+    					 genusName.equals("define-function") ||
+    					 genusName.equals("python-expression") ||
+    					 genusName.equals("python-statement")) {
+    					
     				 //if we just connected something to a call function block,
     				 //see if we connected it to the LAST argument socket
     				 //if so, add space for another arguemnt
@@ -481,7 +487,14 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
     					 int nextArgumentNumber = socketBlock.getNumSockets();
     					 if(genusName.equals("call-function-import") || genusName.equals("define-function"))
     						 nextArgumentNumber -= 1; //account for the import/command socket, which is not an argument
-    					 String socketName = "(arg " + nextArgumentNumber + ")";
+    					 if(genusName.equals("python-expression") || genusName.equals("python-statement"))
+    						 nextArgumentNumber += 1; //the very first (0th) socket is an argument
+    					 
+    					 String argumentPrefix = "arg ";
+    					 if(genusName.equals("python-expression") || genusName.equals("python-statement"))
+    						 argumentPrefix = "$";
+    					 
+    					 String socketName = "(" + argumentPrefix + nextArgumentNumber + ")";
     					 socketBlock.addSocket(lastArgumentIndex + 1, genusName.equals("define-function") ? "variable" : "any", BlockConnector.PositionType.SINGLE, socketName, false, false, Block.NULL);
     					 socketBlock.notifyRenderable();
     				 }

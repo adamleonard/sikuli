@@ -2604,6 +2604,43 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
+		<!-- CUSTOM PYTHON BLOCKS -->
+		
+		<BlockGenus name="python-expression" kind="function" initlabel="python expression" editable-label="yes" is-label-value="yes" color="34 76 117">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" doc-name="arg">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="any" label="($1)"></BlockConnector>
+				<BlockConnector connector-kind="plug" connector-type="any"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="pythonExpression"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="python-statement" kind="command" initlabel="python statement" editable-label="yes" is-label-value="yes" color="34 76 117">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" doc-name="arg">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="any" label="($1)"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="pythonStatement"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
 		<!-- BREED SPECIFIC BLOCKS -->
 		
 		<BlockGenus name="create-agents" kind="command" initlabel="" label-prefix="create " color="34 76 117">
@@ -3004,7 +3041,11 @@ BlockGenuses are first loaded.
 				<BlockGenusMember>log</BlockGenusMember>
 				<BlockGenusMember>ln</BlockGenusMember>
 			</BlockDrawer>
-
+			<BlockDrawer name="Python" type="factory" button-color="34 76 117">
+				<BlockGenusMember>python-expression</BlockGenusMember>
+				<BlockGenusMember>python-statement</BlockGenusMember>
+			</BlockDrawer>
+			
 			<!-- Shapes are automatically loaded as blocks in the Shapes drawer
 				 (see slcodeblocks.ShapeBlocksGenerator for details)  -->
 			<!-- Sound blocks reside in the auto-generated String drawer.  

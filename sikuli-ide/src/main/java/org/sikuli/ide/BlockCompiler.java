@@ -174,6 +174,8 @@ public class BlockCompiler {
 		map.put("argument",			new CompileAdapter() { public String compileBlock(Block block) { return compileVariable(block); } });
 		map.put("defineFunction",	new CompileAdapter() { public String compileBlock(Block block) { return compileDefineFunction(block); } });
 		map.put("return",			new CompileAdapter() { public String compileBlock(Block block) { return compileReturn(block); } });
+		map.put("pythonExpression",	new CompileAdapter() { public String compileBlock(Block block) { return compileCustomPython(block); } });
+		map.put("pythonStatement",	new CompileAdapter() { public String compileBlock(Block block) { return compileCustomPython(block); } });
 
 		_compilerAdapters = Collections.unmodifiableMap(map);
 	}
@@ -870,5 +872,28 @@ public class BlockCompiler {
 	private String compileReturn(Block block) {
 		BlockConnector socket = block.getSocketAt(0);
 		return compileOperator("return", "None", socket);
+	}
+	
+	private String compileCustomPython(Block block) {
+		String code = block.getBlockLabel();
+		if(code == null)
+			return "";
+		
+		//replace all the placeholders ("$1", "$2", ...) with the compiled expression in the appropriate socket
+		int numPlaceholders = block.getNumSockets();
+		BlockConnector[] placeholderSockets = new BlockConnector[numPlaceholders];
+		
+		for(int i = 0; i < numPlaceholders; ++i) { 
+			BlockConnector aConnector = block.getSocketAt(i);
+			if(aConnector.hasBlock()) {
+    			Long blockID = aConnector.getBlockID();
+    			assert !invalidBlockID(blockID);
+    			String compiledExpression  = compileBlock(Block.getBlock(blockID));
+    			
+    			code = code.replaceAll("\\$" + (i + 1), compiledExpression);
+			}
+		}
+				
+		return code;
 	}
 }
