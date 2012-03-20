@@ -134,6 +134,20 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
+		<BlockGenus name="argument" kind="data" initlabel="argument" editable-label="yes" is-label-value="yes" color="40 100 175">
+			<description>
+				<text>
+					An argument that can be used in a function definition or in a custom python code block.
+				</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="plug" connector-type="variable" position-type="mirror"></BlockConnector>		
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="argument"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
 		<BlockGenus name="true" kind="data" initlabel="True" color="40 100 175">
 			<description>
 				<text>
@@ -1925,6 +1939,113 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
+		<BlockGenus name="call-function" kind="function" initlabel="call" color="34 76 117">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" doc-name="function">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="string" label="function">
+					<DefaultArg genus-name="string" label="functionName" />
+				</BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="any" label="(arg 1)"></BlockConnector>
+				<BlockConnector connector-kind="plug" connector-type="any"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="callFunction"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="call-function-import" kind="function" initlabel="call" color="34 76 117">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" doc-name="function">
+					FIXME
+				</arg-description>
+				<arg-description n="2" doc-name="import">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="string" label="function">
+					<DefaultArg genus-name="string" label="functionName" />
+				</BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="string" label="import">
+					<DefaultArg genus-name="string" label="module" />
+				</BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="any" label="(arg 1)"></BlockConnector>
+				<BlockConnector connector-kind="plug" connector-type="any"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="callFunctionImport"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="define-function" kind="procedure" initlabel="define" color="19 46 81">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" doc-name="function">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector label="function" connector-kind="socket" connector-type="string">
+					<DefaultArg genus-name="string" label="functionName" />
+				</BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="variable" label="(arg 1)"></BlockConnector>
+				<BlockConnector label="" connector-kind="socket" connector-type="cmd"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="defineFunction"></LangSpecProperty>
+				<LangSpecProperty key="is-root-block" value="yes"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
+		<BlockGenus name="get-argument" kind="function" initlabel="get" color="34 76 118">
+			<description>
+				<text>
+					FIXME
+				</text>
+				<arg-description n="1" name="argument">
+					FIXME
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="variable" label="">
+					<DefaultArg genus-name="argument" label="argument" />
+				</BlockConnector>
+				<BlockConnector connector-kind="plug" connector-type="any"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="getArgument"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>	
+		
+		<BlockGenus name="return" kind="command" initlabel="return" color="34 76 117">
+			<description>
+				<text>
+					Returns a value from a function.
+				</text>
+				<arg-description n="1" name="value">
+					The value to return.
+				</arg-description>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-kind="socket" connector-type="any"></BlockConnector>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="return"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
 		<BlockGenus name="on-appear-procedure" kind="procedure" initlabel="on appear" label-unique="yes" is-starter="yes" is-terminator="yes" color="19 46 81">
 			<description>
 				<text>
@@ -2409,6 +2530,7 @@ BlockGenuses are first loaded.
 			<LangSpecProperties>
 				<LangSpecProperty key="command-type" value="runOnce"></LangSpecProperty>
 				<LangSpecProperty key="is-root-block" value="yes"></LangSpecProperty>
+				<LangSpecProperty key="yields-top-level-code" value="yes"></LangSpecProperty>
 			</LangSpecProperties>
 		</BlockGenus>
 		
@@ -2811,7 +2933,12 @@ BlockGenuses are first loaded.
 				<BlockGenusMember>variable</BlockGenusMember>
 			</BlockDrawer>
 			<BlockDrawer name="Procedure" type="factory" button-color="34 76 117">
-				<BlockGenusMember>procedure</BlockGenusMember>
+				<BlockGenusMember>define-function</BlockGenusMember>
+				<BlockGenusMember>argument</BlockGenusMember>
+				<BlockGenusMember>get-argument</BlockGenusMember>
+				<BlockGenusMember>return</BlockGenusMember>
+				<BlockGenusMember>call-function</BlockGenusMember>
+				<BlockGenusMember>call-function-import</BlockGenusMember>
 				<BlockGenusMember>on-appear-procedure</BlockGenusMember>
 				<BlockGenusMember>on-vanish-procedure</BlockGenusMember>
 				<BlockGenusMember>on-change-procedure</BlockGenusMember>

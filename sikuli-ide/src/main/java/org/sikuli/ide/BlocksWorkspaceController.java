@@ -447,15 +447,46 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
 				}
 			}
     	}
-    	if(event.getEventType() == WorkspaceEvent.BLOCK_STACK_COMPILED) {
+    	else if(event.getEventType() == WorkspaceEvent.BLOCK_STACK_COMPILED) {
     		Long blockID = event.getSourceBlockID();
 			assert !invalidBlockID(blockID);
 			Block clickedBlock = Block.getBlock(blockID);
-	    	Debug.error("EVENT: " + event.toString() + " BLOCK: " + clickedBlock.toString() + " GENUS:" + clickedBlock.getGenusName());
 			if(clickedBlock.getGenusName().equals("screenshot-block")) {
 				workspace.getFocusManager().setFocus(blockID);
 				capture(0);
 			}
+    	}
+    	else if(event.getEventType() == WorkspaceEvent.BLOCKS_CONNECTED) {
+    		BlockLink link = event.getSourceLink();
+    		 if (link.getSocketBlockID() != null) {
+    			 Block socketBlock = Block.getBlock(link.getSocketBlockID());
+    			 String genusName = socketBlock.getGenusName();
+    			 if(genusName.equals("call-function") || genusName.equals("call-function-import") || genusName.equals("define-function")) {
+    				 //if we just connected something to a call function block,
+    				 //see if we connected it to the LAST argument socket
+    				 //if so, add space for another arguemnt
+
+    				 int lastArgumentIndex = socketBlock.getNumSockets() - 1;
+    				 if(genusName.equals("define-function"))
+    					 lastArgumentIndex -= 1; //for define-function, the last socket contains the command children, which is not an argument 
+
+    				 BlockConnector socket = link.getSocket();
+
+    				 if(socketBlock.getSocketIndex(socket) == lastArgumentIndex) {
+
+    					 //remove the parens around the socket label to indicate that it has been filled, and is thus active
+    					 socket.setLabel(socket.getLabel().substring(1, socket.getLabel().length() - 1));
+    					 
+    					 //add another arguments socket
+    					 int nextArgumentNumber = socketBlock.getNumSockets();
+    					 if(genusName.equals("call-function-import") || genusName.equals("define-function"))
+    						 nextArgumentNumber -= 1; //account for the import/command socket, which is not an argument
+    					 String socketName = "(arg " + nextArgumentNumber + ")";
+    					 socketBlock.addSocket(lastArgumentIndex + 1, genusName.equals("define-function") ? "variable" : "any", BlockConnector.PositionType.SINGLE, socketName, false, false, Block.NULL);
+    					 socketBlock.notifyRenderable();
+    				 }
+    			 }
+    		 }
     	}
     }
 
@@ -833,14 +864,34 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
     }
     
     private String compileToPython() {
-    	String source = "import math\nimport random\nsetThrowException(False)\n";
+    	String source = "setThrowException(False)\n";
+    	String topLevelCode = "";
     	for (Block aBlock : workspace.getBlocks()) {
     		String isRootBlockAsString = aBlock.getProperty("is-root-block");
-    		if(isRootBlockAsString != null && isRootBlockAsString.equals("yes")) {
-    			source += BlockCompiler.compileBlock(aBlock);
-    			source += "\n\n";
+    		if(isRootBlockAsString != null && isRootBlockAsString.equals("yes") && aBlock.getBeforeBlockID() == Block.NULL) {
+    			BlockCompiler compiler = new BlockCompiler();
+    			String result = compiler.compile(aBlock);
+    			result += "\n\n";
+    			
+    			//the order of Python functions in source code generally doesn't matter
+    			//i.e., function A can call function B if A is above B OR B is above A
+    			//the exception is top-level code, which runs sequentially, binding functions as it goes
+    			//so, top-level code at the top of a file cannot call functions defined later in the file
+    			//so, we should ensure that top-level-code generating blocks that call functions, namely runOnce
+    			//are ALWAYS at the bottom of our file, after all the function definitions
+    			//FIXME: functions-inside-functions can also be problematic: function definitons need to go first there too
+    			//but, we currently don't allow functions-inside-functions
+    			String isTopLevelCodeAsString = aBlock.getProperty("yields-top-level-code");
+    			if(isTopLevelCodeAsString != null && isTopLevelCodeAsString.equals("yes")) {
+    				topLevelCode += result;
+    			}
+    			else {
+    				source += result;
+    			}
+    			
     		}
     	}
+    	source += topLevelCode; //add the top-level code to the end of the file
     	Debug.error("SOURCE: \n" + source);
     	return source;
     }

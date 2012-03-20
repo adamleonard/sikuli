@@ -31,8 +31,35 @@ public class BlockCompiler {
 		public String compileBlock(Block block);
 	}
 	
-	private static final Map<String, CompileAdapter> _compilerAdapters;
-	static {
+	private Map<String, CompileAdapter> _compilerAdapters;
+	private Set<String> requiredModules = new HashSet<String>();
+	
+	public BlockCompiler() {
+		super();
+		setupCompileAdapters();
+	}
+	
+	public String compile(Block rootBlock) {
+		String result = "";
+		
+		//compile the tree
+		result += compileBlock(rootBlock);
+		
+		//get all the modules that are required to run the compiled tree, and add them as import's at the top
+		String compiledImports = "";
+		for(String aModule : getRequiredModules()) {
+			compiledImports += "import " + aModule + "\n";
+		}
+		result = compiledImports + result;
+		
+		return result;
+	}
+	
+	public Set<String> getRequiredModules() {
+		return requiredModules;
+	}
+	
+	private void setupCompileAdapters() {
 		Map<String, CompileAdapter> map = new HashMap<String, CompileAdapter>();
 		
 		map.put("runOnce",			new CompileAdapter() { public String compileBlock(Block block) { return compileRunOnce(block); } });
@@ -141,10 +168,17 @@ public class BlockCompiler {
 		map.put("setBoolean",		new CompileAdapter() { public String compileBlock(Block block) { return compileSetter(block); } });
 		map.put("getVariable",		new CompileAdapter() { public String compileBlock(Block block) { return compileGetter(block); } });
 		map.put("setVariable",		new CompileAdapter() { public String compileBlock(Block block) { return compileSetter(block); } });
+		map.put("callFunction",		new CompileAdapter() { public String compileBlock(Block block) { return compileCallFunction(block, false); } });
+		map.put("callFunctionImport",new CompileAdapter() { public String compileBlock(Block block) { return compileCallFunction(block, true); } });
+		map.put("getArgument",		new CompileAdapter() { public String compileBlock(Block block) { return compileGetter(block); } });
+		map.put("argument",			new CompileAdapter() { public String compileBlock(Block block) { return compileVariable(block); } });
+		map.put("defineFunction",	new CompileAdapter() { public String compileBlock(Block block) { return compileDefineFunction(block); } });
+		map.put("return",			new CompileAdapter() { public String compileBlock(Block block) { return compileReturn(block); } });
+
 		_compilerAdapters = Collections.unmodifiableMap(map);
 	}
 	
-	public static String compileBlock(Block block) {
+	private String compileBlock(Block block) {
 		if(block == null)
 			return "";
 		
@@ -157,7 +191,7 @@ public class BlockCompiler {
 		return adapter.compileBlock(block);
 }
 	
-    private static boolean invalidBlockID(Long blockID) {
+    private boolean invalidBlockID(Long blockID) {
         if (blockID == null) {
             return true;
         } else if (blockID.equals(Block.NULL)) {
@@ -167,17 +201,21 @@ public class BlockCompiler {
         }
     }
 	
-    private static String compileFunction(String name, BlockConnector... sockets)
+    private String compileFunction(String name, BlockConnector... sockets)
     {
     	return compileFunction(name, "\"\"", sockets);
     }
     
-    private static String compileFunction(String name, String missing, BlockConnector... sockets)
+    private String compileFunction(String name, String missing, BlockConnector... sockets)
     {
     	String result = "";
     	result += name;
     	result += "(";
+    	int addedArguments = 0;
     	for(BlockConnector socket : sockets) {
+    		if(socket == null) {
+    			continue;
+    		}
     		if(!socket.hasBlock()) {
     			result += missing;
     		}
@@ -187,8 +225,10 @@ public class BlockCompiler {
     			result += compileBlock(Block.getBlock(blockID));
     		}
     		result += ",";
+    		++ addedArguments;
     	}
-    	result = result.substring(0, result.length() - 1); //remove last comma
+    	if(addedArguments > 0)
+    		result = result.substring(0, result.length() - 1); //remove last comma
     	result += ")";
     	return result;
     }
@@ -196,11 +236,11 @@ public class BlockCompiler {
     //accepts one or two operands.
     //If two operands, returns operand[0] operator operand[1]
     //If one operand, returns operator operand[0]
-    private static String compileBooleanOperator(String operator, BlockConnector... operandSockets)
+    private String compileBooleanOperator(String operator, BlockConnector... operandSockets)
     {
     	return compileOperator(operator, "True", operandSockets);
     }
-    private static String compileOperator(String operator, String missing, BlockConnector... operandSockets)
+    private String compileOperator(String operator, String missing, BlockConnector... operandSockets)
     {
     	String result = "";
     	
@@ -228,7 +268,7 @@ public class BlockCompiler {
     	return result;
     }
     
-    private static String compileChildren(String header, BlockConnector socket, boolean indent)
+    private String compileChildren(String header, BlockConnector socket, boolean indent)
     {
     	String result = header + "\n";
 		
@@ -263,7 +303,7 @@ public class BlockCompiler {
     	
     }
     
-    private static String compileSikuliEventHandler(String handlerType, Block block)
+    private String compileSikuliEventHandler(String handlerType, Block block)
     {
 		String result = "";
 		//OpenBlocks will ensure that the label is unique, so use that (without whitespace) as the procedure name
@@ -287,98 +327,98 @@ public class BlockCompiler {
 		return result;
     }
     
-    private static String compileConstant(String constant)
+    private String compileConstant(String constant)
     {
     	return constant;
     }
     
-	private static String compileRunOnce(Block block) {
+	private String compileRunOnce(Block block) {
 		BlockConnector socket = block.getSocketAt(0);
 		return compileChildren("", socket, false);
 	}
 
-	private static String compileWait(Block block) {
+	private String compileWait(Block block) {
 		BlockConnector socket = block.getSocketAt(0);
 		return compileFunction("wait", socket);
 	}
 	
-	private static String compileClick(Block block) {
+	private String compileClick(Block block) {
 		BlockConnector socket = block.getSocketAt(0);
 		return compileFunction("click", socket);
 	}
 	
-	private static String compileDoubleClick(Block block) {
+	private String compileDoubleClick(Block block) {
 		BlockConnector socket = block.getSocketAt(0);
 		return compileFunction("doubleClick", socket);
 	}
 	
-	private static String compileRightClick(Block block) {
+	private String compileRightClick(Block block) {
 		BlockConnector socket = block.getSocketAt(0);
 		return compileFunction("rightClick", socket);
 	}
 	
-	private static String compileHover(Block block) {
+	private String compileHover(Block block) {
 		BlockConnector socket = block.getSocketAt(0);
 		return compileFunction("hover", socket);
 	}
 	
-	private static String compileDragDrop(Block block) {
+	private String compileDragDrop(Block block) {
 		BlockConnector socketFrom = block.getSocketAt(0);
 		BlockConnector socketTo = block.getSocketAt(0);
 		return compileFunction("dragDrop", socketFrom, socketTo);
 	}
 	
-	private static String compileType(Block block) {
+	private String compileType(Block block) {
 		BlockConnector socket = block.getSocketAt(0);
 		return compileFunction("type", socket);
 	}
 	
-	private static String compileTypeIn(Block block) {
+	private String compileTypeIn(Block block) {
 		BlockConnector screenshotSocket = block.getSocketAt(0);
 		BlockConnector stringSocket = block.getSocketAt(1);
 		return compileFunction("type", screenshotSocket, stringSocket);
 	}
 	
-	private static String compileTypeModifiers(Block block) {
+	private String compileTypeModifiers(Block block) {
 		BlockConnector textSocket = block.getSocketAt(0);
 		BlockConnector modifiersSocket = block.getSocketAt(1);
 		return compileFunction("type", textSocket, modifiersSocket);
 	}
 	
-	private static String compilePaste(Block block) {
+	private String compilePaste(Block block) {
 		BlockConnector socket = block.getSocketAt(0);
 		return compileFunction("paste", socket);
 	}
 	
-	private static String compilePasteIn(Block block) {
+	private String compilePasteIn(Block block) {
 		BlockConnector screenshotSocket = block.getSocketAt(0);
 		BlockConnector stringSocket = block.getSocketAt(1);
 		return compileFunction("paste", screenshotSocket, stringSocket);
 	}
 	
 	
-	private static String compileScreenshot(Block block) {
+	private String compileScreenshot(Block block) {
 		String screenshotPath = block.getProperty("screenshot-path");
 		if(screenshotPath == null)
 			return "\"\"";
 		return "\"" + screenshotPath + "\"";
 	}
 	
-	private static String compileStringBlock(Block block) {
+	private String compileStringBlock(Block block) {
 		String string = block.getBlockLabel();
 		if(string == null)
 			return "\"\"";
 		return "\"" + string + "\"";
 	}
 	
-	private static String compileNumber(Block block) {
+	private String compileNumber(Block block) {
 		String string = block.getBlockLabel();
 		if(string == null)
 			return "None";
 		return string;
 	}
 	
-	private static String compileIf(Block block) {
+	private String compileIf(Block block) {
 		BlockConnector testSocket = block.getSocketAt(0);
 		String test = "True";
 		if(testSocket.hasBlock()) {
@@ -391,7 +431,7 @@ public class BlockCompiler {
 		return compileChildren(testString, thenSocket, true);
 	}
 	
-	private static String compileIfElse(Block block) {
+	private String compileIfElse(Block block) {
 		String result = "";
 		BlockConnector testSocket = block.getSocketAt(0);
 		String test = "True";
@@ -411,12 +451,12 @@ public class BlockCompiler {
 		return result;
 	}
 	
-	private static String compileExists(Block block) {
+	private String compileExists(Block block) {
 		BlockConnector socket = block.getSocketAt(0);
 		return compileFunction("exists", socket);
 	}
 	
-	private static String compileRepeat(Block block) {
+	private String compileRepeat(Block block) {
 		BlockConnector timesSocket = block.getSocketAt(0);
 		String times = "1";
 		if(timesSocket.hasBlock()) {
@@ -429,7 +469,7 @@ public class BlockCompiler {
 		return compileChildren(timesString, doSocket, true);
 	}
 	
-	private static String compileWhile(Block block) {
+	private String compileWhile(Block block) {
 		BlockConnector testSocket = block.getSocketAt(0);
 		String test = "True";
 		if(testSocket.hasBlock()) {
@@ -442,262 +482,274 @@ public class BlockCompiler {
 		return compileChildren(testString, thenSocket, true);
 	}
 	
-	private static String compileAnd(Block block) {
+	private String compileAnd(Block block) {
 		BlockConnector firstOperand = block.getSocketAt(0);
 		BlockConnector secondOperand = block.getSocketAt(1);
 		return compileBooleanOperator("and", firstOperand, secondOperand);
 	}
 	
-	private static String compileOr(Block block) {
+	private String compileOr(Block block) {
 		BlockConnector firstOperand = block.getSocketAt(0);
 		BlockConnector secondOperand = block.getSocketAt(1);
 		return compileBooleanOperator("or", firstOperand, secondOperand);
 	}
 	
-	private static String compileNot(Block block) {
+	private String compileNot(Block block) {
 		BlockConnector operand = block.getSocketAt(0);
 		return compileBooleanOperator("not", operand);
 	}
 	
-	private static String compileEquals(Block block) {
+	private String compileEquals(Block block) {
 		BlockConnector firstOperand = block.getSocketAt(0);
 		BlockConnector secondOperand = block.getSocketAt(1);
 		return compileBooleanOperator("==", firstOperand, secondOperand);
 	}
 	
-	private static String compileNotEquals(Block block) {
+	private String compileNotEquals(Block block) {
 		BlockConnector firstOperand = block.getSocketAt(0);
 		BlockConnector secondOperand = block.getSocketAt(1);
 		return compileBooleanOperator("!=", firstOperand, secondOperand);
 	}
 	
-	private static String compileTrue(Block block) {
+	private String compileTrue(Block block) {
 		return "True";
 	}
 	
-	private static String compileFalse(Block block) {
+	private String compileFalse(Block block) {
 		return "False";
 	}
 	
-	private static String compileToString(Block block) {
+	private String compileToString(Block block) {
 		BlockConnector socket = block.getSocketAt(0);
 		return compileFunction("str", socket);
 	}
 	
-	private static String compilePi(Block block) {
+	private String compilePi(Block block) {
+		requiredModules.add("math");
 		return "math.pi";
 	}
 	
-	private static String compileE(Block block) {
+	private String compileE(Block block) {
+		requiredModules.add("math");
 		return "math.e";
 	}
 
-	private static String compileAppendString(Block block) {
+	private String compileAppendString(Block block) {
 		BlockConnector firstOperand = block.getSocketAt(0);
 		BlockConnector secondOperand = block.getSocketAt(1);
 		return compileOperator("+", "", firstOperand, secondOperand);
 	}
 	
-	private static String compileAdd(Block block) {
+	private String compileAdd(Block block) {
 		BlockConnector firstOperand = block.getSocketAt(0);
 		BlockConnector secondOperand = block.getSocketAt(1);
 		return compileOperator("+", "0", firstOperand, secondOperand);
 	}
 	
-	private static String compileSubtract(Block block) {
+	private String compileSubtract(Block block) {
 		BlockConnector firstOperand = block.getSocketAt(0);
 		BlockConnector secondOperand = block.getSocketAt(1);
 		return compileOperator("-", "0", firstOperand, secondOperand);
 	}
 	
-	private static String compileMultiply(Block block) {
+	private String compileMultiply(Block block) {
 		BlockConnector firstOperand = block.getSocketAt(0);
 		BlockConnector secondOperand = block.getSocketAt(1);
 		return compileOperator("*", "1", firstOperand, secondOperand);
 	}
 	
-	private static String compileDivide(Block block) {
+	private String compileDivide(Block block) {
 		BlockConnector firstOperand = block.getSocketAt(0);
 		BlockConnector secondOperand = block.getSocketAt(1);
 		return compileOperator("/", "1", firstOperand, secondOperand);
 	}
 	
-	private static String compileLessThan(Block block) {
+	private String compileLessThan(Block block) {
 		BlockConnector firstOperand = block.getSocketAt(0);
 		BlockConnector secondOperand = block.getSocketAt(1);
 		return compileBooleanOperator("<", firstOperand, secondOperand);
 	}
 	
-	private static String compileGreaterThan(Block block) {
+	private String compileGreaterThan(Block block) {
 		BlockConnector firstOperand = block.getSocketAt(0);
 		BlockConnector secondOperand = block.getSocketAt(1);
 		return compileBooleanOperator(">", firstOperand, secondOperand);
 	}
 	
-	private static String compileLessThanOrEqualTo(Block block) {
+	private String compileLessThanOrEqualTo(Block block) {
 		BlockConnector firstOperand = block.getSocketAt(0);
 		BlockConnector secondOperand = block.getSocketAt(1);
 		return compileBooleanOperator(">=", firstOperand, secondOperand);
 	}
 	
-	private static String compileGreaterThanOrEqualTo(Block block) {
+	private String compileGreaterThanOrEqualTo(Block block) {
 		BlockConnector firstOperand = block.getSocketAt(0);
 		BlockConnector secondOperand = block.getSocketAt(1);
 		return compileBooleanOperator(">=", firstOperand, secondOperand);
 	}
 	
-	private static String compileArcTan(Block block) {
+	private String compileArcTan(Block block) {
 		BlockConnector x = block.getSocketAt(0);
 		BlockConnector y = block.getSocketAt(1);
 		return compileFunction("atan2", "0", y, x);
 	}
 	
-	private static String compileRandom(Block block) {
+	private String compileRandom(Block block) {
+		requiredModules.add("random");
 		BlockConnector lowerBound = block.getSocketAt(0);
 		BlockConnector upperBound = block.getSocketAt(1);
 		return compileFunction("random.randint", "0", lowerBound, upperBound);
 	}
 	
-	private static String compileRound(Block block) {
+	private String compileRound(Block block) {
 		BlockConnector socket = block.getSocketAt(0);
 		return compileFunction("round", "0", socket);
 	}
 	
-	private static String compileInt(Block block) {
+	private String compileInt(Block block) {
 		BlockConnector socket = block.getSocketAt(0);
 		return compileFunction("int", "0", socket);
 	}
 	
-	private static String compileMin(Block block) {
+	private String compileMin(Block block) {
 		BlockConnector firstOperand = block.getSocketAt(0);
 		BlockConnector secondOperand = block.getSocketAt(1);
 		return compileFunction("min", "0", firstOperand, secondOperand);
 	}
 	
-	private static String compileMax(Block block) {
+	private String compileMax(Block block) {
 		BlockConnector firstOperand = block.getSocketAt(0);
 		BlockConnector secondOperand = block.getSocketAt(1);
 		return compileFunction("max", "0", firstOperand, secondOperand);
 	}
 	
-	private static String compileRemainder(Block block) {
+	private String compileRemainder(Block block) {
 		BlockConnector firstOperand = block.getSocketAt(0);
 		BlockConnector secondOperand = block.getSocketAt(1);
 		return compileOperator("%", "1", firstOperand, secondOperand);
 	}
 	
-	private static String compilePower(Block block) {
+	private String compilePower(Block block) {
+		requiredModules.add("math");
 		BlockConnector firstOperand = block.getSocketAt(0);
 		BlockConnector secondOperand = block.getSocketAt(1);
 		return compileFunction("math.pow", "1", firstOperand, secondOperand);
 	}
 	
-	private static String compileAbs(Block block) {
+	private String compileAbs(Block block) {
 		BlockConnector operand = block.getSocketAt(0);
 		return compileFunction("abs", "0", operand);
 	}
 	
-	private static String compileSqrt(Block block) {
+	private String compileSqrt(Block block) {
+		requiredModules.add("math");
 		BlockConnector operand = block.getSocketAt(0);
 		return compileFunction("math.sqrt", "0", operand);
 	}
 	
-	private static String compileSin(Block block) {
+	private String compileSin(Block block) {
+		requiredModules.add("math");
 		BlockConnector operand = block.getSocketAt(0);
 		return compileFunction("math.sin", "0", operand);
 	}
 	
-	private static String compileCos(Block block) {
+	private String compileCos(Block block) {
+		requiredModules.add("math");
 		BlockConnector operand = block.getSocketAt(0);
 		return compileFunction("math.cos", "0", operand);
 	}
 	
-	private static String compileTan(Block block) {
+	private String compileTan(Block block) {
+		requiredModules.add("math");
 		BlockConnector operand = block.getSocketAt(0);
 		return compileFunction("math.tan", "0", operand);
 	}
 	
-	private static String compileArcSin(Block block) {
+	private String compileArcSin(Block block) {
+		requiredModules.add("math");
 		BlockConnector operand = block.getSocketAt(0);
 		return compileFunction("math.asin", "0", operand);
 	}
 	
-	private static String compileArcCos(Block block) {
+	private String compileArcCos(Block block) {
+		requiredModules.add("math");
 		BlockConnector operand = block.getSocketAt(0);
 		return compileFunction("math.acos", "0", operand);
 	}
 	
-	private static String compileLog(Block block) {
+	private String compileLog(Block block) {
+		requiredModules.add("math");
 		BlockConnector operand = block.getSocketAt(0);
 		return compileFunction("math.log10", "1", operand);
 	}
 	
-	private static String compileLn(Block block) {
+	private String compileLn(Block block) {
+		requiredModules.add("math");
 		BlockConnector operand = block.getSocketAt(0);
 		return compileFunction("math.log", "1", operand);
 	}
 	
-	private static String compileOnAppear(Block block) {
+	private String compileOnAppear(Block block) {
 		return compileSikuliEventHandler("onAppear", block);
 	}
 	
-	private static String compileOnVanish(Block block) {
+	private String compileOnVanish(Block block) {
 		return compileSikuliEventHandler("onVanish", block);
 	}
 	
-	private static String compileOnChange(Block block) {
+	private String compileOnChange(Block block) {
 		return compileSikuliEventHandler("onChange", block);
 	}
 	
-	private static String compileObserve(Block block) {
+	private String compileObserve(Block block) {
 		BlockConnector stringSocket = block.getSocketAt(0);
 		BlockConnector backgroundSocket = block.getSocketAt(1);
 		return compileFunction("observe", stringSocket, backgroundSocket);
 	}
 	
-	private static String compilePrint(Block block) {
+	private String compilePrint(Block block) {
 		BlockConnector operand = block.getSocketAt(0);
 		return compileFunction("print", operand);
 	}
 	
-	private static String compileAssert(Block block) {
+	private String compileAssert(Block block) {
 		BlockConnector operand = block.getSocketAt(0);
 		return compileFunction("assert", operand);
 	}
 	
-	private static String compileOpenApp(Block block) {
+	private String compileOpenApp(Block block) {
 		BlockConnector socket = block.getSocketAt(0);
 		return compileFunction("openApp", socket);
 	}
 	
-	private static String compileSwitchApp(Block block) {
+	private String compileSwitchApp(Block block) {
 		BlockConnector socket = block.getSocketAt(0);
 		return compileFunction("switchApp", socket);
 	}
 	
-	private static String compileCloseApp(Block block) {
+	private String compileCloseApp(Block block) {
 		BlockConnector socket = block.getSocketAt(0);
 		return compileFunction("closeApp", socket);
 	}
 	
-	private static String compileRunCommand(Block block) {
+	private String compileRunCommand(Block block) {
 		BlockConnector socket = block.getSocketAt(0);
 		return compileFunction("run", socket);
 	}
 	
-	private static String compilePopup(Block block) {
+	private String compilePopup(Block block) {
 		BlockConnector textSocket = block.getSocketAt(0);
 		BlockConnector titleSocket = block.getSocketAt(1);
 		return compileFunction("popup", textSocket, titleSocket);
 	}
 	
-	private static String compileInput(Block block) {
+	private String compileInput(Block block) {
 		BlockConnector textSocket = block.getSocketAt(0);
 		BlockConnector defaultSocket = block.getSocketAt(1);
 		return compileFunction("input", textSocket, defaultSocket);
 	}
 	
-	private static String compileFunctionKey(Block block) {
+	private String compileFunctionKey(Block block) {
 		BlockConnector numberSocket = block.getSocketAt(0);
 		Long blockID = numberSocket.getBlockID();
 		assert !invalidBlockID(blockID);
@@ -707,29 +759,116 @@ public class BlockCompiler {
 		return "Key.F" + number;
 	}
 	
-	private static String compileBreak(Block block) {
+	private String compileBreak(Block block) {
 		return "break";
 	}
 
-	private static String compileContinue(Block block) {
+	private String compileContinue(Block block) {
 		return "continue";
 	}
 	
-	private static String compileVariable(Block block) {
+	private String compileVariable(Block block) {
 		String variable = block.getBlockLabel();
 		if(variable == null)
 			return "None";
 		return variable;
 	}
 	
-	private static String compileGetter(Block block) {
+	private String compileGetter(Block block) {
 		BlockConnector variableSocket = block.getSocketAt(0);
 		return compileOperator("", "None", variableSocket);
 	}
 	
-	private static String compileSetter(Block block) {
+	private String compileSetter(Block block) {
 		BlockConnector variableSocket = block.getSocketAt(0);
 		BlockConnector valueSocket = block.getSocketAt(1);
 		return compileOperator("=", "None", variableSocket, valueSocket);
+	}
+	
+	private String compileCallFunction(Block block, boolean hasImportSocket) {
+		BlockConnector functionNameSocket = block.getSocketAt(0);
+		Long blockID = functionNameSocket.getBlockID();
+		assert !invalidBlockID(blockID);
+		String functionName = compileBlock(Block.getBlock(blockID));
+		//when compiled, functionName will be a string with quotes around it
+		//function names don't have quotes, so remove the first and last character
+		functionName = functionName.substring(1, functionName.length() - 1);
+		
+		int numArguments = block.getNumSockets() - 1; //arguments are contained every socket after the function name socket
+		
+		if(hasImportSocket) {
+			BlockConnector importSocket = block.getSocketAt(1);
+			blockID = importSocket.getBlockID();
+			assert !invalidBlockID(blockID);
+			String importModuleName = compileBlock(Block.getBlock(blockID));
+			//same as before, remove the quotes
+			importModuleName = importModuleName.substring(1, importModuleName.length() - 1);
+			
+			//be kind; if the user typed "import " before their module name, remove that prefix
+			if(importModuleName.startsWith("import "))
+				importModuleName.replaceFirst("import ", "");
+			
+			//be kind; if the user did not include any modules for this function, but did specify an import module, use the import module
+			if(!functionName.contains("."))
+				functionName = importModuleName + "." + functionName;
+			
+			requiredModules.add(importModuleName);
+			
+			numArguments -= 1; // the import socket also isn't an argument
+		}
+		
+		if(numArguments == 0) {
+			return compileFunction(functionName, "");
+		}
+		else {
+			BlockConnector[] argumentSockets = new BlockConnector[numArguments];
+			//iterate over all arguments, but skip the first socket, which is the function name, and skip the second socket if it is the import socket
+			for(int i = hasImportSocket ? 2 : 1; i < block.getNumSockets(); ++i) { 
+				BlockConnector aConnector = block.getSocketAt(i);
+				if(aConnector.hasBlock())
+					argumentSockets[i - 1] = aConnector;
+			}
+			return compileFunction(functionName, "", argumentSockets);
+		}
+	}
+	
+	private String compileDefineFunction(Block block) {
+		BlockConnector functionNameSocket = block.getSocketAt(0);
+		Long blockID = functionNameSocket.getBlockID();
+		assert !invalidBlockID(blockID);
+		String functionName = compileBlock(Block.getBlock(blockID));
+		//when compiled, functionName will be a string with quotes around it
+		//function names don't have quotes, so remove the first and last character
+		functionName = functionName.substring(1, functionName.length() - 1);
+		
+		int numArguments = block.getNumSockets() - 1; //arguments are contained every socket after the function name socket
+		
+		//the header is the function definition, which conveniently looks the same as a function call:
+		//"def" + compileFunction(...) + ":" --> "def foo(arg1, arg2):"
+		String header = "def ";
+		
+		if(numArguments == 0) {
+			header += compileFunction(functionName, "");
+		}
+		else {
+			BlockConnector[] argumentSockets = new BlockConnector[numArguments];
+			//iterate over all arguments, but skip the first socket, which is the function name, and the last socket, which contains the command children
+			for(int i = 1; i < block.getNumSockets() - 1; ++i) { 
+				BlockConnector aConnector = block.getSocketAt(i);
+				if(aConnector.hasBlock())
+					argumentSockets[i - 1] = aConnector;
+			}
+			header += compileFunction(functionName, "", argumentSockets);
+		}
+		
+		header += ":";
+		
+		BlockConnector commandChildrenSocket = block.getSocketAt(block.getNumSockets() - 1);
+		return compileChildren(header, commandChildrenSocket, true);
+	}
+	
+	private String compileReturn(Block block) {
+		BlockConnector socket = block.getSocketAt(0);
+		return compileOperator("return", "None", socket);
 	}
 }
