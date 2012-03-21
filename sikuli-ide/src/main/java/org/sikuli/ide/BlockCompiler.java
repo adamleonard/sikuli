@@ -176,6 +176,7 @@ public class BlockCompiler {
 		map.put("return",			new CompileAdapter() { public String compileBlock(Block block) { return compileReturn(block); } });
 		map.put("pythonExpression",	new CompileAdapter() { public String compileBlock(Block block) { return compileCustomPython(block); } });
 		map.put("pythonStatement",	new CompileAdapter() { public String compileBlock(Block block) { return compileCustomPython(block); } });
+		map.put("comment",			new CompileAdapter() { public String compileBlock(Block block) { return compileComment(block); } });
 
 		_compilerAdapters = Collections.unmodifiableMap(map);
 	}
@@ -895,5 +896,12 @@ public class BlockCompiler {
 		}
 				
 		return code;
+	}
+	
+	private String compileComment(Block block) {
+		String string = block.getBlockLabel();
+		if(string == null)
+			return "";
+		return "# " + string;
 	}
 }

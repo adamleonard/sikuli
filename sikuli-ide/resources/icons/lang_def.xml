@@ -958,19 +958,30 @@ BlockGenuses are first loaded.
 		
 		<!-- TESTING -->
 		
+		<BlockGenus name="comment" kind="command" initlabel="comment" editable-label="yes" is-label-value="yes" color="255 255 150">
+			<description>
+				<text>
+					A comment that describes or documents blocks. Has no effect when run.
+				</text>
+			</description>
+			<BlockConnectors>
+			</BlockConnectors>
+			<LangSpecProperties>
+				<LangSpecProperty key="command-type" value="comment"></LangSpecProperty>
+			</LangSpecProperties>
+		</BlockGenus>
+		
 		<BlockGenus name="print" kind="command" initlabel="print" color="34 76 117">
 			<description>
 				<text>
-					Prints the provided text to the console.
+					Prints the provided text or value to the console.
 				</text>
 				<arg-description n="1" name="text">
-				The text to print.
+				The value to print.
 				</arg-description>
 			</description>
 			<BlockConnectors>
-				<BlockConnector connector-kind="socket" connector-type="string">
-					<DefaultArg genus-name="string" label="text" />
-				</BlockConnector>
+				<BlockConnector connector-kind="socket" connector-type="any"></BlockConnector>
 			</BlockConnectors>
 			<LangSpecProperties>
 				<LangSpecProperty key="command-type" value="print"></LangSpecProperty>
@@ -3004,10 +3015,6 @@ BlockGenuses are first loaded.
 				<BlockGenusMember>string-equals</BlockGenusMember>
 				<BlockGenusMember>string-not-equals</BlockGenusMember>
 			</BlockDrawer>
-			<BlockDrawer name="Testing" type="factory" button-color="34 76 117">
-				<BlockGenusMember>print</BlockGenusMember>
-				<BlockGenusMember>assert</BlockGenusMember>
-			</BlockDrawer>
 			<BlockDrawer name="Math" type="factory" button-color="34 76 117">
 				<BlockGenusMember>number</BlockGenusMember>
 				<BlockGenusMember>pi</BlockGenusMember>
@@ -3044,6 +3051,11 @@ BlockGenuses are first loaded.
 			<BlockDrawer name="Python" type="factory" button-color="34 76 117">
 				<BlockGenusMember>python-expression</BlockGenusMember>
 				<BlockGenusMember>python-statement</BlockGenusMember>
+			</BlockDrawer>
+			<BlockDrawer name="Testing" type="factory" button-color="34 76 117">
+				<BlockGenusMember>comment</BlockGenusMember>
+				<BlockGenusMember>print</BlockGenusMember>
+				<BlockGenusMember>assert</BlockGenusMember>
 			</BlockDrawer>
 			
 			<!-- Shapes are automatically loaded as blocks in the Shapes drawer
