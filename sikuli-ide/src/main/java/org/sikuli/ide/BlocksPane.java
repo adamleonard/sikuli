@@ -183,7 +183,7 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
      */
     public void resetLanguage() {
         BlockConnectorShape.resetConnectorShapeMappings();
-        BlockGenus.resetAllGenuses();
+        getEnv().resetAllGenuses();
         BlockLinkChecker.reset();
     }
 
@@ -413,31 +413,7 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
         //clear all block and renderable block instances
         this.reset();
     }
-    /*
-    public void reset() {
-    	//FIXME: This is just a partial implementation of reset copied from Workspace.java
-    	//It clears the view, but it leaves junk behind in the model 
-    	//thus leaking when documents are closed and potentially causing other problems!
-    	//Specifically, it does not call RenderableBlock.reset() because that messes with static (application-wide) state
-    	//but we want to be able to open multiple workspaces at a time (i.e., in multiple tabs)
-    	
-    	//More specifically, RenderableBlock.java has a static, applicaiton-wide map ALL_RENDERABLE_BLOCKS
-    	//and Block.java has a static map ALL_BLOCKS
-    	//Those contain all RenderableBlocks/Blocks that are in use anywhere in the application, 
-    	//and reset() clears them all, since it assumes there is only one workspace.
-    	
-    	//Those static maps should become instance variables on Workspace
-    	//For more details on the effort to support multiple workspaces, see: 
-    	//https://github.com/mikaelhg/openblocks/pull/11
-    	
 
-        //We now reset, the blockcanvas, the factory, and the renderableblocks
-        getBlockCanvas().reset();
-        getFactoryManager().reset();
-        //RenderableBlock.reset(); //FIXME: TEMPORARILY REMOVED: see comment at top of function
-        revalidate();
-    }
-*/
     public void workspaceEventOccurred(WorkspaceEvent event) {
     	if(event.isUserEvent())
     		setDirty(true);
@@ -445,7 +421,7 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
     	if(event.getEventType() == WorkspaceEvent.BLOCK_ADDED && event.isUserEvent()) {
     		Long blockID = event.getSourceBlockID();
 			assert !invalidBlockID(blockID);
-			Block addedBlock = Block.getBlock(blockID);
+			Block addedBlock = getEnv().getBlock(blockID);
 			if(addedBlock.getNumSockets() > 0) {
 				BlockConnector socket = addedBlock.getSocketAt(0);
 			
@@ -458,7 +434,7 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
     	else if(event.getEventType() == WorkspaceEvent.BLOCK_STACK_COMPILED) {
     		Long blockID = event.getSourceBlockID();
 			assert !invalidBlockID(blockID);
-			Block clickedBlock = Block.getBlock(blockID);
+			Block clickedBlock = getEnv().getBlock(blockID);
 			if(clickedBlock.getGenusName().equals("screenshot-block")) {
 				this.getFocusManager().setFocus(blockID);
 				capture(0);
@@ -467,7 +443,7 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
     	else if(event.getEventType() == WorkspaceEvent.BLOCKS_CONNECTED) {
     		BlockLink link = event.getSourceLink();
     		 if (link.getSocketBlockID() != null) {
-    			 Block socketBlock = Block.getBlock(link.getSocketBlockID());
+    			 Block socketBlock = getEnv().getBlock(link.getSocketBlockID());
     			 String genusName = socketBlock.getGenusName();
     			 //FIXME: clean this up a lot
     			 if(genusName.equals("call-function") || 
@@ -687,9 +663,15 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
     public void setSelectedFile(File selectedFile) {
         this.selectedFile = selectedFile;
     }
-    
+
     private static boolean invalidBlockID(Long blockID) {
-        return BlockUtilities.isNullBlockInstance(blockID);
+    	if (blockID == null) {
+    		return true;
+    	} else if (blockID.equals(Block.NULL)) {
+    		return true;
+    	} else {
+    		return false;
+    	}
     }
     
     public void capture(int delay) {
@@ -709,14 +691,14 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
     private void changeScreenshotImages(Block screenshotBlock, String screenshotPath, Map<BlockImageIcon.ImageLocation, BlockImageIcon> blockImageMap)
     {
     	//modify the existing screenshot block
-		RenderableBlock screenshotRenderableBlock = RenderableBlock.getRenderableBlock(screenshotBlock.getBlockID());
+		RenderableBlock screenshotRenderableBlock = getEnv().getRenderableBlock(screenshotBlock.getBlockID());
 		screenshotBlock.setBlockImageMap(blockImageMap);
 		screenshotBlock.setProperty("screenshot-path", screenshotPath);
 		
 		Long screenshotParentBlockID = screenshotBlock.getPlugBlockID();
 		if(!invalidBlockID(screenshotParentBlockID)) {
 			//if this screenshot block has a parent, redraw the parent, and in turn, the screenshot
-			RenderableBlock screenshotParentRenderableBlock = RenderableBlock.getRenderableBlock(screenshotParentBlockID);
+			RenderableBlock screenshotParentRenderableBlock = getEnv().getRenderableBlock(screenshotParentBlockID);
 			
 			/*
 			BlockLink link = BlockLink.getBlockLink(this, screenshotParentRenderableBlock.getBlock(),
@@ -776,7 +758,7 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
     	BlockCanvas blockCanvas = this.getBlockCanvas();
     	Long parentBlockID = focusManager.getFocusBlockID();
     	if(!invalidBlockID(parentBlockID)) {
-    		Block parentBlock = Block.getBlock(parentBlockID);
+    		Block parentBlock = getEnv().getBlock(parentBlockID);
     		if(parentBlock.getGenusName().equals("screenshot-block")) {
     			changeScreenshotImages(parentBlock, screenshotPath, blockImageMap);
     			return;
@@ -798,7 +780,7 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
     	boolean didConnectBlock = false;
 
         if(!invalidBlockID(parentBlockID)) {
-            RenderableBlock parentRenderableBlock = RenderableBlock.getRenderableBlock(parentBlockID);
+            RenderableBlock parentRenderableBlock = getEnv().getRenderableBlock(parentBlockID);
             if(parentRenderableBlock != null && parentRenderableBlock.isVisible()) {
 	        	Debug.error("Adding as child of block: " + parentRenderableBlock.toString());
 	        	//find a socket for the new screenshot
@@ -806,7 +788,7 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
 	        	int i = 0;
 	        	//first, try an empty socket
 	        	for(BlockConnector aConnector : sockets) {
-					if(!aConnector.hasBlock() && aConnector.getKind().equals("screenshot") && RenderableBlock.getRenderableBlock(aConnector.getBlockID()).isVisible()) {
+					if(!aConnector.hasBlock() && aConnector.getKind().equals("screenshot") && getEnv().getRenderableBlock(aConnector.getBlockID()).isVisible()) {
 						//empty screenshot socket! use that
 						BlockLink link = BlockLink.getBlockLink(this, parentRenderableBlock.getBlock(),
 								screenshotBlock,
@@ -816,11 +798,11 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
 				        
 				        this.notifyListeners(new WorkspaceEvent(
 	                            this, 
-	                            RenderableBlock.getRenderableBlock(link.getPlugBlockID()).getParentWidget(),
+	                            getEnv().getRenderableBlock(link.getPlugBlockID()).getParentWidget(),
 	                            link, WorkspaceEvent.BLOCKS_CONNECTED));
-	                    RenderableBlock.getRenderableBlock(link.getSocketBlockID()).moveConnectedBlocks();
-	                    RenderableBlock.getRenderableBlock(link.getSocketBlockID()).repaintBlock();
-	                    RenderableBlock.getRenderableBlock(link.getSocketBlockID()).repaint();
+	                    getEnv().getRenderableBlock(link.getSocketBlockID()).moveConnectedBlocks();
+	                    getEnv().getRenderableBlock(link.getSocketBlockID()).repaintBlock();
+	                    getEnv().getRenderableBlock(link.getSocketBlockID()).repaint();
 	                    
 	                    focusManager.setFocus(block.getBlockID());
 	                    didConnectBlock = true;
@@ -833,7 +815,7 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
 	        	//second, try to replace a block in an existing screenshot socket
 	        	for(BlockConnector aConnector : sockets) {
 					if(aConnector.hasBlock() && aConnector.getKind().equals("screenshot")) {
-		    			changeScreenshotImages(Block.getBlock(aConnector.getBlockID()), screenshotPath, blockImageMap);
+		    			changeScreenshotImages(getEnv().getBlock(aConnector.getBlockID()), screenshotPath, blockImageMap);
 		    	        focusManager.setFocus(block.getBlockID());
 		    	        didConnectBlock = true;
 		    			break;
@@ -902,7 +884,7 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
     	for (Block aBlock : this.getBlocks()) {
     		String isRootBlockAsString = aBlock.getProperty("is-root-block");
     		if(isRootBlockAsString != null && isRootBlockAsString.equals("yes") && aBlock.getBeforeBlockID() == Block.NULL) {
-    			BlockCompiler compiler = new BlockCompiler();
+    			BlockCompiler compiler = new BlockCompiler(this);
     			String result = compiler.compile(aBlock);
     			result += "\n\n";
     			

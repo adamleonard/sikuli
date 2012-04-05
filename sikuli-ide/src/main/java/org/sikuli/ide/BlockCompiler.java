@@ -16,6 +16,7 @@ import edu.mit.blocks.codeblocks.BlockLinkChecker;
 import edu.mit.blocks.codeblocks.CommandRule;
 import edu.mit.blocks.codeblocks.Constants;
 import edu.mit.blocks.codeblocks.SocketRule;
+import edu.mit.blocks.workspace.Workspace;
 import edu.mit.blocks.workspace.BlockCanvas;
 import edu.mit.blocks.workspace.SearchBar;
 import edu.mit.blocks.workspace.SearchableContainer;
@@ -33,9 +34,11 @@ public class BlockCompiler {
 	
 	private Map<String, CompileAdapter> _compilerAdapters;
 	private Set<String> requiredModules = new HashSet<String>();
+	private Workspace _workspace;
 	
-	public BlockCompiler() {
+	public BlockCompiler(Workspace workspace) {
 		super();
+		_workspace = workspace;
 		setupCompileAdapters();
 	}
 	
@@ -225,7 +228,7 @@ public class BlockCompiler {
     		else {
     			Long blockID = socket.getBlockID();
     			assert !invalidBlockID(blockID);
-    			result += compileBlock(Block.getBlock(blockID));
+    			result += compileBlock(_workspace.getEnv().getBlock(blockID));
     		}
     		result += ",";
     		++ addedArguments;
@@ -256,7 +259,7 @@ public class BlockCompiler {
     		else {
     			Long blockID = socket.getBlockID();
     			assert !invalidBlockID(blockID);
-    			compiledOperands.add(compileBlock(Block.getBlock(blockID)));
+    			compiledOperands.add(compileBlock(_workspace.getEnv().getBlock(blockID)));
     		}
     	}
     	
@@ -283,7 +286,7 @@ public class BlockCompiler {
 		
 		Long nextBlockID = socket.getBlockID();
 		assert !invalidBlockID(nextBlockID);
-		aBlock = Block.getBlock(nextBlockID);
+		aBlock = _workspace.getEnv().getBlock(nextBlockID);
 		
 		while(aBlock != null) {
 			String childResult = compileBlock(aBlock);
@@ -299,7 +302,7 @@ public class BlockCompiler {
 			nextBlockID = aBlock.getAfterBlockID();
 			if(invalidBlockID(nextBlockID))
 				break;
-			aBlock = Block.getBlock(nextBlockID);
+			aBlock = _workspace.getEnv().getBlock(nextBlockID);
 		}
 		
 		return result;
@@ -321,7 +324,7 @@ public class BlockCompiler {
 		if(testSocket.hasBlock()) {
 			Long blockID = testSocket.getBlockID();
 			assert !invalidBlockID(blockID);
-			test = compileBlock(Block.getBlock(blockID));
+			test = compileBlock(_workspace.getEnv().getBlock(blockID));
 		}
 		
 		//setup the handler
@@ -427,7 +430,7 @@ public class BlockCompiler {
 		if(testSocket.hasBlock()) {
 			Long blockID = testSocket.getBlockID();
 			assert !invalidBlockID(blockID);
-			test = compileBlock(Block.getBlock(blockID));
+			test = compileBlock(_workspace.getEnv().getBlock(blockID));
 		}
 		String testString = "if " + test + ":";
 		BlockConnector thenSocket = block.getSocketAt(1);
@@ -441,7 +444,7 @@ public class BlockCompiler {
 		if(testSocket.hasBlock()) {
 			Long blockID = testSocket.getBlockID();
 			assert !invalidBlockID(blockID);
-			test = compileBlock(Block.getBlock(blockID));
+			test = compileBlock(_workspace.getEnv().getBlock(blockID));
 		}
 		
 		String testString = "if " + test + ":";
@@ -465,7 +468,7 @@ public class BlockCompiler {
 		if(timesSocket.hasBlock()) {
 			Long blockID = timesSocket.getBlockID();
 			assert !invalidBlockID(blockID);
-			times = compileBlock(Block.getBlock(blockID));
+			times = compileBlock(_workspace.getEnv().getBlock(blockID));
 		}
 		String timesString = "for i in range(" + times + "):";
 		BlockConnector doSocket = block.getSocketAt(1);
@@ -478,7 +481,7 @@ public class BlockCompiler {
 		if(testSocket.hasBlock()) {
 			Long blockID = testSocket.getBlockID();
 			assert !invalidBlockID(blockID);
-			test = compileBlock(Block.getBlock(blockID));
+			test = compileBlock(_workspace.getEnv().getBlock(blockID));
 		}
 		String testString = "while " + test + ":";
 		BlockConnector thenSocket = block.getSocketAt(1);
@@ -756,7 +759,7 @@ public class BlockCompiler {
 		BlockConnector numberSocket = block.getSocketAt(0);
 		Long blockID = numberSocket.getBlockID();
 		assert !invalidBlockID(blockID);
-		String number = compileBlock(Block.getBlock(blockID));
+		String number = compileBlock(_workspace.getEnv().getBlock(blockID));
 		if(number.equals("None"))
 			number = "1";
 		return "Key.F" + number;
@@ -792,7 +795,7 @@ public class BlockCompiler {
 		BlockConnector functionNameSocket = block.getSocketAt(0);
 		Long blockID = functionNameSocket.getBlockID();
 		assert !invalidBlockID(blockID);
-		String functionName = compileBlock(Block.getBlock(blockID));
+		String functionName = compileBlock(_workspace.getEnv().getBlock(blockID));
 		//when compiled, functionName will be a string with quotes around it
 		//function names don't have quotes, so remove the first and last character
 		functionName = functionName.substring(1, functionName.length() - 1);
@@ -803,7 +806,7 @@ public class BlockCompiler {
 			BlockConnector importSocket = block.getSocketAt(1);
 			blockID = importSocket.getBlockID();
 			assert !invalidBlockID(blockID);
-			String importModuleName = compileBlock(Block.getBlock(blockID));
+			String importModuleName = compileBlock(_workspace.getEnv().getBlock(blockID));
 			//same as before, remove the quotes
 			importModuleName = importModuleName.substring(1, importModuleName.length() - 1);
 			
@@ -839,7 +842,7 @@ public class BlockCompiler {
 		BlockConnector functionNameSocket = block.getSocketAt(0);
 		Long blockID = functionNameSocket.getBlockID();
 		assert !invalidBlockID(blockID);
-		String functionName = compileBlock(Block.getBlock(blockID));
+		String functionName = compileBlock(_workspace.getEnv().getBlock(blockID));
 		//when compiled, functionName will be a string with quotes around it
 		//function names don't have quotes, so remove the first and last character
 		functionName = functionName.substring(1, functionName.length() - 1);
@@ -889,7 +892,7 @@ public class BlockCompiler {
 			if(aConnector.hasBlock()) {
     			Long blockID = aConnector.getBlockID();
     			assert !invalidBlockID(blockID);
-    			String compiledExpression  = compileBlock(Block.getBlock(blockID));
+    			String compiledExpression  = compileBlock(_workspace.getEnv().getBlock(blockID));
     			
     			code = code.replaceAll("\\$" + (i + 1), compiledExpression);
 			}
