@@ -9,6 +9,7 @@ import java.awt.*;
 import javax.swing.*;
 import java.io.*;
 import javax.swing.text.*;
+import javax.swing.undo.*;
 
 public interface SikuliCodePane <T extends JComponent> {
 	
@@ -20,7 +21,7 @@ public interface SikuliCodePane <T extends JComponent> {
 	
 	public void insertScreenshot(String path, Element src);
 	
-	public UndoManager getUndoManager();
+	public UndoableEdit getUndoManager();
 	
 	public boolean isDirty();
 	public void setDirty(boolean flag);

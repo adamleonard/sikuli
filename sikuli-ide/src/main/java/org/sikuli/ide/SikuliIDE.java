@@ -1845,7 +1845,7 @@ public class SikuliIDE extends JFrame {
          } 
       } 
       public void actionPerformed(ActionEvent e){ 
-         UndoManager undo = getCurrentCodePane().getUndoManager();
+    	 UndoableEdit undo = getCurrentCodePane().getUndoManager();
          try{ 
             undo.undo(); 
          } 
@@ -1861,7 +1861,7 @@ public class SikuliIDE extends JFrame {
          setEnabled(false); 
       } 
       public void actionPerformed(ActionEvent e){ 
-         UndoManager undo = getCurrentCodePane().getUndoManager();
+    	 UndoableEdit undo = getCurrentCodePane().getUndoManager();
          try{ 
             undo.redo(); 
          }

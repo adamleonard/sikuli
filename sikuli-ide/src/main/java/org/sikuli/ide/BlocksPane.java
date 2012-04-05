@@ -19,6 +19,7 @@ import java.lang.Iterable;
 
 import javax.swing.*;
 import javax.swing.text.*;
+import javax.swing.undo.*;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -87,7 +88,7 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
     
     private ImageLocator _imgLocator;
     
-    private UndoManager _undoManager = new UndoManager();
+    private BlocksUndoManager _undoManager;
     
     static InputStream SikuliToHtmlConverter = SikuliIDE.class.getResourceAsStream("/scripts/sikuli2html.py");
     static String pyConverter = Utils.convertStreamToString(SikuliToHtmlConverter);
@@ -105,6 +106,8 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
     	super();
     	setPreferredSize(null); //Let the scroll view that contains us choose our size to fit
         this.addWorkspaceListener(this);
+        _undoManager = new BlocksUndoManager(this);
+        this.addWorkspaceListener(_undoManager);
     }
 
     /**
@@ -295,7 +298,6 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
             loadBlockLanguage(langDefRoot);
         }
         this.loadWorkspaceFrom(null, langDefRoot);
-        workspaceLoaded = true;
         
     	Block runonceBlock = new Block(this, "runonce", "run once", true);
     	RenderableBlock runonceRenderableBlock = BlockUtilities.cloneBlock(runonceBlock);
@@ -306,6 +308,7 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
     	//add this block to that page.
     	p.blockDropped(runonceRenderableBlock);
     	
+        workspaceLoaded = true;    	
     }
 
     /**
@@ -411,12 +414,17 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
         //clear all pages and their drawers
         //clear all drawers and their content
         //clear all block and renderable block instances
+        workspaceLoaded = false;
         this.reset();
     }
 
     public void workspaceEventOccurred(WorkspaceEvent event) {
-    	if(event.isUserEvent())
+    	if(event.isUserEvent() && workspaceLoaded) {
+    		//if the user initiated an action and that action was not opening a new file,
+    		//mark the document as dirty and indicate that the undo manager may have changed states
     		setDirty(true);
+    		SikuliIDE.getInstance().updateUndoRedoStates();
+    	}
     	
     	if(event.getEventType() == WorkspaceEvent.BLOCK_ADDED && event.isUserEvent()) {
     		Long blockID = event.getSourceBlockID();
@@ -997,8 +1005,7 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
 		createOrEditScreenshotBlock(path);
     }
     
-	public UndoManager getUndoManager() {
-    	//FIXME: NOT IMPLEMENTED
+	public UndoableEdit getUndoManager() {
     	return _undoManager;
     }
 	
@@ -1010,7 +1017,7 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
         if(_dirty == flag)
             return;
          _dirty = flag; 
-         if(flag)
+         if(flag && getRootPane() != null)
             getRootPane().putClientProperty("Window.documentModified", true);
          else
             SikuliIDE.getInstance().checkDirtyPanes();

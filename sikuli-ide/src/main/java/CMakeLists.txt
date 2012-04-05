@@ -16,6 +16,7 @@ SET(JAVA_SOURCE_FILES
          org/sikuli/ide/ButtonGenCommand.java
          org/sikuli/ide/BlockCompiler.java
          org/sikuli/ide/BlocksPane.java
+         org/sikuli/ide/BlocksUndoManager.java
          org/sikuli/ide/AnyBlockSocketRule.java
          org/sikuli/ide/CaptureButton.java
          org/sikuli/ide/CaptureController.java

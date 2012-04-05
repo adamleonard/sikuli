@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import javax.swing.*;
 import javax.swing.text.*;
+import javax.swing.undo.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -93,7 +94,7 @@ public class SikuliTextPane extends JTextPane implements SikuliCodePane, KeyList
       getDocument().addUndoableEditListener(_undo);
    }
 
-   public UndoManager getUndoManager(){
+   public UndoableEdit getUndoManager(){
       return _undo;
    }
 
