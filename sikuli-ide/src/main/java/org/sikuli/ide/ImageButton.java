@@ -24,7 +24,7 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
 
 
    private String _imgFilename, _thumbFname;
-   private SikuliPane _pane;
+   private SikuliCodePane _pane;
    private float _similarity;
    private int _numMatches = DEFAULT_NUM_MATCHES;
    private boolean _exact;
@@ -116,7 +116,7 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
       return createThumbnail(imgFname, max_h);
    }
 
-   protected void init(SikuliPane pane){
+   protected void init(SikuliCodePane pane){
       _pane = pane;
       _exact = false;
       _similarity = DEFAULT_SIMILARITY;
@@ -129,11 +129,11 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
       setToolTipText( this.toString() );
    }
 
-   protected ImageButton(SikuliPane pane){
+   protected ImageButton(SikuliCodePane pane){
       init(pane);
    }
    
-   public ImageButton(SikuliPane pane, String imgFilename){
+   public ImageButton(SikuliCodePane pane, String imgFilename){
       init(pane);
       setFilename(imgFilename);
    }
@@ -233,7 +233,7 @@ class ImageButton extends JButton implements ActionListener, Serializable /*, Mo
 
 
 
-   public static ImageButton createFromString(SikuliPane parentPane, String str){
+   public static ImageButton createFromString(SikuliCodePane parentPane, String str){
       if( !str.startsWith("Pattern") ){
          if(str.charAt(0) == '\"' && str.charAt(str.length()-1) == '\"'){
             String filename = str.substring(1, str.length()-1);

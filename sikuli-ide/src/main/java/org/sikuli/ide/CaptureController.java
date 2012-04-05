@@ -57,6 +57,10 @@ class CaptureController implements Observer, Subject{
 
    public void update(Subject s){
       if(s instanceof CapturePrompt){
+         SikuliIDE ide = SikuliIDE.getInstance();
+ 		 ide.setVisible(true);
+ 		_isCapturing = false;
+
          CapturePrompt cp = (CapturePrompt)s;
          ScreenImage simg = cp.getSelection();
          if(simg==null){
@@ -64,8 +68,7 @@ class CaptureController implements Observer, Subject{
             return;
          }
          cp.close();
-         SikuliIDE ide = SikuliIDE.getInstance();
-         SikuliPane pane = ide.getCurrentCodePane();
+         SikuliCodePane pane = ide.getCurrentCodePane();
          int naming = UserPreferences.getInstance().getAutoNamingMethod();
          String filename;
          if(naming == UserPreferences.AUTO_NAMING_TIMESTAMP)
@@ -102,7 +105,9 @@ class CaptureController implements Observer, Subject{
    public void capture(final int delay){
       if(_isCapturing)
          return;
+      SikuliIDE.getInstance().setVisible(false);
       _isCapturing = true;
+      _imagePath = null;
       Thread t = new Thread("capture"){
          public void run(){
             try{

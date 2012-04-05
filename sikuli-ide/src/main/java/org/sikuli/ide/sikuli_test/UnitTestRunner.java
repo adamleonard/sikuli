@@ -6,6 +6,7 @@
 package org.sikuli.ide.sikuli_test;
 
 import org.sikuli.ide.SikuliIDE;
+import org.sikuli.ide.SikuliCodePane;
 import java.util.Vector;
 import java.util.HashMap;
 import java.util.Enumeration;
@@ -33,11 +34,7 @@ import junit.runner.StandardTestSuiteLoader;
 import junit.runner.TestSuiteLoader;
 
 import org.sikuli.script.Debug;
-import java.io.PrintStream;
-import java.io.File;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 import org.python.util.PythonInterpreter; 
 import org.python.core.*; 
@@ -253,21 +250,43 @@ public class UnitTestRunner extends BaseTestRunner implements TestRunContext{
    }
 
    synchronized public void runSuite() {
-      SikuliIDE ide = SikuliIDE.getInstance();
-      if (fRunner != null) {
-         fTestResult.stop();
-         showIDE(true);
-      } else {
-         try{
-            showIDE(false);
-            reset();
-            String filename = ide.getCurrentFilename();
-            String path = ide.getCurrentBundlePath();
-            Test suite = genTestSuite(filename, path);
-            doRun(suite);
-         }
-         catch(IOException e){
-            e.printStackTrace();
+	   SikuliIDE ide = SikuliIDE.getInstance();
+	   if (fRunner != null) {
+		   fTestResult.stop();
+		   showIDE(true);
+	   } else {
+		   try{
+			   showIDE(false);
+			   reset();
+
+			   //get the current file's python code, write it to a temp file, and run it
+			   File tmpFile = null;
+			   String className = null;
+			   SikuliCodePane codePane = ide.getCurrentCodePane();
+			   try{
+				   className = new File(ide.getCurrentFilename()).getName();
+				   className = className.substring(0, className.lastIndexOf('.')); //remove extension
+				   tmpFile = File.createTempFile(className,".py");
+				   tmpFile.deleteOnExit();
+				   BufferedWriter bw = new BufferedWriter(
+						   new OutputStreamWriter( 
+								   new FileOutputStream(tmpFile), 
+								   "UTF8"));
+				   codePane.writePython(bw);
+				   bw.close();
+			   }
+			   catch(IOException e){ 
+				   e.printStackTrace(); 
+				   showIDE(true);
+	           }
+			   String filename = tmpFile.getAbsolutePath();
+
+			   String path = ide.getCurrentBundlePath();
+			   Test suite = genTestSuite(className, filename, path);
+			   doRun(suite);
+		   }
+		   catch(IOException e){
+			   e.printStackTrace();
             showIDE(true);
          }
       }
@@ -466,15 +485,12 @@ public class UnitTestRunner extends BaseTestRunner implements TestRunContext{
    }
 
 
-   private String genTestClassName(String filename){
-      String fname = new File(filename).getName();
-      int dot = fname.indexOf(".");
-      return fname.substring(0, dot);
-   }
-
-
-   private Test genTestSuite(String filename, String bundlePath) throws IOException{
-      String className = genTestClassName(filename);
+   private Test genTestSuite(String className, String filename, String bundlePath) throws IOException{
+      
+      //remove any "non-word" characters, i.e., leave only letters
+      //that should ensure the python class name is syntatically valid
+      className = className.replaceAll("\\W", "");
+      
       TestSuite ret = new TestSuite(className);
       PythonInterpreter interp = new PythonInterpreter();
       String testCode = 

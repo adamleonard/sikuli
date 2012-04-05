@@ -170,7 +170,7 @@ public class SikuliEditorKit extends StyledEditorKit {
             else {
                if(direction == SwingConstants.NORTH || 
                   direction == SwingConstants.SOUTH )
-                  dot = getNSVisualPosition((SikuliPane)textArea, dot, direction);
+                  dot = getNSVisualPosition((SikuliTextPane)textArea, dot, direction);
                else
                   dot = textArea.getUI().getNextVisualPositionFrom(
                         textArea, dot,
@@ -195,7 +195,7 @@ public class SikuliEditorKit extends StyledEditorKit {
 
    }
 
-   static int getNSVisualPosition(SikuliPane txt, int pos, int direction){
+   static int getNSVisualPosition(SikuliTextPane txt, int pos, int direction){
       int line = txt.getLineAtCaret(pos);
       int tarLine = direction==SwingConstants.NORTH? line-1 : line+1;
       try{
@@ -454,7 +454,7 @@ public class SikuliEditorKit extends StyledEditorKit {
             int end = line.getEndOffset()-1; 
             int len = end-start;
             String s = doc.getText(start, len);
-            PythonIndentation indentationLogic = ((SikuliPane)txt).getIndentationLogic();
+            PythonIndentation indentationLogic = ((SikuliTextPane)txt).getIndentationLogic();
 
             String leadingWS = getLeadingWhitespace(doc, start, caretPos-start);
             StringBuffer sb = new StringBuffer("\n");

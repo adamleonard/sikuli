@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.zip.*;
 import java.awt.image.*;
 import java.awt.event.KeyEvent;
+import javax.swing.*;
 import javax.imageio.*;
 
 import org.sikuli.script.Debug;
@@ -212,13 +213,13 @@ public class Utils {
    }
 
 
-   public static File createTempDir() {
+   public static File createTempDir(String extension) {
       final String baseTempPath = System.getProperty("java.io.tmpdir");
 
       Random rand = new Random();
       int randomInt = 1 + rand.nextInt();
 
-      File tempDir = new File(baseTempPath + File.separator + "tmp-" + randomInt + ".sikuli");
+      File tempDir = new File(baseTempPath + File.separator + "tmp-" + randomInt + "." + extension);
       if (tempDir.exists() == false) {
          tempDir.mkdir();
       }
@@ -312,4 +313,68 @@ public class Utils {
          ret = txtMod + " " + txtCode;
       return ret;
    }
+   
+   /**
+    * Shows a dialog "[filename] has been modified. Save changes?"
+    * Returns CLOSE_AND_SAVE if "Yes" is clicked, 
+    * CLOSE_AND_DONT_SAVE if "No" is clicked
+    * CANCEL_AND_DONT_SAVE if "Cancel" is clicked
+    */
+   public enum UnsavedChangesDialogResult {
+	   CLOSE_AND_SAVE,
+	   CLOSE_AND_DONT_SAVE,
+	   CANCEL_AND_DONT_SAVE
+   }
+   
+   public static UnsavedChangesDialogResult showCloseWithUnsavedChangesDialog(JComponent parentComponent, String filename) {
+       Object[] options = {I18N._I("yes"), I18N._I("no"), I18N._I("cancel")};
+       int ans = JOptionPane.showOptionDialog(parentComponent,
+             I18N._I("msgAskSaveChanges", filename),
+             I18N._I("dlgAskCloseTab"),
+             JOptionPane.YES_NO_CANCEL_OPTION,
+             JOptionPane.WARNING_MESSAGE,
+             null,
+             options, options[0]);
+       if( ans == JOptionPane.CANCEL_OPTION || 
+           ans == JOptionPane.CLOSED_OPTION )
+          return UnsavedChangesDialogResult.CANCEL_AND_DONT_SAVE;
+       else if( ans == JOptionPane.YES_OPTION )
+    	  return UnsavedChangesDialogResult.CLOSE_AND_SAVE;
+       else
+    	  return UnsavedChangesDialogResult.CLOSE_AND_DONT_SAVE;
+   }
+   
+   
+   public enum SikuliFileType {
+	   SIKULI_FILE_TYPE_TEXT,
+	   SIKULI_FILE_TYPE_BLOCKS,
+	   SIKULI_FILE_TYPE_UNKNOWN
+   }
+   
+   public static SikuliFileType sikuliFileTypeForPath(String path) {
+	   if(path.endsWith(".sikuli") || path.endsWith(".sikuli" + "/"))
+		   return SikuliFileType.SIKULI_FILE_TYPE_TEXT;
+	   else if(path.endsWith(".sikuliblocks") || path.endsWith(".sikuliblocks" + "/"))
+		   return SikuliFileType.SIKULI_FILE_TYPE_BLOCKS;
+	   return SikuliFileType.SIKULI_FILE_TYPE_UNKNOWN;
+   }
+   
+   public static SikuliFileType sikuliFileTypeForFile(File file) {
+	   return Utils.sikuliFileTypeForPath(file.getPath());
+   }
+   
+   
+   public enum SikuliCodePaneType {
+	   SIKULI_PANE_TYPE_TEXT,
+	   SIKULI_PANE_TYPE_BLOCKS,
+   }
+   
+   public static SikuliCodePaneType typeOfCodePane(SikuliCodePane codePane) {
+	   if(codePane.getComponent() instanceof SikuliTextPane)
+		   return SikuliCodePaneType.SIKULI_PANE_TYPE_TEXT;
+	   else if(codePane.getComponent() instanceof BlocksPane)
+		   return SikuliCodePaneType.SIKULI_PANE_TYPE_BLOCKS;
+	   throw new RuntimeException("Unknown code pane type"); //if a new type of code pane is added, it must be added here
+   }
+   
 }

@@ -193,7 +193,13 @@ public class PreferencesWin extends JFrame {
       SikuliIDE ide = SikuliIDE.getInstance();
       Font font = new Font((String)_cmbFontName.getSelectedItem(), Font.PLAIN, 
                            (Integer)_spnFontSize.getValue());
-      ide.getCurrentCodePane().setFont(font);
+      
+      SikuliCodePane codePane = SikuliIDE.getInstance().getCurrentCodePane();
+      if(Utils.typeOfCodePane(codePane) == Utils.SikuliCodePaneType.SIKULI_PANE_TYPE_TEXT) {
+    	  //preview only supported on text code panes
+    	  SikuliTextPane textPane = (SikuliTextPane)(codePane.getComponent());
+    	  textPane.setFont(font);
+      }
    }
 
    private void fontNameItemStateChanged(ItemEvent e) {

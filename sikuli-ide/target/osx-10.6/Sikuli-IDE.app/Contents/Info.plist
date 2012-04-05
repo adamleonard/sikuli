@@ -25,6 +25,22 @@
 			<key>LSTypeIsPackage</key>
 			<true/>
 		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>sikuliblocks</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>SikuliSrc.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>Sikuli Blocks source file</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsAppleDefaultForType</key>
+			<true/>
+			<key>LSTypeIsPackage</key>
+			<true/>
+		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>JavaApplicationStub</string>

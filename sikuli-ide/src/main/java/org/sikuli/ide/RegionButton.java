@@ -22,11 +22,11 @@ import org.sikuli.script.Subject;
 import org.sikuli.script.Debug;
 
 class RegionButton extends JButton implements ActionListener, Observer{
-   SikuliPane _pane;
+   SikuliCodePane _pane;
    int _x, _y, _w, _h;
 
 
-   public RegionButton(SikuliPane pane, int x, int y, int w, int h){
+   public RegionButton(SikuliCodePane pane, int x, int y, int w, int h){
       _pane = pane;
       _x = x;
       _y = y;
@@ -42,7 +42,7 @@ class RegionButton extends JButton implements ActionListener, Observer{
       return String.format("Region(%d,%d,%d,%d)", _x, _y, _w, _h);
    }
 
-   public static RegionButton createFromString(SikuliPane parentPane, String str){
+   public static RegionButton createFromString(SikuliCodePane parentPane, String str){
       String[] tokens = str.split("[(),]");
       try{
          int x = Integer.valueOf(tokens[1].trim()), y = Integer.valueOf(tokens[2].trim()), 
@@ -81,7 +81,7 @@ class RegionButton extends JButton implements ActionListener, Observer{
 
    public void actionPerformed(ActionEvent ae){
       SikuliIDE ide = SikuliIDE.getInstance();
-      SikuliPane codePane = ide.getCurrentCodePane();
+      SikuliCodePane codePane = ide.getCurrentCodePane();
       ide.setVisible(false);
       CapturePrompt prompt = new CapturePrompt(null, this);
       prompt.prompt(SikuliIDE._I("msgCapturePrompt"), 500);

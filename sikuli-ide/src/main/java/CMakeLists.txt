@@ -15,7 +15,7 @@ SET(JAVA_SOURCE_FILES
          org/sikuli/ide/AutoUpdater.java
          org/sikuli/ide/ButtonGenCommand.java
          org/sikuli/ide/BlockCompiler.java
-         org/sikuli/ide/BlocksWorkspaceController.java
+         org/sikuli/ide/BlocksPane.java
          org/sikuli/ide/AnyBlockSocketRule.java
          org/sikuli/ide/CaptureButton.java
          org/sikuli/ide/CaptureController.java
@@ -50,7 +50,8 @@ SET(JAVA_SOURCE_FILES
          org/sikuli/ide/SikuliDocument.java
          org/sikuli/ide/SikuliEditorKit.java
          org/sikuli/ide/SikuliIDE.java
-         org/sikuli/ide/SikuliPane.java
+         org/sikuli/ide/SikuliCodePane.java
+         org/sikuli/ide/SikuliTextPane.java
          org/sikuli/ide/SikuliView.java
          org/sikuli/ide/SikuliViewFactory.java
          org/sikuli/ide/SimilaritySlider.java

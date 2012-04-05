@@ -7,7 +7,6 @@ package org.sikuli.ide;
 
 import org.sikuli.ide.extmanager.ExtensionManagerFrame;
 import org.sikuli.ide.sikuli_test.*;
-import org.sikuli.ide.BlocksWorkspaceController;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -47,8 +46,6 @@ import org.sikuli.script.HotkeyEvent;
 import org.apache.commons.cli.CommandLine;
 
 import com.explodingpixels.macwidgets.MacUtils;
-
-import edu.mit.blocks.controller.WorkspaceController;
 
 public class SikuliIDE extends JFrame {
    final static boolean ENABLE_RECORDING = false;
@@ -96,8 +93,6 @@ public class SikuliIDE extends JFrame {
 
    private boolean _inited = false;
    
-   private BlocksWorkspaceController _blocksWorkspaceController;
-
    static String _I(String key, Object... args){ 
       return I18N._I(key, args);
    }
@@ -132,10 +127,7 @@ public class SikuliIDE extends JFrame {
 
    public void onQuickCapture(String arg){
       Debug.log(2, "QuickCapture");
-      if(_blocksWorkspaceController != null)
-    	  _blocksWorkspaceController.capture(0);
-      else
-    	  _btnCapture.capture(0);
+      _btnCapture.capture(0);
    }
 
    //FIXME: singleton lock
@@ -163,7 +155,7 @@ public class SikuliIDE extends JFrame {
       for(int i=0;i<_mainPane.getTabCount();i++){
          try{
             JScrollPane scrPane = (JScrollPane)_mainPane.getComponentAt(i);
-            SikuliPane codePane = (SikuliPane)scrPane.getViewport().getView();
+            SikuliCodePane codePane = (SikuliCodePane)scrPane.getViewport().getView();
             if(codePane.isDirty()){
                getRootPane().putClientProperty("Window.documentModified", true);
                return true;
@@ -508,7 +500,7 @@ public class SikuliIDE extends JFrame {
 
       _searchField.setCancelAction(new ActionListener(){
          public void actionPerformed(ActionEvent evt) {    
-            getCurrentCodePane().requestFocus();
+            getCurrentCodePane().getComponent().requestFocus();
             _findHelper.setFailed(false);
          }
       });
@@ -547,7 +539,7 @@ public class SikuliIDE extends JFrame {
          public boolean closeTab(int i){
             try{
                JScrollPane scrPane = (JScrollPane)_mainPane.getComponentAt(i);
-               SikuliPane codePane = (SikuliPane)scrPane.getViewport().getView();
+               SikuliCodePane codePane = (SikuliCodePane)scrPane.getViewport().getView();
                Debug.log(8, "close tab " + i + " n:" + _mainPane.getComponentCount());
                boolean ret = codePane.close();
                Debug.log(8, "after close tab n:" + _mainPane.getComponentCount());
@@ -723,7 +715,7 @@ public class SikuliIDE extends JFrame {
       restoreSession();
       setVisible(true);
       autoCheckUpdate();
-      getCurrentCodePane().requestFocus();
+      getCurrentCodePane().getComponent().requestFocus();
    }
 
    private void initTooltip(){
@@ -750,7 +742,7 @@ public class SikuliIDE extends JFrame {
       for(int i=0;i<nTab;i++){
          try{
             JScrollPane scrPane = (JScrollPane)_mainPane.getComponentAt(i);
-            SikuliPane codePane = (SikuliPane)scrPane.getViewport().getView();
+            SikuliCodePane codePane = (SikuliCodePane)scrPane.getViewport().getView();
             File f = codePane.getCurrentFile();
             if( f != null){
                String bundlePath= codePane.getSrcBundle();
@@ -842,11 +834,51 @@ public class SikuliIDE extends JFrame {
          e.printStackTrace();
       }
    }
+   
+   public String loadFile() throws IOException{
+	      File file = new FileChooser(SikuliIDE.getInstance()).load();
+	      if(file == null)  return null;
+
+	      String fname = Utils.slashify(file.getAbsolutePath(),false);
+
+	      return fname;
+   }
+   
+   /**
+    * Adds a new tab containing a blocks pane
+    * createEmptyWorkspace should be true if a new, empty document should be created
+    * createEmptyWorkspace should be false if an existing file will be loaded into the blocks pane
+    */
+   private void loadBlocksPane(boolean createEmptyWorkspace) {
+       try{
+           BlocksPane codePane = new BlocksPane();
+           codePane.setLangDefStream(SikuliIDE.class.getResourceAsStream("/icons/lang_def.xml"));
+           if(createEmptyWorkspace)
+         	  codePane.loadFreshWorkspace();
+           JScrollPane scrPane = new JScrollPane(codePane);
+           _mainPane.addTab(_I("tabUntitled"), scrPane);
+           _mainPane.setSelectedIndex(_mainPane.getTabCount()-1);
+       }
+       catch(Exception ex){
+          ex.printStackTrace();
+       }
+   }
 
    public void loadFile(String file){
-      (new FileAction()).doNew(null);
+	   
+       //create a new code pane of the appropriate type:
+       //a Python text pane for .sikuli files and unknown files
+       //and a Blocks pane for .sikuliblocks files
+       Utils.SikuliFileType fileType = Utils.sikuliFileTypeForPath(file);
+       if(fileType == Utils.SikuliFileType.SIKULI_FILE_TYPE_TEXT)
+    	   (new FileAction()).doNew(null);
+       else if(fileType == Utils.SikuliFileType.SIKULI_FILE_TYPE_BLOCKS)
+    	   loadBlocksPane(false);
+       else
+    	   (new FileAction()).doNew(null); //if the file type is unknown, assume it's text
+       
       try{
-         getCurrentCodePane().loadFile(file);
+    	 getCurrentCodePane().loadFile(file);
          setCurrentFilename(file);
       }
       catch(IOException e){
@@ -890,7 +922,7 @@ public class SikuliIDE extends JFrame {
          throw new IOException(filename + ": No such file");
       String name = file.getName();
       name = name.substring(0, name.lastIndexOf('.'));
-      File tmpDir = Utils.createTempDir();
+      File tmpDir = Utils.createTempDir("sikuli");
       File sikuliDir = new File(tmpDir + File.separator + name + ".sikuli");
       sikuliDir.mkdir();
       Utils.unzip(filename, sikuliDir.getAbsolutePath());
@@ -987,22 +1019,30 @@ public class SikuliIDE extends JFrame {
    }
 
    public void jumpTo(String funcName) throws BadLocationException{
-      SikuliPane pane = getCurrentCodePane();
-      pane.jumpTo(funcName);
-      pane.grabFocus();
+      SikuliCodePane pane = getCurrentCodePane();
+      if(Utils.typeOfCodePane(pane) == Utils.SikuliCodePaneType.SIKULI_PANE_TYPE_TEXT) {
+    	  //only supported on text code panes
+    	  SikuliTextPane textPane = (SikuliTextPane)(pane.getComponent());
+    	  textPane.jumpTo(funcName);
+    	  textPane.grabFocus();
+      }
    }
 
    public void jumpTo(int lineNo) throws BadLocationException{
-      SikuliPane pane = getCurrentCodePane();
-      pane.jumpTo(lineNo);
-      pane.grabFocus();
+      SikuliCodePane pane = getCurrentCodePane();
+      if(Utils.typeOfCodePane(pane) == Utils.SikuliCodePaneType.SIKULI_PANE_TYPE_TEXT) {
+    	  //only supported on text code panes
+    	  SikuliTextPane textPane = (SikuliTextPane)(pane.getComponent());
+    	  textPane.jumpTo(lineNo);
+    	  textPane.grabFocus();
+      }
    }
    
-   public SikuliPane getCurrentCodePane(){
+   public SikuliCodePane getCurrentCodePane(){
       if(_mainPane.getSelectedIndex() == -1)
          return null;
       JScrollPane scrPane = (JScrollPane)_mainPane.getSelectedComponent();
-      SikuliPane ret = (SikuliPane)scrPane.getViewport().getView();
+      SikuliCodePane ret = (SikuliCodePane)scrPane.getViewport().getView();
       return ret;
    }
 
@@ -1020,18 +1060,18 @@ public class SikuliIDE extends JFrame {
    }
 
    public String getCurrentBundlePath(){
-      SikuliPane pane = getCurrentCodePane();
+      SikuliCodePane pane = getCurrentCodePane();
       return pane.getSrcBundle();
    }
    
    public String getCurrentFilename(){
-      SikuliPane pane = getCurrentCodePane();
+      SikuliCodePane pane = getCurrentCodePane();
       String fname = pane.getCurrentFile().getAbsolutePath();
       return fname;
    }
 
    public boolean closeCurrentTab(){
-      SikuliPane pane = getCurrentCodePane();
+      SikuliCodePane pane = getCurrentCodePane();
       (new FileAction()).doCloseTab(null);
       if( pane == getCurrentCodePane() )
          return false;
@@ -1272,7 +1312,7 @@ public class SikuliIDE extends JFrame {
       }
 
       private boolean _find(String str, int begin, boolean forward){
-         SikuliPane codePane = getCurrentCodePane();
+         SikuliCodePane codePane = getCurrentCodePane();
          int pos = codePane.search(str, begin, forward);
          Debug.log(7, "find \"" + str + "\" at " + begin + ", found: " + pos);
          if(pos < 0)
@@ -1281,22 +1321,51 @@ public class SikuliIDE extends JFrame {
       }
 
       public boolean findStr(String str){
-         if(getCurrentCodePane() != null)
-            return _find(str, getCurrentCodePane().getCaretPosition(), true);
+     	 SikuliCodePane codePane = SikuliIDE.this.getCurrentCodePane();
+         if(codePane != null) {
+             if(Utils.typeOfCodePane(codePane) == Utils.SikuliCodePaneType.SIKULI_PANE_TYPE_TEXT) {
+           	  SikuliTextPane textPane = (SikuliTextPane)(codePane.getComponent());
+              return _find(str, textPane.getCaretPosition(), true);
+             }
+             else if(Utils.typeOfCodePane(codePane) == Utils.SikuliCodePaneType.SIKULI_PANE_TYPE_BLOCKS) {
+              	  BlocksPane blocksPane = (BlocksPane)(codePane.getComponent());
+                  return _find(str, 0, true);
+             }
+         }
          return false;
       }
 
       public boolean findPrev(String str){
-         if(getCurrentCodePane() != null)
-            return _find(str, getCurrentCodePane().getCaretPosition(), false);
+      	 SikuliCodePane codePane = SikuliIDE.this.getCurrentCodePane();
+         if(codePane != null) {
+             if(Utils.typeOfCodePane(codePane) == Utils.SikuliCodePaneType.SIKULI_PANE_TYPE_TEXT) {
+           	  SikuliTextPane textPane = (SikuliTextPane)(codePane.getComponent());
+              return _find(str, textPane.getCaretPosition(), false);
+             }
+             else if(Utils.typeOfCodePane(codePane) == Utils.SikuliCodePaneType.SIKULI_PANE_TYPE_BLOCKS) {
+              	  BlocksPane blocksPane = (BlocksPane)(codePane.getComponent());
+                  return _find(str, 0, false);
+                  //FIXME: blocks might not support the notion of previous/next finds
+             }
+         }
          return false;
       }
 
       public boolean findNext(String str){
-         if(getCurrentCodePane() != null)
-            return _find(str, 
-                         getCurrentCodePane().getCaretPosition()+str.length(),
-                         true);
+      	 SikuliCodePane codePane = SikuliIDE.this.getCurrentCodePane();
+         if(codePane != null) {
+             if(Utils.typeOfCodePane(codePane) == Utils.SikuliCodePaneType.SIKULI_PANE_TYPE_TEXT) {
+           	  SikuliTextPane textPane = (SikuliTextPane)(codePane.getComponent());
+              return _find(str, 
+                      textPane.getCaretPosition()+str.length(),
+                      true);
+             }
+             else if(Utils.typeOfCodePane(codePane) == Utils.SikuliCodePaneType.SIKULI_PANE_TYPE_BLOCKS) {
+              	  BlocksPane blocksPane = (BlocksPane)(codePane.getComponent());
+                  return _find(str, 0, true);
+                  //FIXME: blocks might not support the notion of previous/next finds
+             }
+         }
          return false;
       }
 
@@ -1330,8 +1399,8 @@ public class SikuliIDE extends JFrame {
 
       private void performEditorAction(String action, ActionEvent ae){
          SikuliIDE ide = SikuliIDE.getInstance();
-         SikuliPane pane = ide.getCurrentCodePane();
-         pane.getActionMap().get(action).actionPerformed(ae);
+         SikuliCodePane pane = ide.getCurrentCodePane();
+         pane.getComponent().getActionMap().get(action).actionPerformed(ae);
       }
 
       public void doCut(ActionEvent ae){
@@ -1352,14 +1421,22 @@ public class SikuliIDE extends JFrame {
 
       public void doIndent(ActionEvent ae){
          SikuliIDE ide = SikuliIDE.getInstance();
-         SikuliPane pane = ide.getCurrentCodePane();
-         (new SikuliEditorKit.InsertTabAction()).actionPerformed(pane);
+         SikuliCodePane pane = ide.getCurrentCodePane();
+         if(Utils.typeOfCodePane(pane) == Utils.SikuliCodePaneType.SIKULI_PANE_TYPE_TEXT) {
+        	 //only supported on text code panes
+        	 SikuliTextPane textPane = (SikuliTextPane)(pane.getComponent());
+       	  	(new SikuliEditorKit.InsertTabAction()).actionPerformed(textPane);
+         }
       }
 
       public void doUnindent(ActionEvent ae){
          SikuliIDE ide = SikuliIDE.getInstance();
-         SikuliPane pane = ide.getCurrentCodePane();
-         (new SikuliEditorKit.DeindentAction()).actionPerformed(pane);
+         SikuliCodePane pane = ide.getCurrentCodePane();
+         if(Utils.typeOfCodePane(pane) == Utils.SikuliCodePaneType.SIKULI_PANE_TYPE_TEXT) {
+        	 //only supported on text code panes
+        	 SikuliTextPane textPane = (SikuliTextPane)(pane.getComponent());
+        	 (new SikuliEditorKit.DeindentAction()).actionPerformed(textPane);
+         }
       }
    }
 
@@ -1385,7 +1462,7 @@ public class SikuliIDE extends JFrame {
       public void doQuit(ActionEvent ae){
          SikuliIDE ide = SikuliIDE.getInstance();
          while(true){
-            SikuliPane codePane = ide.getCurrentCodePane();
+            SikuliCodePane codePane = ide.getCurrentCodePane();
             if(codePane == null)
                break;
             if(!ide.closeCurrentTab())
@@ -1399,14 +1476,14 @@ public class SikuliIDE extends JFrame {
       }
 
       public void doNew(ActionEvent ae){
-         SikuliPane codePane = new SikuliPane();
+         SikuliTextPane codePane = new SikuliTextPane();
          JScrollPane scrPane = new JScrollPane(codePane);
          scrPane.setRowHeaderView(new LineNumberView(codePane));
          _mainPane.addTab(_I("tabUntitled"), scrPane);
          _mainPane.setSelectedIndex(_mainPane.getTabCount()-1);
          codePane.addCaretListener(new CaretListener(){
             public void caretUpdate(CaretEvent evt){
-               SikuliPane comp = (SikuliPane)evt.getSource();
+               SikuliTextPane comp = (SikuliTextPane)evt.getSource();
                int line = comp.getLineAtCaret();
                int col = comp.getColumnAtCaret();
                if(_status != null)
@@ -1418,26 +1495,28 @@ public class SikuliIDE extends JFrame {
       }
       
       public void doNewBlocks(ActionEvent ae){
-         try{
-        	_blocksWorkspaceController = new BlocksWorkspaceController();
-        	_blocksWorkspaceController.setLangDefStream(SikuliIDE.class.getResourceAsStream("/icons/lang_def.xml"));
-        	_blocksWorkspaceController.loadFreshWorkspace();
-        	_blocksWorkspaceController.createAndShowGUI();
-         }
-         catch(Exception ex){
-            ex.printStackTrace();
-         }
+      	SikuliIDE.getInstance().loadBlocksPane(true);
       }
       
       public void doLoad(ActionEvent ae){
          try{
-            doNew(ae);
-            SikuliPane codePane = SikuliIDE.getInstance().getCurrentCodePane();
-            String fname = codePane.loadFile();
-            if(fname!=null)
-               SikuliIDE.getInstance().setCurrentFilename(fname);
-            else
-               doCloseTab(ae);
+            String fname = SikuliIDE.getInstance().loadFile();
+            if(fname!=null) {                
+                //create a new code pane of the appropriate type:
+                //a Python text pane for .sikuli files and unknown files
+                //and a Blocks pane for .sikuliblocks files
+                Utils.SikuliFileType fileType = Utils.sikuliFileTypeForPath(fname);
+                if(fileType == Utils.SikuliFileType.SIKULI_FILE_TYPE_TEXT)
+                    doNew(ae);
+                else if(fileType == Utils.SikuliFileType.SIKULI_FILE_TYPE_BLOCKS)
+                	SikuliIDE.getInstance().loadBlocksPane(false);
+                else
+                	doNew(ae); //if the file type is unknown, assume it's text
+
+                SikuliCodePane codePane = SikuliIDE.getInstance().getCurrentCodePane();
+                codePane.loadFile(fname);
+                SikuliIDE.getInstance().setCurrentFilename(fname);
+            }
          }
          catch(IOException eio){
             eio.printStackTrace();
@@ -1446,7 +1525,7 @@ public class SikuliIDE extends JFrame {
       
       public void doSave(ActionEvent ae){
          try{
-            SikuliPane codePane = SikuliIDE.getInstance().getCurrentCodePane();
+            SikuliCodePane codePane = SikuliIDE.getInstance().getCurrentCodePane();
             String fname = codePane.saveFile();
             if(fname!=null)
                SikuliIDE.getInstance().setCurrentFilename(fname);
@@ -1458,7 +1537,7 @@ public class SikuliIDE extends JFrame {
 
       public void doSaveAs(ActionEvent ae){
          try{
-            SikuliPane codePane = SikuliIDE.getInstance().getCurrentCodePane();
+            SikuliCodePane codePane = SikuliIDE.getInstance().getCurrentCodePane();
             String fname = codePane.saveAsFile();
             if(fname!=null)
                SikuliIDE.getInstance().setCurrentFilename(fname);
@@ -1470,7 +1549,7 @@ public class SikuliIDE extends JFrame {
 
       public void doExport(ActionEvent ae){
          try{
-            SikuliPane codePane = SikuliIDE.getInstance().getCurrentCodePane();
+            SikuliCodePane codePane = SikuliIDE.getInstance().getCurrentCodePane();
             String fname = codePane.exportAsZip();
          }
          catch(Exception ex){
@@ -1480,7 +1559,7 @@ public class SikuliIDE extends JFrame {
 
 
       public void doCloseTab(ActionEvent ae){
-         SikuliPane codePane = SikuliIDE.getInstance().getCurrentCodePane();
+         SikuliCodePane codePane = SikuliIDE.getInstance().getCurrentCodePane();
          try{
             if(codePane.close())
                _mainPane.remove(_mainPane.getSelectedIndex());
@@ -1512,7 +1591,7 @@ public class SikuliIDE extends JFrame {
             //FIXME: test if this works..
             Class c = Class.forName("SikuliGenerator");
             Class[] t_params = {
-               String[].class, SikuliPane.class
+               String[].class, SikuliTextPane.class
             };
             Constructor constr = c.getConstructor(t_params);
             constr.newInstance(new Object[]{
@@ -1667,25 +1746,35 @@ public class SikuliIDE extends JFrame {
       }
 
       public void addErrorMark(int line){
-         JScrollPane scrPane = (JScrollPane)_mainPane.getSelectedComponent();
-         LineNumberView lnview = (LineNumberView)(scrPane.getRowHeader().getView());
-         lnview.addErrorMark(line);
-         SikuliPane codePane = SikuliIDE.this.getCurrentCodePane();
-         //codePane.setErrorHighlight(line);
+          SikuliCodePane codePane = SikuliIDE.this.getCurrentCodePane();
+          if(Utils.typeOfCodePane(codePane) == Utils.SikuliCodePaneType.SIKULI_PANE_TYPE_TEXT) {
+        	  //only supported on text code panes
+        	  SikuliTextPane textPane = (SikuliTextPane)(codePane.getComponent());
+        	  JScrollPane scrPane = (JScrollPane)_mainPane.getSelectedComponent();
+        	  LineNumberView lnview = (LineNumberView)(scrPane.getRowHeader().getView());
+        	  lnview.addErrorMark(line);
+        	  //textPane.setErrorHighlight(line);
+          }
+          //FIXME: add support for blocks pane
       }
 
       public void resetErrorMark(){
-         JScrollPane scrPane = (JScrollPane)_mainPane.getSelectedComponent();
-         LineNumberView lnview = (LineNumberView)(scrPane.getRowHeader().getView());
-         lnview.resetErrorMark();
-         SikuliPane codePane = SikuliIDE.this.getCurrentCodePane();
-         //codePane.setErrorHighlight(-1);
+    	  SikuliCodePane codePane = SikuliIDE.this.getCurrentCodePane();
+          if(Utils.typeOfCodePane(codePane) == Utils.SikuliCodePaneType.SIKULI_PANE_TYPE_TEXT) {
+        	  //only supported on text code panes
+        	  SikuliTextPane textPane = (SikuliTextPane)(codePane.getComponent());
+        	  JScrollPane scrPane = (JScrollPane)_mainPane.getSelectedComponent();
+        	  LineNumberView lnview = (LineNumberView)(scrPane.getRowHeader().getView());
+        	  lnview.resetErrorMark();
+        	  //textPane.setErrorHighlight(-1);
+          }
+          //FIXME: add support for blocks pane
       }
 
       public void runCurrentScript() {
          _runningThread = new Thread(){
             public void run(){
-               SikuliPane codePane = SikuliIDE.getInstance().getCurrentCodePane();
+               SikuliCodePane codePane = SikuliIDE.getInstance().getCurrentCodePane();
                File tmpFile;
                try{
                   tmpFile = File.createTempFile("sikuli-tmp",".py");
@@ -1695,7 +1784,8 @@ public class SikuliIDE extends JFrame {
                                            new OutputStreamWriter( 
                                              new FileOutputStream(tmpFile), 
                                               "UTF8"));
-                     codePane.write(bw);
+                     codePane.writePython(bw);
+                     bw.close();
                      SikuliIDE.getInstance().setVisible(false);
                      _console.clear();
                      resetErrorMark();
@@ -1715,9 +1805,15 @@ public class SikuliIDE extends JFrame {
                         if(srcLine != -1){
                            Debug.error( _I("msgErrorLine", srcLine) );
                            addErrorMark(srcLine);
-                           try{ codePane.jumpTo(srcLine); }
+                           try{
+                        	   if(Utils.typeOfCodePane(codePane) == Utils.SikuliCodePaneType.SIKULI_PANE_TYPE_TEXT) {
+                             	  //only supported on text code panes
+                             	  SikuliTextPane textPane = (SikuliTextPane)(codePane.getComponent());
+                             	  textPane.jumpTo(srcLine); 
+                        	   }
+                           }
                            catch(BadLocationException be){}
-                           codePane.requestFocus();
+                           codePane.getComponent().requestFocus();
                         }
                         Debug.error( _I("msgErrorMsg", e.toString()) );
                      }
@@ -1803,15 +1899,15 @@ class ButtonInsertImage extends ToolbarButton implements ActionListener{
    }
 
    public void actionPerformed(ActionEvent ae) {
-      SikuliPane codePane = SikuliIDE.getInstance().getCurrentCodePane();
-      File file = new FileChooser(SikuliIDE.getInstance()).loadImage();
-      if(file == null)
-         return;
-      String path = Utils.slashify(file.getAbsolutePath(), false);
-      Debug.info("load image: " + path);
-      ImageButton icon = new ImageButton(codePane, 
-                                         codePane.copyFileToBundle(path).getAbsolutePath());
-      codePane.insertComponent(icon);
+      SikuliCodePane codePane = SikuliIDE.getInstance().getCurrentCodePane();
+      
+	  File file = new FileChooser(SikuliIDE.getInstance()).loadImage();
+	  if(file == null)
+		  return;
+	  String path = Utils.slashify(file.getAbsolutePath(), false);
+	  Debug.info("load image: " + path);
+	  String pathInBundle = codePane.copyFileToBundle(path).getAbsolutePath();
+	  codePane.insertScreenshot(pathInBundle, null);
    }
 }
 
@@ -1842,7 +1938,6 @@ class ButtonSubregion extends ToolbarButton implements ActionListener, Observer{
 
    public void actionPerformed(ActionEvent ae) {
       SikuliIDE ide = SikuliIDE.getInstance();
-      SikuliPane codePane = ide.getCurrentCodePane();
       ide.setVisible(false);
       CapturePrompt prompt = new CapturePrompt(null, this);
       prompt.prompt(SikuliIDE._I("msgCapturePrompt"), 500);
@@ -1851,12 +1946,17 @@ class ButtonSubregion extends ToolbarButton implements ActionListener, Observer{
    public void complete(int x, int y, int w, int h){
       Debug.log(7,"Region: %d %d %d %d", x, y, w, h);
       SikuliIDE ide = SikuliIDE.getInstance();
-      SikuliPane codePane = ide.getCurrentCodePane();
-      ide.setVisible(false);
-      JButton icon = new RegionButton(codePane, x, y, w, h);
-      codePane.insertComponent(icon);
-      ide.setVisible(true);
-      codePane.requestFocus();
+      SikuliCodePane codePane = ide.getCurrentCodePane();
+      if(Utils.typeOfCodePane(codePane) == Utils.SikuliCodePaneType.SIKULI_PANE_TYPE_TEXT) {
+    	  //only supported on text code panes
+    	  SikuliTextPane textPane = (SikuliTextPane)(codePane.getComponent());
+    	  ide.setVisible(false);
+    	  JButton icon = new RegionButton(codePane, x, y, w, h);
+    	  textPane.insertComponent(icon);
+    	  ide.setVisible(true);
+    	  textPane.requestFocus();
+      }
+      //FIXME: add support for blocks pane
    }
 
  

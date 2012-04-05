@@ -63,16 +63,24 @@ public class FileChooser {
    public File load(){
       return open("Open a Sikuli Source File", FileDialog.LOAD,
          new GeneralFileFilter[]{
-             new GeneralFileFilter("sikuli","Sikuli source files (*.sikuli)")
+             new GeneralFileFilter("sikuli","Sikuli source files (*.sikuli)"),
+             new GeneralFileFilter("sikuliblocks","Sikuli blocks source files (*.sikuliblocks)")
       },JFileChooser.DIRECTORIES_ONLY);
    }
 
-   public File save(){
+   public File saveText(){
       return open("Save a Sikuli Source File", FileDialog.SAVE,
          new GeneralFileFilter[]{
              new GeneralFileFilter("sikuli","Sikuli source files (*.sikuli)")
       },JFileChooser.DIRECTORIES_ONLY);
    }
+   
+   public File saveBlocks(){
+	      return open("Save a Sikuli Blocks Source File", FileDialog.SAVE,
+	         new GeneralFileFilter[]{
+	             new GeneralFileFilter("sikuliblocks","Sikuli blocks source files (*.sikuli)")
+	      },JFileChooser.DIRECTORIES_ONLY);
+	   }
 
    public File export(){
       return open("Export a Sikuli Executable File", FileDialog.SAVE,

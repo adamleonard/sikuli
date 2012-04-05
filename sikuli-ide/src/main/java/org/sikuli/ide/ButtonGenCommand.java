@@ -101,7 +101,7 @@ public class ButtonGenCommand extends JButton implements ActionListener,
    
    public void insertCommand() {
       SikuliIDE ide = SikuliIDE.getInstance();
-      SikuliPane pane = ide.getCurrentCodePane();
+      SikuliTextPane pane = (SikuliTextPane)(ide.getCurrentCodePane().getComponent()); //we should only be used with a text pane (not a blocks pane)
       UserPreferences pref = UserPreferences.getInstance();
       int endPos = -1, endPosLen = 0;
       boolean first = true;

@@ -38,8 +38,7 @@ import org.sikuli.script.Debug;
 import org.sikuli.script.Location;
 
 
-public class SikuliPane extends JTextPane implements KeyListener, 
-                                                     CaretListener{
+public class SikuliTextPane extends JTextPane implements SikuliCodePane, KeyListener, CaretListener{
    private File _editingFile;
    private String _srcBundlePath = null;
    private boolean _dirty = false;
@@ -58,7 +57,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    // TODO: move to SikuliDocument
    private PythonIndentation _indentationLogic;
 
-   public SikuliPane(){
+   public SikuliTextPane(){
       UserPreferences pref = UserPreferences.getInstance();
       setEditorKitForContentType("text/python", new SikuliEditorKit());
       setContentType("text/python");
@@ -182,7 +181,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
    public String getSrcBundle(){
       if( _srcBundlePath == null ){
-         File tmp = Utils.createTempDir();
+         File tmp = Utils.createTempDir("sikuli");
          setSrcBundle(Utils.slashify(tmp.getAbsolutePath(),true));
       }
       return _srcBundlePath;
@@ -206,18 +205,10 @@ public class SikuliPane extends JTextPane implements KeyListener,
 
    public boolean close() throws IOException{
       if( isDirty() ){
-         Object[] options = {I18N._I("yes"), I18N._I("no"), I18N._I("cancel")};
-         int ans = JOptionPane.showOptionDialog(this,
-               I18N._I("msgAskSaveChanges", getCurrentShortFilename()),
-               I18N._I("dlgAskCloseTab"),
-               JOptionPane.YES_NO_CANCEL_OPTION,
-               JOptionPane.WARNING_MESSAGE,
-               null,
-               options, options[0]);
-         if( ans == JOptionPane.CANCEL_OPTION || 
-             ans == JOptionPane.CLOSED_OPTION )
+    	  Utils.UnsavedChangesDialogResult ans =  Utils.showCloseWithUnsavedChangesDialog(this, getCurrentShortFilename());
+         if( ans == Utils.UnsavedChangesDialogResult.CANCEL_AND_DONT_SAVE )
             return false;
-         else if( ans == JOptionPane.YES_OPTION )
+         else if( ans == Utils.UnsavedChangesDialogResult.CLOSE_AND_SAVE )
             saveFile();
          setDirty(false);
       }
@@ -293,7 +284,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
 
    public String saveAsFile() throws IOException{
-      File file = new FileChooser(SikuliIDE.getInstance()).save();
+      File file = new FileChooser(SikuliIDE.getInstance()).saveText();
       if(file == null)  return null;
 
       String bundlePath = file.getAbsolutePath();
@@ -345,8 +336,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
 
    private File createSourceFile(String bundlePath, String ext){
-      if( bundlePath.endsWith(".sikuli") || 
-          bundlePath.endsWith(".sikuli/") ){
+      if( Utils.sikuliFileTypeForPath(bundlePath) == Utils.SikuliFileType.SIKULI_FILE_TYPE_TEXT) { //.sikuli file )
          File dir = new File(bundlePath);
          String name = dir.getName();
          name = name.substring(0, name.lastIndexOf("."));
@@ -356,8 +346,7 @@ public class SikuliPane extends JTextPane implements KeyListener,
    }
    
    private File findSourceFile(String sikuli_dir){
-      if( sikuli_dir.endsWith(".sikuli") || 
-          sikuli_dir.endsWith(".sikuli" + "/") ){
+      if( Utils.sikuliFileTypeForPath(sikuli_dir) == Utils.SikuliFileType.SIKULI_FILE_TYPE_TEXT) { //.sikuli file
          File dir = new File(sikuli_dir);
          File[] pys = dir.listFiles(new GeneralFileFilter("py", "Python Source"));
          if(pys.length > 1){
@@ -386,16 +375,6 @@ public class SikuliPane extends JTextPane implements KeyListener,
       updateDocumentListeners();
       setDirty(false);
    }
-
-   public String loadFile() throws IOException{
-      File file = new FileChooser(SikuliIDE.getInstance()).load();
-      if(file == null)  return null;
-
-      String fname = Utils.slashify(file.getAbsolutePath(),false);
-      loadFile(fname);
-      return fname;
-   }
-
 
    int _caret_last_x = -1;
    boolean _can_update_caret_last_x = true;
@@ -814,7 +793,56 @@ public class SikuliPane extends JTextPane implements KeyListener,
          setDirty(true);
       }
    }
+   
+   @Override
+   public SikuliTextPane getComponent() {
+	   return this;
+   }
+   
+   @Override
+   public void writePython(Writer writer) throws IOException {
+	   this.write(writer);
+   }
 
+   @Override
+   public void insertScreenshot(String path, Element src) {
+	   if(path == null) return;
+	   if( src == null ){
+		      ImageButton icon = new ImageButton(this, path);
+		      this.insertComponent(icon);
+		   return;
+	   }
+
+	   int start = src.getStartOffset();
+	   int end = src.getEndOffset();
+	   int old_sel_start = this.getSelectionStart(),
+			   old_sel_end = this.getSelectionEnd();
+	   try{
+		   StyledDocument doc = (StyledDocument)src.getDocument();
+		   String text = doc.getText(start, end-start);
+		   Debug.log(3, text);
+		   for(int i=start;i<end;i++){
+			   Element elm = doc.getCharacterElement(i);
+			   if(elm.getName().equals(StyleConstants.ComponentElementName)){
+				   AttributeSet attr=elm.getAttributes();
+				   Component com=StyleConstants.getComponent(attr);
+				   if( com instanceof CaptureButton ){
+					   Debug.log(5, "button is at " + i);
+					   int oldCaretPos = this.getCaretPosition();
+					   this.select(i, i+1);
+					   ImageButton icon = new ImageButton(this, path);
+					   this.insertComponent(icon);
+					   this.setCaretPosition(oldCaretPos);
+					   break;
+				   }
+			   }
+		   }
+	   }
+	   catch(BadLocationException ble){
+		   ble.printStackTrace();
+	   }
+	   this.select(old_sel_start, old_sel_end);
+   }
 
 
 }
@@ -891,7 +919,7 @@ class MyTransferHandler extends TransferHandler{
       if(canImport(comp, t.getTransferDataFlavors())){
          try{
             String transferString = (String)t.getTransferData(htmlFlavor);
-            SikuliPane targetTextPane = (SikuliPane)comp;
+            SikuliTextPane targetTextPane = (SikuliTextPane)comp;
             for(Map.Entry<String,String> entry : _copiedImgs.entrySet()){
                String imgName = entry.getKey();
                String imgPath = entry.getValue();

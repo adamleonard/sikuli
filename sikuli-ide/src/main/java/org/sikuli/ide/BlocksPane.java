@@ -13,10 +13,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.lang.Iterable;
 
 import javax.swing.*;
+import javax.swing.text.*;
+
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -38,68 +41,70 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import edu.mit.blocks.codeblocks.BlockConnectorShape;
-import edu.mit.blocks.codeblocks.BlockGenus;
-import edu.mit.blocks.codeblocks.Block;
-import edu.mit.blocks.codeblocks.BlockLink;
-import edu.mit.blocks.codeblocks.BlockConnector;
-import edu.mit.blocks.codeblocks.BlockLinkChecker;
-import edu.mit.blocks.codeblocks.CommandRule;
-import edu.mit.blocks.codeblocks.Constants;
-import edu.mit.blocks.codeblocks.SocketRule;
-import edu.mit.blocks.workspace.BlockCanvas;
-import edu.mit.blocks.workspace.SearchBar;
-import edu.mit.blocks.workspace.SearchableContainer;
-import edu.mit.blocks.workspace.Workspace;
-import edu.mit.blocks.workspace.WorkspaceListener;
-import edu.mit.blocks.workspace.WorkspaceEvent;
-import edu.mit.blocks.workspace.Page;
+import edu.mit.blocks.codeblocks.*;
+import edu.mit.blocks.workspace.*;
 import edu.mit.blocks.workspace.typeblocking.*;
 import edu.mit.blocks.renderable.*;
 
+import org.sikuli.script.ImageLocator;
+import org.sikuli.script.Location;
 import org.sikuli.script.Debug;
 import org.sikuli.script.ScreenImage;
 import org.sikuli.script.Observer;
 import org.sikuli.script.Subject;
 import org.sikuli.script.ScriptRunner;
 
+import org.python.util.PythonInterpreter; 
+import org.python.core.*; 
+
 /**
  * Example entry point to OpenBlock application creation.
  *
  * @author Ricarose Roque
  */
-public class BlocksWorkspaceController implements Observer, WorkspaceListener {
+public class BlocksPane extends Workspace implements Observer, WorkspaceListener, SikuliCodePane {
 
     private Element langDefRoot;
-    private boolean isWorkspacePanelInitialized = false;
-    protected JPanel workspacePanel;
-    protected final Workspace workspace;
     protected SearchBar searchBar;
 
+    //flag to indicate if the workspace has been initialized with the contents of a file
+    private boolean workspaceLoaded = false;
     //flag to indicate if a new lang definition file has been set
     private boolean langDefDirty = true;
 
-    //flag to indicate if a workspace has been loaded/initialized
-    private boolean workspaceLoaded = false;
     // last directory that was selected with open or save action
     private File lastDirectory;
     // file currently loaded in workspace
     private File selectedFile;
-    // Reference kept to be able to update frame title with current loaded file
-    private JFrame frame;
     
     private Thread _runningThread;
     
     private boolean autoCaptureEnabled = false;
+    
+    private String _srcBundlePath = null;
+    
+    private boolean _dirty = false;
+    
+    private ImageLocator _imgLocator;
+    
+    private UndoManager _undoManager = new UndoManager();
+    
+    static InputStream SikuliToHtmlConverter = SikuliIDE.class.getResourceAsStream("/scripts/sikuli2html.py");
+    static String pyConverter = Utils.convertStreamToString(SikuliToHtmlConverter);
 
+    static InputStream SikuliBundleCleaner= SikuliIDE.class.getResourceAsStream("/scripts/clean-dot-sikuli.py");
+    static String pyBundleCleaner = Utils.convertStreamToString(SikuliBundleCleaner);
+    
+    
     /**
      * Constructs a WorkspaceController instance that manages the
      * interaction with the codeblocks.Workspace
      *
      */
-    public BlocksWorkspaceController() {
-        this.workspace = new Workspace();
-        workspace.addWorkspaceListener(this);
+    public BlocksPane() {
+    	super();
+    	setPreferredSize(null); //Let the scroll view that contains us choose our size to fit
+        this.addWorkspaceListener(this);
     }
 
     /**
@@ -159,12 +164,12 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
         BlockConnectorShape.loadBlockConnectorShapes(root);
 
         //load genuses
-        BlockGenus.loadBlockGenera(workspace, root);
+        BlockGenus.loadBlockGenera(this, root);
 
         //load rules
-        BlockLinkChecker.addRule(workspace, new CommandRule(workspace));
-        BlockLinkChecker.addRule(workspace, new SocketRule());
-        BlockLinkChecker.addRule(workspace, new AnyBlockSocketRule());
+        BlockLinkChecker.addRule(this, new CommandRule(this));
+        BlockLinkChecker.addRule(this, new SocketRule());
+        BlockLinkChecker.addRule(this, new AnyBlockSocketRule());
 
         //set the dirty flag for the language definition file
         //to false now that the lang file has been loaded
@@ -236,7 +241,7 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
             // schema reference
             documentElement.setAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi:schemaLocation", Constants.XML_CODEBLOCKS_NS+" "+Constants.XML_CODEBLOCKS_SCHEMA_URI);
 
-            Node workspaceNode = workspace.getSaveNode(document);
+            Node workspaceNode = this.getSaveNode(document);
             if (workspaceNode != null) {
                 documentElement.appendChild(workspaceNode);
             }
@@ -289,15 +294,15 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
         if (langDefDirty) {
             loadBlockLanguage(langDefRoot);
         }
-        workspace.loadWorkspaceFrom(null, langDefRoot);
+        this.loadWorkspaceFrom(null, langDefRoot);
         workspaceLoaded = true;
         
-    	Block runonceBlock = new Block(workspace, "runonce", "run once", true);
+    	Block runonceBlock = new Block(this, "runonce", "run once", true);
     	RenderableBlock runonceRenderableBlock = BlockUtilities.cloneBlock(runonceBlock);
-        workspace.getBlockCanvas().getCanvas().add(runonceRenderableBlock, 0);
+        this.getBlockCanvas().getCanvas().add(runonceRenderableBlock, 0);
         runonceRenderableBlock.setLocation(50, 25);
         
-    	Page p = workspace.getBlockCanvas().getPages().get(0); //FIXME: this won't work with multiple pages.
+    	Page p = this.getBlockCanvas().getPages().get(0); //FIXME: this won't work with multiple pages.
     	//add this block to that page.
     	p.blockDropped(runonceRenderableBlock);
     	
@@ -325,8 +330,8 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
             //also load drawers, or any custom drawers from file.  if no custom drawers
             //are present in root, then the default set of drawers is loaded from
             //langDefRoot
-            workspace.reset();
-            workspace.loadWorkspaceFrom(projectRoot, langDefRoot);
+            this.reset();
+            this.loadWorkspaceFrom(projectRoot, langDefRoot);
             workspaceLoaded = true;
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
@@ -345,7 +350,7 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
      * @param element element of the programming project to load
      */
     public void loadProjectFromElement(Element elementToLoad) {
-        workspace.loadWorkspaceFrom(elementToLoad, langDefRoot);
+        this.loadWorkspaceFrom(elementToLoad, langDefRoot);
         workspaceLoaded = true;
     }
 
@@ -387,7 +392,7 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
             } else {
                 loadBlockLanguage(langRoot);
             }
-            workspace.loadWorkspaceFrom(projectRoot, langRoot);
+            this.loadWorkspaceFrom(projectRoot, langRoot);
             workspaceLoaded = true;
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
@@ -406,34 +411,37 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
         //clear all pages and their drawers
         //clear all drawers and their content
         //clear all block and renderable block instances
-        workspace.reset();
+        this.reset();
     }
+    /*
+    public void reset() {
+    	//FIXME: This is just a partial implementation of reset copied from Workspace.java
+    	//It clears the view, but it leaves junk behind in the model 
+    	//thus leaking when documents are closed and potentially causing other problems!
+    	//Specifically, it does not call RenderableBlock.reset() because that messes with static (application-wide) state
+    	//but we want to be able to open multiple workspaces at a time (i.e., in multiple tabs)
+    	
+    	//More specifically, RenderableBlock.java has a static, applicaiton-wide map ALL_RENDERABLE_BLOCKS
+    	//and Block.java has a static map ALL_BLOCKS
+    	//Those contain all RenderableBlocks/Blocks that are in use anywhere in the application, 
+    	//and reset() clears them all, since it assumes there is only one workspace.
+    	
+    	//Those static maps should become instance variables on Workspace
+    	//For more details on the effort to support multiple workspaces, see: 
+    	//https://github.com/mikaelhg/openblocks/pull/11
+    	
 
-    /**
-     * This method creates and lays out the entire workspace panel with its
-     * different components.  Workspace and language data not loaded in
-     * this function.
-     * Should be call only once at application startup.
-     */
-    private void initWorkspacePanel() {
-        workspacePanel = new JPanel();
-        workspacePanel.setLayout(new BorderLayout());
-        workspacePanel.add(workspace, BorderLayout.CENTER);
-        isWorkspacePanelInitialized = true;
+        //We now reset, the blockcanvas, the factory, and the renderableblocks
+        getBlockCanvas().reset();
+        getFactoryManager().reset();
+        //RenderableBlock.reset(); //FIXME: TEMPORARILY REMOVED: see comment at top of function
+        revalidate();
     }
-
-    /**
-     * Returns the JComponent of the entire workspace.
-     * @return the JComponent of the entire workspace.
-     */
-    public JComponent getWorkspacePanel() {
-        if (!isWorkspacePanelInitialized) {
-            initWorkspacePanel();
-        }
-        return workspacePanel;
-    }
-    
+*/
     public void workspaceEventOccurred(WorkspaceEvent event) {
+    	if(event.isUserEvent())
+    		setDirty(true);
+    	
     	if(event.getEventType() == WorkspaceEvent.BLOCK_ADDED && event.isUserEvent()) {
     		Long blockID = event.getSourceBlockID();
 			assert !invalidBlockID(blockID);
@@ -452,7 +460,7 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
 			assert !invalidBlockID(blockID);
 			Block clickedBlock = Block.getBlock(blockID);
 			if(clickedBlock.getGenusName().equals("screenshot-block")) {
-				workspace.getFocusManager().setFocus(blockID);
+				this.getFocusManager().setFocus(blockID);
 				capture(0);
 			}
     	}
@@ -506,6 +514,7 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
     /**
      * Action bound to "Open" action.
      */
+    /*
     private class OpenAction extends AbstractAction {
 
         private static final long serialVersionUID = -2119679269613495704L;
@@ -526,10 +535,12 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
             }
         }
     }
+    */
 
     /**
      * Action bound to "Save" button.
      */
+    /*
     private class SaveAction extends AbstractAction {
         private static final long serialVersionUID = -5540588250535739852L;
         SaveAction() {
@@ -554,10 +565,12 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
             }
         }
     }
+    */
 
     /**
      * Action bound to "Save As..." button.
      */
+    /*
     private class SaveAsAction extends AbstractAction {
          private static final long serialVersionUID = 3981294764824307472L;
         private final SaveAction saveAction;
@@ -574,10 +587,12 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
             saveAction.actionPerformed(e);
         }
     }
+    */
     
     /**
      * Action bound to "Add Function..." button.
      */
+    /*
     private class AddFunctionAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
 
@@ -590,10 +605,12 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
         	createAndShowAddFunctionDialog();
         }
     }
+    */
     
     /**
      * Action bound to "Screenshot..." button.
      */
+    /*
     private class ScreenshotAction extends AbstractAction {
          private static final long serialVersionUID = 1L;
          
@@ -606,10 +623,12 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
         	capture(0);
         }
     }
+    */
     
     /**
      * Action bound to "Run" button.
      */
+    /*
     private class RunAction extends AbstractAction {
          private static final long serialVersionUID = 1L;
          
@@ -622,10 +641,11 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
         	compileAndRun();
         }
     }
-    
+    */
     /**
      * Action bound to "Auto Capture" checkbox.
      */
+    /*
     private class AutoCaptureToggleAction extends AbstractAction {
          private static final long serialVersionUID = 1L;
          
@@ -638,16 +658,17 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
         	autoCaptureEnabled = true;
         }
     }
+    */
 
     /**
      * Saves the content of the workspace to the given file
      * @param file Destination file
      * @throws IOException If save failed
      */
-    private void saveToFile(File file) throws IOException {
+    private void writeSrcFile(boolean writeHTML) throws IOException {
         FileWriter fileWriter = null;
         try {
-            fileWriter = new FileWriter(file);
+            fileWriter = new FileWriter(selectedFile);
             fileWriter.write(getSaveString());
         }
         finally {
@@ -655,11 +676,16 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
                 fileWriter.close();
             }
         }
+        
+        if(writeHTML)
+            convertSrcToHtml(getSrcBundle());
+        
+        cleanBundle(getSrcBundle());
+        setDirty(false);
     }
 
     public void setSelectedFile(File selectedFile) {
         this.selectedFile = selectedFile;
-        frame.setTitle("WorkspaceDemo - "+selectedFile.getPath());
     }
     
     private static boolean invalidBlockID(Long blockID) {
@@ -667,16 +693,12 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
     }
     
     public void capture(int delay) {
-        SikuliIDE.getInstance().setVisible(false);
-        frame.setVisible(false);
     	CaptureController captureController =  new CaptureController();
     	captureController.addObserver(this);
     	captureController.capture(delay);
     }
     public void update(Subject s) {
         if(s instanceof CaptureController){
-            SikuliIDE.getInstance().setVisible(true);
-            frame.setVisible(true);
         	CaptureController captureController = (CaptureController)s;
         	String screenshotPath = captureController.getScreenshotPath();
         	if(screenshotPath != null)
@@ -697,7 +719,7 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
 			RenderableBlock screenshotParentRenderableBlock = RenderableBlock.getRenderableBlock(screenshotParentBlockID);
 			
 			/*
-			BlockLink link = BlockLink.getBlockLink(workspace, screenshotParentRenderableBlock.getBlock(),
+			BlockLink link = BlockLink.getBlockLink(this, screenshotParentRenderableBlock.getBlock(),
 													screenshotBlock,
 													screenshotParentRenderableBlock.getBlock().getSocketAt(0), 
 													screenshotBlock.getPlug());
@@ -717,14 +739,14 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
 			screenshotRenderableBlock.repaintBlock();
 			screenshotRenderableBlock.repaint();
 			screenshotParentRenderableBlock.blockConnected(connectedSocket, screenshotBlock.getBlockID());
-			workspace.getCurrentPage(screenshotRenderableBlock).getJComponent().repaint();
-			workspace.getCurrentPage(screenshotRenderableBlock).getJComponent().revalidate();
+			this.getCurrentPage(screenshotRenderableBlock).getJComponent().repaint();
+			this.getCurrentPage(screenshotRenderableBlock).getJComponent().revalidate();
 			screenshotParentRenderableBlock.clearBufferedImage();
             screenshotParentRenderableBlock.moveConnectedBlocks();
             screenshotParentRenderableBlock.repaintBlock();
 			screenshotParentRenderableBlock.repaint();
-			workspace.getBlockCanvas().getJComponent().repaint();
-			workspace.getBlockCanvas().getJComponent().revalidate();
+			this.getBlockCanvas().getJComponent().repaint();
+			this.getBlockCanvas().getJComponent().revalidate();
 
 
 		}
@@ -750,8 +772,8 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
     	blockImageMap.put(BlockImageIcon.ImageLocation.CENTER, blockImage);
     	
     	
-    	FocusTraversalManager focusManager = workspace.getFocusManager();
-    	BlockCanvas blockCanvas = workspace.getBlockCanvas();
+    	FocusTraversalManager focusManager = this.getFocusManager();
+    	BlockCanvas blockCanvas = this.getBlockCanvas();
     	Long parentBlockID = focusManager.getFocusBlockID();
     	if(!invalidBlockID(parentBlockID)) {
     		Block parentBlock = Block.getBlock(parentBlockID);
@@ -764,7 +786,7 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
     	
     	//create a new screenshot block
     	
-    	Block screenshotBlock = new Block(workspace, "screenshot-block", "", true);
+    	Block screenshotBlock = new Block(this, "screenshot-block", "", true);
     	
     	screenshotBlock.setBlockImageMap(blockImageMap);
     	
@@ -786,14 +808,14 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
 	        	for(BlockConnector aConnector : sockets) {
 					if(!aConnector.hasBlock() && aConnector.getKind().equals("screenshot") && RenderableBlock.getRenderableBlock(aConnector.getBlockID()).isVisible()) {
 						//empty screenshot socket! use that
-						BlockLink link = BlockLink.getBlockLink(workspace, parentRenderableBlock.getBlock(),
+						BlockLink link = BlockLink.getBlockLink(this, parentRenderableBlock.getBlock(),
 								screenshotBlock,
 								parentRenderableBlock.getBlock().getSocketAt(i), 
 								screenshotBlock.getPlug());
 						link.connect();
 				        
-				        workspace.notifyListeners(new WorkspaceEvent(
-	                            workspace, 
+				        this.notifyListeners(new WorkspaceEvent(
+	                            this, 
 	                            RenderableBlock.getRenderableBlock(link.getPlugBlockID()).getParentWidget(),
 	                            link, WorkspaceEvent.BLOCKS_CONNECTED));
 	                    RenderableBlock.getRenderableBlock(link.getSocketBlockID()).moveConnectedBlocks();
@@ -823,7 +845,7 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
             blockCanvas.getCanvas().add(block, 0);
             block.setLocation(25, 25);
             
-        	Page p = workspace.getBlockCanvas().getPages().get(0); //FIXME: this won't work with multiple pages.
+        	Page p = this.getBlockCanvas().getPages().get(0); //FIXME: this won't work with multiple pages.
         	//add this block to that page.
         	p.blockDropped(block);
         }
@@ -846,7 +868,6 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
                      bw.write(source, 0, source.length());
                      bw.close();
                      SikuliIDE.getInstance().setVisible(false);
-                     frame.setVisible(false);
                      
                      ScriptRunner srunner = new ScriptRunner(SikuliIDE.getInstance().getPyArgs());
                      try{
@@ -866,7 +887,6 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
                   } 
                   finally{
                      SikuliIDE.getInstance().setVisible(true);
-                     frame.setVisible(true);
                      _runningThread = null;
                   }
                }
@@ -879,7 +899,7 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
     private String compileToPython() {
     	String source = "setThrowException(False)\n";
     	String topLevelCode = "";
-    	for (Block aBlock : workspace.getBlocks()) {
+    	for (Block aBlock : this.getBlocks()) {
     		String isRootBlockAsString = aBlock.getProperty("is-root-block");
     		if(isRootBlockAsString != null && isRootBlockAsString.equals("yes") && aBlock.getBeforeBlockID() == Block.NULL) {
     			BlockCompiler compiler = new BlockCompiler();
@@ -912,6 +932,7 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
     /**
      * Return the lower button panel.
      */
+    /*
     private JComponent getButtonPanel() {
         JPanel buttonPanel = new JPanel();
         // Open
@@ -938,124 +959,34 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
         
         return buttonPanel;
     }
+    */
 
     /**
      * Returns a SearchBar instance capable of searching for blocks
      * within the BlockCanvas and block drawers
      */
+    /*
     public JComponent getSearchBar() {
         final SearchBar sb = new SearchBar(
-                "Search blocks", "Search for blocks in the drawers and workspace", workspace);
+                "Search blocks", "Search for blocks in the drawers and workspace", this);
         for (SearchableContainer con : getAllSearchableContainers()) {
             sb.addSearchableContainer(con);
         }
         return sb.getComponent();
     }
-
-    /**
-     * Returns an unmodifiable Iterable of SearchableContainers
-     * @return an unmodifiable Iterable of SearchableContainers
-     */
-    public Iterable<SearchableContainer> getAllSearchableContainers() {
-        return workspace.getAllSearchableContainers();
-    }
-    
-    private void createAndShowAddFunctionDialog() {
-    	JFrame dialog = new JFrame("Add Function");
-    	dialog.setSize(500, 250);
-    	
-    	Container content = dialog.getContentPane();
-    	content.setLayout(new GridBagLayout());
-    	GridBagConstraints c = new GridBagConstraints();
-    	
-    	c.anchor = GridBagConstraints.FIRST_LINE_START;
-    	c.ipadx = 12;
-
-    	final JLabel nameLabel = new JLabel("Function Name:", SwingConstants.RIGHT);
-    	nameLabel.setVerticalTextPosition(SwingConstants.CENTER);
-    	c.fill = GridBagConstraints.HORIZONTAL;
-    	c.gridx = 0;
-    	c.gridy = 0;
-    	c.weighty = 1;
-    	dialog.add(nameLabel, c);
-    	    	
-    	final JTextField nameField = new JTextField();
-    	c.fill = GridBagConstraints.HORIZONTAL;
-    	c.gridx = 1;
-    	c.gridy = 0;
-    	c.gridwidth = 2;
-    	//c.ipadx = 350;
-    	dialog.add(nameField, c);
-    	
-    	//c.ipadx = 0;
-    	c.gridwidth = 1;
-    	
-    	final JLabel parametersLabel = new JLabel("Parameters:", SwingConstants.LEFT);
-    	c.fill = GridBagConstraints.HORIZONTAL;
-    	c.gridx = 0;
-    	c.gridy = 1;
-    	dialog.add(parametersLabel, c);
-
-    	String[] data = {"one", "two", "three", "four"};
-    	final JList myList = new JList(data);
-    	c.fill = GridBagConstraints.HORIZONTAL;
-    	c.ipady = 50;
-    	c.gridwidth = 4;
-    	c.gridx = 0;
-    	c.gridy = 2;
-    	dialog.add(myList, c);
-    	
-    	c.ipady = 0;
-    	c.gridwidth = 1;
-    	
-    	final JButton addButton = new JButton("Add");
-    	c.fill = GridBagConstraints.HORIZONTAL;
-    	c.gridx = 0;
-    	c.gridy = 3;
-    	dialog.add(addButton, c);
-    	
-    	final JButton removeButton = new JButton("Remove");
-    	c.fill = GridBagConstraints.HORIZONTAL;
-    	c.gridx = 1;
-    	c.gridy = 3;
-    	dialog.add(removeButton, c);
-
-    	final Component spacer = Box.createHorizontalStrut(48);
-    	c.fill = GridBagConstraints.HORIZONTAL;
-    	c.ipadx = 48;
-    	c.gridx = 2;
-    	c.gridy = 3;
-    	dialog.add(spacer, c);
-    	
-    	c.ipadx = 12;
-    	
-    	final JButton cancelButton = new JButton("Cancel");
-    	c.fill = GridBagConstraints.HORIZONTAL;
-    	c.gridx = 3;
-    	c.gridy = 4;
-    	dialog.add(cancelButton, c);
-    	
-    	final JButton okButton = new JButton("Add Function");
-    	dialog.getRootPane().setDefaultButton(okButton);
-    	c.fill = GridBagConstraints.HORIZONTAL;
-    	c.gridx = 4;
-    	c.gridy = 4;
-    	dialog.add(okButton, c);
-    	
-    	
-    	dialog.setVisible(true);
-    }
+    */
 
     /**
      * Create the GUI and show it.  For thread safety, this method should be
      * invoked from the event-dispatching thread.
      */
+    /*
     public void createAndShowGUI() {
         frame = new JFrame("Sikuli Blocks");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setBounds(100, 100, 1000, 1000);
         final SearchBar sb = new SearchBar("Search blocks",
-                "Search for blocks in the drawers and workspace", workspace);
+                "Search for blocks in the drawers and workspace", this);
         for (final SearchableContainer con : getAllSearchableContainers()) {
             sb.addSearchableContainer(con);
         }
@@ -1066,6 +997,218 @@ public class BlocksWorkspaceController implements Observer, WorkspaceListener {
         frame.add(getWorkspacePanel(), BorderLayout.CENTER);
         frame.add(getButtonPanel(), BorderLayout.SOUTH);
         frame.setVisible(true);
+    }
+    */
+    
+    /**
+     * SikuliCodePane conformance
+     */
+    
+    @Override
+    public void writePython(Writer writer) throws IOException {
+    	final String source = compileToPython();
+    	writer.write(source, 0, source.length());
+    }
+    
+    @Override
+    public void insertScreenshot(String path, javax.swing.text.Element src) {
+		createOrEditScreenshotBlock(path);
+    }
+    
+	public UndoManager getUndoManager() {
+    	//FIXME: NOT IMPLEMENTED
+    	return _undoManager;
+    }
+	
+	public boolean isDirty() {
+    	return _dirty;
+    }
+
+	public void setDirty(boolean flag) {
+        if(_dirty == flag)
+            return;
+         _dirty = flag; 
+         if(flag)
+            getRootPane().putClientProperty("Window.documentModified", true);
+         else
+            SikuliIDE.getInstance().checkDirtyPanes();
+    }
+	
+    public boolean close() throws IOException{
+        if( isDirty() ){
+      	  Utils.UnsavedChangesDialogResult ans =  Utils.showCloseWithUnsavedChangesDialog(this, getCurrentShortFilename());
+           if( ans == Utils.UnsavedChangesDialogResult.CANCEL_AND_DONT_SAVE )
+              return false;
+           else if( ans == Utils.UnsavedChangesDialogResult.CLOSE_AND_SAVE )
+              saveFile();
+           setDirty(false);
+        }
+        return true;
+     }
+	
+	public String getCurrentShortFilename() {
+        if(_srcBundlePath != null){
+            File f = new File(_srcBundlePath);
+            return f.getName();
+         }
+         return "Untitled";
+    }
+    
+	public File getCurrentFile() {
+    	return this.selectedFile;
+    }
+	
+	private void convertSrcToHtml(String bundle)  {
+    	//FIXME: NOT IMPLEMENTED
+    }
+	
+	public String saveFile() throws IOException {
+        if(getCurrentFile()==null)
+            return saveAsFile();
+         else{
+            writeSrcFile(true);
+            return getCurrentShortFilename();
+         }
+    }
+    
+	public String saveAsFile() throws IOException {
+        File file = new FileChooser(SikuliIDE.getInstance()).saveBlocks();
+        if(file == null)  return null;
+
+        String bundlePath = file.getAbsolutePath();
+        if( !file.getAbsolutePath().endsWith(".sikuliblocks") )
+           bundlePath += ".sikuliblocks";
+        if(Utils.exists(bundlePath)){
+           int res = JOptionPane.showConfirmDialog(
+                 null, I18N._I("msgFileExists", bundlePath), 
+                 I18N._I("dlgFileExists"), JOptionPane.YES_NO_OPTION);
+           if(res != JOptionPane.YES_OPTION)
+              return null;
+        }
+        saveAsBundle(bundlePath);
+
+        return getCurrentShortFilename();
+    }
+    
+    private void saveAsBundle(String bundlePath) throws IOException{
+        bundlePath = Utils.slashify(bundlePath, true);
+        if(_srcBundlePath != null)
+           Utils.xcopy( _srcBundlePath, bundlePath );
+        else
+           Utils.mkdir(bundlePath);
+        setSrcBundle(bundlePath);
+        setSelectedFile(createSourceFile(bundlePath, ".blocks"));
+        Debug.log(1, "save to bundle: " + getSrcBundle());
+        writeSrcFile(true);
+        //TODO: update all bundle references in ImageButtons
+        //BUG: if save and rename images, the images will be gone..
+     }
+    
+    private File createSourceFile(String bundlePath, String ext){
+        if( Utils.sikuliFileTypeForPath(bundlePath) == Utils.SikuliFileType.SIKULI_FILE_TYPE_BLOCKS) { //.sikuli file )
+           File dir = new File(bundlePath);
+           String name = dir.getName();
+           name = name.substring(0, name.lastIndexOf("."));
+           return new File(bundlePath, name+ext);
+        }
+        return new File(bundlePath);
+     }
+	
+	public String exportAsZip() throws IOException, FileNotFoundException
+	{
+		//FIXME: NOT IMPLEMENTED
+		return "";
+	}
+    
+    private File findSourceFile(String sikuli_dir){
+        if( Utils.sikuliFileTypeForPath(sikuli_dir) == Utils.SikuliFileType.SIKULI_FILE_TYPE_BLOCKS) { //.sikuliblocks file
+           File dir = new File(sikuli_dir);
+           File[] blockFiles = dir.listFiles(new GeneralFileFilter("blocks", "Blocks Source"));
+           if(blockFiles.length > 1){
+              String sikuli_name = dir.getName();
+              sikuli_name = sikuli_name.substring(0, sikuli_name.lastIndexOf('.'));
+              for(File f : blockFiles){
+                 String block_name = f.getName();
+                 block_name = block_name.substring(0, block_name.lastIndexOf('.'));
+                 if( block_name.equals(sikuli_name) )
+                    return f;
+              }
+           }
+           if(blockFiles.length >= 1)
+              return blockFiles[0];
+        }
+        return new File(sikuli_dir);
+     }
+     
+    public void loadFile(String filename) throws IOException{
+        if( filename.endsWith("/") )
+           filename = filename.substring(0, filename.length()-1);
+        setSrcBundle(filename+"/");        
+        setSelectedFile(findSourceFile(filename));
+        Debug.error("Loading file: " + selectedFile.getPath() + " workspace:" + this.toString());
+        loadFreshWorkspace();
+        loadProjectFromPath(selectedFile.getPath());
+     }
+    
+    private void cleanBundle(String bundle){
+    	/*
+        PythonInterpreter py = 
+           ScriptRunner.getInstance(null).getPythonInterpreter();
+        Debug.log(2, "Clear source bundle " + bundle);
+        py.set("bundle_path", bundle);
+        py.exec(pyBundleCleaner);
+        */
+     
+   }
+    
+	public String getSrcBundle() {
+        if( _srcBundlePath == null ){
+            File tmp = Utils.createTempDir("sikuliblocks");
+            setSrcBundle(Utils.slashify(tmp.getAbsolutePath(),true));
+         }
+         return _srcBundlePath;
+    }
+    
+    void setSrcBundle(String newBundlePath) {
+        _srcBundlePath = newBundlePath;
+        _imgLocator = new ImageLocator(_srcBundlePath);
+    }
+    
+	public File copyFileToBundle(String filename) {
+        File f = new File(filename);
+        String bundlePath = getSrcBundle();
+        if(f.exists()){
+           try{
+              File newFile = Utils.smartCopy(filename, bundlePath);
+              return newFile;
+           }
+           catch(IOException e){
+              e.printStackTrace();
+              return f;
+           }
+        }
+        return null;
+    }
+    
+    public File getFileInBundle(String filename) {
+        if(_imgLocator == null)
+            return null;
+         try{
+            String fullpath = _imgLocator.locate(filename);
+            return new File(fullpath);
+         }
+         catch(IOException e){
+            return null;
+         }
+    }
+	
+	public int search(String str, int pos, boolean forward) {
+    	//FIXME: NOT IMPLEMENTED
+    	return -1;
+    }
+    
+    public BlocksPane getComponent() {
+ 	   return this;
     }
 
 }
