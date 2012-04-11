@@ -25,6 +25,7 @@ SET(JAVA_SOURCE_FILES
          org/sikuli/ide/CommandArgs.java
          org/sikuli/ide/ConsolePane.java
          org/sikuli/ide/CurrentLineHighlighter.java
+         org/sikuli/ide/EditPane.java
          org/sikuli/ide/FileChooser.java
          org/sikuli/ide/I18N.java
          org/sikuli/ide/IDESettings.java

@@ -154,8 +154,8 @@ public class SikuliIDE extends JFrame {
    boolean checkDirtyPanes(){
       for(int i=0;i<_mainPane.getTabCount();i++){
          try{
-            JScrollPane scrPane = (JScrollPane)_mainPane.getComponentAt(i);
-            SikuliCodePane codePane = (SikuliCodePane)scrPane.getViewport().getView();
+      	  	EditPane editPane = (EditPane)_mainPane.getSelectedComponent();
+            SikuliCodePane codePane = editPane.getCodePane();
             if(codePane.isDirty()){
                getRootPane().putClientProperty("Window.documentModified", true);
                return true;
@@ -535,39 +535,39 @@ public class SikuliIDE extends JFrame {
 
 
    private void initTabPane(){
-      _mainPane = new CloseableTabbedPane();
-      _mainPane.setUI(new AquaCloseableTabbedPaneUI());
-      _mainPane.addCloseableTabbedPaneListener(
-                new CloseableTabbedPaneListener(){
-         public boolean closeTab(int i){
-            try{
-               JScrollPane scrPane = (JScrollPane)_mainPane.getComponentAt(i);
-               SikuliCodePane codePane = (SikuliCodePane)scrPane.getViewport().getView();
-               Debug.log(8, "close tab " + i + " n:" + _mainPane.getComponentCount());
-               boolean ret = codePane.close();
-               Debug.log(8, "after close tab n:" + _mainPane.getComponentCount());
-               checkDirtyPanes();
-               return ret;
-            }
-            catch(Exception e){
-               Debug.info("Can't close this tab: " + e.getStackTrace());
-               e.printStackTrace();
-               return false;
-            }
-         }
+	   _mainPane = new CloseableTabbedPane();
+	   _mainPane.setUI(new AquaCloseableTabbedPaneUI());
+	   _mainPane.addCloseableTabbedPaneListener(
+			   new CloseableTabbedPaneListener(){
+				   public boolean closeTab(int i){
+					   try{
+						   EditPane editPane = (EditPane)_mainPane.getSelectedComponent();
+						   SikuliCodePane codePane = editPane.getCodePane();
+						   Debug.log(8, "close tab " + i + " n:" + _mainPane.getComponentCount());
+						   boolean ret = codePane.close();
+						   Debug.log(8, "after close tab n:" + _mainPane.getComponentCount());
+						   checkDirtyPanes();
+						   return ret;
+					   }
+					   catch(Exception e){
+						   Debug.info("Can't close this tab: " + e.getStackTrace());
+						   e.printStackTrace();
+						   return false;
+					   }
+				   }
 
-      });
+			   });
 
-      _mainPane.addChangeListener(new ChangeListener(){
-         public void stateChanged(javax.swing.event.ChangeEvent e){
-            JTabbedPane tab = (JTabbedPane)e.getSource();
-            int i = tab.getSelectedIndex();
-            if(i>=0)
-               SikuliIDE.this.setTitle(tab.getTitleAt(i));
-            updateUndoRedoStates();
-         }
-      });
-            
+	   _mainPane.addChangeListener(new ChangeListener(){
+		   public void stateChanged(javax.swing.event.ChangeEvent e){
+			   JTabbedPane tab = (JTabbedPane)e.getSource();
+			   int i = tab.getSelectedIndex();
+			   if(i>=0)
+				   SikuliIDE.this.setTitle(tab.getTitleAt(i));
+			   updateUndoRedoStates();
+		   }
+	   });
+
    }
 
    private void initAuxPane(){
@@ -683,18 +683,14 @@ public class SikuliIDE extends JFrame {
       codeAndUnitPane.setBorder(BorderFactory.createEmptyBorder(0,8,0,0));
       codeAndUnitPane.add(_mainPane, BorderLayout.CENTER);
       codeAndUnitPane.add(_sidePane, BorderLayout.EAST);
+      codeAndUnitPane.setMinimumSize(new Dimension(0,300));
       _mainSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
             codeAndUnitPane, _auxPane);
       _mainSplitPane.setResizeWeight(1.0);
       _mainSplitPane.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
 
-      JPanel editPane = new JPanel(new BorderLayout(0,0));
-      editPane.add(createCommandPane(), BorderLayout.WEST);
-      editPane.add(_mainSplitPane, BorderLayout.CENTER);
-
-
       c.add(initToolbar(), BorderLayout.NORTH);
-      c.add(editPane, BorderLayout.CENTER);
+      c.add(_mainSplitPane, BorderLayout.CENTER);
       c.add(initStatusbar(), BorderLayout.SOUTH);
       c.doLayout();
 
@@ -744,8 +740,8 @@ public class SikuliIDE extends JFrame {
       StringBuffer sbuf = new StringBuffer();
       for(int i=0;i<nTab;i++){
          try{
-            JScrollPane scrPane = (JScrollPane)_mainPane.getComponentAt(i);
-            SikuliCodePane codePane = (SikuliCodePane)scrPane.getViewport().getView();
+       	  	EditPane editPane = (EditPane)_mainPane.getSelectedComponent();
+            SikuliCodePane codePane = editPane.getCodePane();
             File f = codePane.getCurrentFile();
             if( f != null){
                String bundlePath= codePane.getSrcBundle();
@@ -853,16 +849,19 @@ public class SikuliIDE extends JFrame {
     * createEmptyWorkspace should be false if an existing file will be loaded into the blocks pane
     */
    private void loadBlocksPane(boolean createEmptyWorkspace) {
-       try{
-           BlocksPane codePane = new BlocksPane();
-           codePane.setLangDefStream(SikuliIDE.class.getResourceAsStream("/icons/lang_def.xml"));
-           if(createEmptyWorkspace)
-         	  codePane.loadFreshWorkspace();
-           JScrollPane scrPane = new JScrollPane(codePane);
-           _mainPane.addTab(_I("tabUntitled"), scrPane);
-           _mainPane.setSelectedIndex(_mainPane.getTabCount()-1);
-       }
-       catch(Exception ex){
+	   try{
+		   BlocksPane codePane = new BlocksPane();
+		   codePane.setLangDefStream(SikuliIDE.class.getResourceAsStream("/icons/lang_def.xml"));
+
+		   JPanel editPane = new EditPane(codePane);
+
+		   if(createEmptyWorkspace)
+			   codePane.loadFreshWorkspace();
+		   _mainPane.addTab(_I("tabUntitled"), editPane);
+		   _mainPane.setSelectedIndex(_mainPane.getTabCount()-1);
+		   codePane.requestFocus();
+	   }
+	   catch(Exception ex){
           ex.printStackTrace();
        }
    }
@@ -1044,8 +1043,8 @@ public class SikuliIDE extends JFrame {
    public SikuliCodePane getCurrentCodePane(){
       if(_mainPane.getSelectedIndex() == -1)
          return null;
-      JScrollPane scrPane = (JScrollPane)_mainPane.getSelectedComponent();
-      SikuliCodePane ret = (SikuliCodePane)scrPane.getViewport().getView();
+	  EditPane editPane = (EditPane)_mainPane.getSelectedComponent();
+      SikuliCodePane ret = editPane.getCodePane();
       return ret;
    }
 
@@ -1481,9 +1480,13 @@ public class SikuliIDE extends JFrame {
 
       public void doNew(ActionEvent ae){
          SikuliTextPane codePane = new SikuliTextPane();
-         JScrollPane scrPane = new JScrollPane(codePane);
-         scrPane.setRowHeaderView(new LineNumberView(codePane));
-         _mainPane.addTab(_I("tabUntitled"), scrPane);
+         JComponent commandPane = createCommandPane();
+
+    	 EditPane editPane = new EditPane(codePane, commandPane);
+    	 
+         editPane.getScrollPane().setRowHeaderView(new LineNumberView(codePane));
+    	 
+         _mainPane.addTab(_I("tabUntitled"), editPane);
          _mainPane.setSelectedIndex(_mainPane.getTabCount()-1);
          codePane.addCaretListener(new CaretListener(){
             public void caretUpdate(CaretEvent evt){
@@ -1775,7 +1778,8 @@ public class SikuliIDE extends JFrame {
           if(Utils.typeOfCodePane(codePane) == Utils.SikuliCodePaneType.SIKULI_PANE_TYPE_TEXT) {
         	  //only supported on text code panes
         	  SikuliTextPane textPane = (SikuliTextPane)(codePane.getComponent());
-        	  JScrollPane scrPane = (JScrollPane)_mainPane.getSelectedComponent();
+        	  EditPane editPane = (EditPane)_mainPane.getSelectedComponent();
+        	  JScrollPane scrPane = editPane.getScrollPane();
         	  LineNumberView lnview = (LineNumberView)(scrPane.getRowHeader().getView());
         	  lnview.addErrorMark(line);
         	  //textPane.setErrorHighlight(line);
@@ -1788,7 +1792,8 @@ public class SikuliIDE extends JFrame {
           if(Utils.typeOfCodePane(codePane) == Utils.SikuliCodePaneType.SIKULI_PANE_TYPE_TEXT) {
         	  //only supported on text code panes
         	  SikuliTextPane textPane = (SikuliTextPane)(codePane.getComponent());
-        	  JScrollPane scrPane = (JScrollPane)_mainPane.getSelectedComponent();
+        	  EditPane editPane = (EditPane)_mainPane.getSelectedComponent();
+        	  JScrollPane scrPane = editPane.getScrollPane();
         	  LineNumberView lnview = (LineNumberView)(scrPane.getRowHeader().getView());
         	  lnview.resetErrorMark();
         	  //textPane.setErrorHighlight(-1);
