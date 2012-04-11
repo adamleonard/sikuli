@@ -69,6 +69,7 @@ public class SikuliIDE extends JFrame {
    private FindAction _findHelper;
 
    private CaptureButton _btnCapture;
+   private JButton _btnSubregion;
    private ButtonRun _btnRun, _btnRunViz;
 
    private JMenuBar _menuBar = new JMenuBar();
@@ -78,6 +79,11 @@ public class SikuliIDE extends JFrame {
    private JMenu _viewMenu = new JMenu(_I("menuView"));   
    private JMenu _toolMenu = new JMenu(_I("menuTool"));
    private JMenu _helpMenu = new JMenu(_I("menuHelp"));
+   
+   private JMenuItem _menuItemConvertToPython;
+   private JMenuItem _menuItemIndent;
+   private JMenuItem _menuItemUnindent;
+
    private JCheckBoxMenuItem _chkShowUnitTest;
    private UnitTestRunner _testRunner;
 
@@ -217,9 +223,10 @@ public class SikuliIDE extends JFrame {
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, 
                   InputEvent.SHIFT_MASK | scMask),
                new FileAction(FileAction.EXPORT)));
-      _fileMenu.add( createMenuItem(_I("menuFileConvertToPython"),
+      _menuItemConvertToPython =  createMenuItem(_I("menuFileConvertToPython"),
               null,
-              new FileAction(FileAction.CONVERT_TO_PYTHON)));
+              new FileAction(FileAction.CONVERT_TO_PYTHON));
+      _fileMenu.add(_menuItemConvertToPython);
       _fileMenu.addSeparator();
       if(!Utils.isMacOSX()){
          _fileMenu.add( createMenuItem(_I("menuFilePreferences"),
@@ -275,12 +282,14 @@ public class SikuliIDE extends JFrame {
                new FindAction(FindAction.FIND_PREV)));
       _editMenu.add(findMenu);
       _editMenu.addSeparator();
-      _editMenu.add( createMenuItem(_I("menuEditIndent"), 
-               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_TAB, 0),
-               new EditAction(EditAction.INDENT)));
-      _editMenu.add( createMenuItem(_I("menuEditUnIndent"), 
-               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_TAB, InputEvent.SHIFT_MASK),
-               new EditAction(EditAction.UNINDENT)));
+      _menuItemIndent = createMenuItem(_I("menuEditIndent"), 
+              KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_TAB, 0),
+              new EditAction(EditAction.INDENT));
+      _editMenu.add(_menuItemIndent);
+      _menuItemUnindent = createMenuItem(_I("menuEditUnIndent"), 
+              KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_TAB, InputEvent.SHIFT_MASK),
+              new EditAction(EditAction.UNINDENT));
+      _editMenu.add(_menuItemUnindent);
    }
 
    private void initHelpMenu() throws NoSuchMethodException{
@@ -461,11 +470,11 @@ public class SikuliIDE extends JFrame {
       _btnRun = new ButtonRun();
       JButton btnInsertImage = new ButtonInsertImage();
       _btnCapture = new CaptureButton();
-      JButton btnSubregion = new ButtonSubregion();
+      _btnSubregion = new ButtonSubregion();
       _btnRunViz = new ButtonRunViz();
       toolbar.add(_btnCapture);
       toolbar.add(btnInsertImage);
-      toolbar.add(btnSubregion);
+      toolbar.add(_btnSubregion);
       toolbar.add(Box.createHorizontalGlue());
       /*
       if( ENABLE_RECORDING ){
@@ -547,6 +556,7 @@ public class SikuliIDE extends JFrame {
 						   boolean ret = codePane.close();
 						   Debug.log(8, "after close tab n:" + _mainPane.getComponentCount());
 						   checkDirtyPanes();
+						   validateUI();
 						   return ret;
 					   }
 					   catch(Exception e){
@@ -565,6 +575,7 @@ public class SikuliIDE extends JFrame {
 			   if(i>=0)
 				   SikuliIDE.this.setTitle(tab.getTitleAt(i));
 			   updateUndoRedoStates();
+			   validateUI();
 		   }
 	   });
 
@@ -660,6 +671,17 @@ public class SikuliIDE extends JFrame {
       int i = _mainPane.getSelectedIndex();
       int prev = (i-1+_mainPane.getTabCount()) % _mainPane.getTabCount();
       _mainPane.setSelectedIndex(prev);
+   }
+   
+   private void validateUI() {
+	   SikuliCodePane codePane = getCurrentCodePane();
+	   
+	   if(codePane != null) {
+		   _btnSubregion.setEnabled(codePane.supportsRegions());	 
+		   _menuItemConvertToPython.setEnabled(codePane.supportsPythonConversion());
+		   _menuItemIndent.setEnabled(codePane.supportsTextCommands());
+		   _menuItemUnindent.setEnabled(codePane.supportsTextCommands());
+	   }
    }
    
    // Constructor 

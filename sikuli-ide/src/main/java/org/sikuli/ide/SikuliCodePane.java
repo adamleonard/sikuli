@@ -14,6 +14,22 @@ import javax.swing.undo.*;
 public interface SikuliCodePane <T extends JComponent> {
 	
 	/**
+	 * Returns True if this editor can use the "Add Region" button or display regions.
+	 */
+	public boolean supportsRegions();
+	
+	/**
+	 * Returns True if this editor can convert its representation into a Python text-only representation
+	 */
+	public boolean supportsPythonConversion();
+	
+	/**
+	 * Returns True if this editor supports commands specific to text documents (e.g., "Indent," "Un-indent")
+	 */
+	public boolean supportsTextCommands();
+	
+	
+	/**
 	 * Writes the Python representation of this code pane to the given Writer
 	 * The result should be runnable with JPython 
 	 */

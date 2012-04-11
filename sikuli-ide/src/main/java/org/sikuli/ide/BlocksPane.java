@@ -1199,5 +1199,20 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
     public BlocksPane getComponent() {
  	   return this;
     }
+    
+	@Override
+	public boolean supportsRegions() {
+		return false;
+	}
+	
+	@Override
+	public boolean supportsPythonConversion() {
+		return true;
+	}
+	
+	@Override
+	public boolean supportsTextCommands() {
+		return false;
+	}
 
 }

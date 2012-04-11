@@ -844,6 +844,21 @@ public class SikuliTextPane extends JTextPane implements SikuliCodePane, KeyList
 	   }
 	   this.select(old_sel_start, old_sel_end);
    }
+   
+	@Override
+	public boolean supportsRegions() {
+		return true;
+	}
+	
+	@Override
+	public boolean supportsPythonConversion() {
+		return false;
+	}
+	
+	@Override
+	public boolean supportsTextCommands() {
+		return true;
+	}
 
 
 }
