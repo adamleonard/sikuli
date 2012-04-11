@@ -217,6 +217,9 @@ public class SikuliIDE extends JFrame {
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, 
                   InputEvent.SHIFT_MASK | scMask),
                new FileAction(FileAction.EXPORT)));
+      _fileMenu.add( createMenuItem(_I("menuFileConvertToPython"),
+              null,
+              new FileAction(FileAction.CONVERT_TO_PYTHON)));
       _fileMenu.addSeparator();
       if(!Utils.isMacOSX()){
          _fileMenu.add( createMenuItem(_I("menuFilePreferences"),
@@ -1447,6 +1450,7 @@ public class SikuliIDE extends JFrame {
       static final String SAVE = "doSave";
       static final String SAVE_AS = "doSaveAs";
       static final String EXPORT = "doExport";
+      static final String CONVERT_TO_PYTHON = "doConvertToPython";
       static final String CLOSE_TAB = "doCloseTab";
       static final String PREFERENCES = "doPreferences";
       static final String QUIT = "doQuit";
@@ -1555,6 +1559,27 @@ public class SikuliIDE extends JFrame {
          catch(Exception ex){
             ex.printStackTrace();
          }
+      }
+      
+      public void doConvertToPython(ActionEvent ae){
+    	  try{
+    		  SikuliCodePane codePane = SikuliIDE.getInstance().getCurrentCodePane();
+    		  if(Utils.typeOfCodePane(codePane) == Utils.SikuliCodePaneType.SIKULI_PANE_TYPE_BLOCKS) {
+    			  //only supported on block code panes
+    			  BlocksPane blockPane = (BlocksPane)(codePane.getComponent());
+    			  String python = blockPane.compileToPython();
+    			  
+    			  //make a new text document
+    			  doNew(ae);
+    			  
+    			  //now, the current code pane should be the text pane
+    			  SikuliTextPane textPane = (SikuliTextPane)(SikuliIDE.getInstance().getCurrentCodePane().getComponent());
+    			  textPane.insertString(python);
+    		  }
+    	  }
+    	  catch(Exception ex){
+    		  ex.printStackTrace();
+    	  }
       }
 
 

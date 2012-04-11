@@ -886,7 +886,7 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
          _runningThread.start();
     }
     
-    private String compileToPython() {
+    public String compileToPython() {
     	String source = "setThrowException(False)\n";
     	String topLevelCode = "";
     	for (Block aBlock : this.getBlocks()) {
