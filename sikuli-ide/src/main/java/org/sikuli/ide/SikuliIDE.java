@@ -226,6 +226,7 @@ public class SikuliIDE extends JFrame {
       _menuItemConvertToPython =  createMenuItem(_I("menuFileConvertToPython"),
               null,
               new FileAction(FileAction.CONVERT_TO_PYTHON));
+      _fileMenu.addSeparator();
       _fileMenu.add(_menuItemConvertToPython);
       _fileMenu.addSeparator();
       if(!Utils.isMacOSX()){
@@ -1421,10 +1422,13 @@ public class SikuliIDE extends JFrame {
          super(item);
       }
 
-      private void performEditorAction(String action, ActionEvent ae){
+      private void performEditorAction(String actionKey, ActionEvent ae){
          SikuliIDE ide = SikuliIDE.getInstance();
          SikuliCodePane pane = ide.getCurrentCodePane();
-         pane.getComponent().getActionMap().get(action).actionPerformed(ae);
+         Action action = pane.getComponent().getActionMap().get(actionKey);
+         if(action != null && action.isEnabled()) {
+        	 action.actionPerformed(ae);
+         }
       }
 
       public void doCut(ActionEvent ae){

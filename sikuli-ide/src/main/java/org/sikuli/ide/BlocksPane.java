@@ -108,6 +108,25 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
         this.addWorkspaceListener(this);
         _undoManager = new BlocksUndoManager(this);
         this.addWorkspaceListener(_undoManager);
+        this.enableTypeBlocking(true);
+        
+        this.getActionMap().put(DefaultEditorKit.copyAction, new AbstractAction() {
+        	public void actionPerformed(ActionEvent evt) {
+        		copyBlocks();
+        	}
+        });
+        
+        this.getActionMap().put(DefaultEditorKit.cutAction, new AbstractAction() {
+        	public void actionPerformed(ActionEvent evt) {
+        		cutBlocks();
+        	}
+        });
+        
+        this.getActionMap().put(DefaultEditorKit.pasteAction, new AbstractAction() {
+        	public void actionPerformed(ActionEvent evt) {
+        		pasteBlocks();
+        	}
+        });
     }
 
     /**
@@ -219,7 +238,7 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
      * custom factories, canvas view state and position, pages
      * @return the DOM node for the entire workspace.
      */
-    public Node getSaveNode() {
+    public Document getSaveNode() {
     	//FIXME: re-enable validation once the schema is updated
         return getSaveNode(false);
     }
@@ -232,7 +251,7 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
      * against the code blocks schema
      * @return the DOM node for the entire workspace.
      */
-    public Node getSaveNode(final boolean validate) {
+    public Document getSaveNode(final boolean validate) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
@@ -310,6 +329,10 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
     	
         workspaceLoaded = true;    	
     }
+    
+    public boolean isWorkspaceLoaded() {
+    	return workspaceLoaded;
+    }
 
     /**
      * Loads the programming project from the specified file path.
@@ -353,6 +376,9 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
      * @param element element of the programming project to load
      */
     public void loadProjectFromElement(Element elementToLoad) {
+        if (workspaceLoaded) {
+        	resetWorkspace();
+        }
         this.loadWorkspaceFrom(elementToLoad, langDefRoot);
         workspaceLoaded = true;
     }
