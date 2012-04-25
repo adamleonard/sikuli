@@ -752,18 +752,8 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
 				}
 			}
 			assert connectedSocket != null;
-			screenshotRenderableBlock.repaintBlock();
-			screenshotRenderableBlock.repaint();
 			screenshotParentRenderableBlock.blockConnected(connectedSocket, screenshotBlock.getBlockID());
-			this.getCurrentPage(screenshotRenderableBlock).getJComponent().repaint();
-			this.getCurrentPage(screenshotRenderableBlock).getJComponent().revalidate();
-			screenshotParentRenderableBlock.clearBufferedImage();
-            screenshotParentRenderableBlock.moveConnectedBlocks();
-            screenshotParentRenderableBlock.repaintBlock();
-			screenshotParentRenderableBlock.repaint();
-			this.getBlockCanvas().getJComponent().repaint();
-			this.getBlockCanvas().getJComponent().revalidate();
-
+			screenshotParentRenderableBlock.redrawFromTop();
 
 		}
 		else {
@@ -822,12 +812,12 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
 	        	int i = 0;
 	        	//first, try an empty socket
 	        	for(BlockConnector aConnector : sockets) {
-					if(!aConnector.hasBlock() && aConnector.getKind().equals("screenshot") && getEnv().getRenderableBlock(aConnector.getBlockID()).isVisible()) {
+					if(!aConnector.hasBlock() && aConnector.getKind().equals("screenshot")) {
 						//empty screenshot socket! use that
 						BlockLink link = BlockLink.getBlockLink(this, parentRenderableBlock.getBlock(),
-								screenshotBlock,
+								block.getBlock(),
 								parentRenderableBlock.getBlock().getSocketAt(i), 
-								screenshotBlock.getPlug());
+								block.getBlock().getPlug());
 						link.connect();
 				        
 				        this.notifyListeners(new WorkspaceEvent(
@@ -838,6 +828,11 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
 	                    getEnv().getRenderableBlock(link.getSocketBlockID()).repaintBlock();
 	                    getEnv().getRenderableBlock(link.getSocketBlockID()).repaint();
 	                    
+	                	Page p = this.getBlockCanvas().getPages().get(0);
+	                	//add this block to that page.
+	                	p.blockDropped(block);
+	                    
+	                    
 	                    focusManager.setFocus(block.getBlockID());
 	                    didConnectBlock = true;
 				        
@@ -845,15 +840,17 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
 					}
 					i ++;
 				}
-	        	
-	        	//second, try to replace a block in an existing screenshot socket
-	        	for(BlockConnector aConnector : sockets) {
-					if(aConnector.hasBlock() && aConnector.getKind().equals("screenshot")) {
-		    			changeScreenshotImages(getEnv().getBlock(aConnector.getBlockID()), screenshotPath, blockImageMap);
-		    	        focusManager.setFocus(block.getBlockID());
-		    	        didConnectBlock = true;
-		    			break;
-					}
+
+	        	if(!didConnectBlock) {
+	        		//second, try to replace a block in an existing screenshot socket
+	        		for(BlockConnector aConnector : sockets) {
+	        			if(aConnector.hasBlock() && aConnector.getKind().equals("screenshot")) {
+	        				changeScreenshotImages(getEnv().getBlock(aConnector.getBlockID()), screenshotPath, blockImageMap);
+	        				focusManager.setFocus(block.getBlockID());
+	        				didConnectBlock = true;
+	        				break;
+	        			}
+	        		}
 	        	}
             }
         }
@@ -861,7 +858,7 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
             blockCanvas.getCanvas().add(block, 0);
             block.setLocation(25, 25);
             
-        	Page p = this.getBlockCanvas().getPages().get(0); //FIXME: this won't work with multiple pages.
+        	Page p = this.getBlockCanvas().getPages().get(0);
         	//add this block to that page.
         	p.blockDropped(block);
         }
