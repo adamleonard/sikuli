@@ -763,7 +763,7 @@ public class SikuliIDE extends JFrame {
       StringBuffer sbuf = new StringBuffer();
       for(int i=0;i<nTab;i++){
          try{
-       	  	EditPane editPane = (EditPane)_mainPane.getSelectedComponent();
+       	  	EditPane editPane = (EditPane)_mainPane.getComponentAt(i);
             SikuliCodePane codePane = editPane.getCodePane();
             File f = codePane.getCurrentFile();
             if( f != null){
