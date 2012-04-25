@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.lang.Iterable;
+import java.awt.image.*;
+import javax.imageio.*;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -464,6 +466,28 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
 					capture(0);
 				}
 			}
+			if(addedBlock.getGenusName().equals("screenshot-block")) {
+				BufferedImage placeholderImageAsBuffered = null;
+				try {
+					placeholderImageAsBuffered = ImageIO.read(SikuliIDE.class.getResourceAsStream("/icons/capture-small.png"));
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+				String placeholderPath = Utils.saveTmpImage(placeholderImageAsBuffered);
+				
+				ImageIcon placeholderImage = new ImageIcon(placeholderPath);
+		    	URL placeholderURL = null;
+		    	try {
+		    		placeholderURL = new File(placeholderPath).toURL();
+		    	} catch(MalformedURLException e) {
+		    		throw new RuntimeException(e);
+		    	}
+		    	
+		    	BlockImageIcon blockImage = new BlockImageIcon(placeholderImage, placeholderURL, BlockImageIcon.ImageLocation.CENTER, false, false);
+		    	Map<BlockImageIcon.ImageLocation, BlockImageIcon> blockImageMap = new HashMap<BlockImageIcon.ImageLocation, BlockImageIcon>();
+		    	blockImageMap.put(BlockImageIcon.ImageLocation.CENTER, blockImage);
+    			changeScreenshotImages(addedBlock, placeholderPath, blockImageMap);
+			}
     	}
     	else if(event.getEventType() == WorkspaceEvent.BLOCK_STACK_COMPILED) {
     		Long blockID = event.getSourceBlockID();
@@ -751,10 +775,10 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
 					break;
 				}
 			}
-			assert connectedSocket != null;
-			screenshotParentRenderableBlock.blockConnected(connectedSocket, screenshotBlock.getBlockID());
+			if(connectedSocket != null) {
+				screenshotParentRenderableBlock.blockConnected(connectedSocket, screenshotBlock.getBlockID());
+			}
 			screenshotParentRenderableBlock.redrawFromTop();
-
 		}
 		else {
 			//otherwise, just redraw the screenshot
