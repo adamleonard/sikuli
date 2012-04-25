@@ -821,7 +821,6 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
     	screenshotBlock.setBlockImageMap(blockImageMap);
     	
     	RenderableBlock block = BlockUtilities.cloneBlock(screenshotBlock);
-        Debug.error("Creating screenshot block: " + block.toString());
     	
     	block.getBlock().setProperty("screenshot-path", screenshotPath);
 
@@ -830,7 +829,6 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
         if(!invalidBlockID(parentBlockID)) {
             RenderableBlock parentRenderableBlock = getEnv().getRenderableBlock(parentBlockID);
             if(parentRenderableBlock != null && parentRenderableBlock.isVisible()) {
-	        	Debug.error("Adding as child of block: " + parentRenderableBlock.toString());
 	        	//find a socket for the new screenshot
 	        	Iterable<BlockConnector> sockets = parentRenderableBlock.getBlock().getSockets();
 	        	int i = 0;
@@ -895,7 +893,6 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
                File tmpFile;
                try{
                   tmpFile = File.createTempFile("sikuli-tmp",".py");
-                  Debug.error("PATH:" + tmpFile.toString());
                   tmpFile.deleteOnExit();
                   try{
                      BufferedWriter bw = new BufferedWriter(
@@ -962,7 +959,6 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
     		}
     	}
     	source += topLevelCode; //add the top-level code to the end of the file
-    	Debug.error("SOURCE: \n" + source);
     	return source;
     }
 
@@ -1181,7 +1177,6 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
            filename = filename.substring(0, filename.length()-1);
         setSrcBundle(filename+"/");        
         setSelectedFile(findSourceFile(filename));
-        Debug.error("Loading file: " + selectedFile.getPath() + " workspace:" + this.toString());
         loadFreshWorkspace();
         loadProjectFromPath(selectedFile.getPath());
      }

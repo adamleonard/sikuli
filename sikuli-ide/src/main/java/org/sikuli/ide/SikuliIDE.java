@@ -1605,7 +1605,6 @@ public class SikuliIDE extends JFrame {
     		      if(!newBundlePath.endsWith(".sikuli") )
     		    	  newBundlePath += ".sikuli";
     		      newBundlePath = Utils.slashify(newBundlePath, true);
-    		      Debug.error("PATH::: " + newBundlePath);
     			  
     			  //and copy the Block bundle to a new Python bundle
     			  Utils.xcopy(Utils.slashify(blockPane.getSrcBundle(), true), newBundlePath);
@@ -1614,7 +1613,6 @@ public class SikuliIDE extends JFrame {
     			  String name = new File(newBundlePath).getName();
     		      name = name.substring(0, name.lastIndexOf("."));
     		      File pythonSourceFile = new File(newBundlePath, name + ".py");
-    		      Debug.error("PYTHON FILE::: " + pythonSourceFile.toString());
     		      BufferedWriter writer = new BufferedWriter(new FileWriter(pythonSourceFile));
     		      writer.write(python);
     		      writer.close();
