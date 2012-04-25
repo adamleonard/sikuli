@@ -1598,12 +1598,34 @@ public class SikuliIDE extends JFrame {
     			  BlocksPane blockPane = (BlocksPane)(codePane.getComponent());
     			  String python = blockPane.compileToPython();
     			  
+    			  //ask the user where he/she wants to save the Python version of this file
+    			  File file = new FileChooser(SikuliIDE.getInstance()).saveText();
+    			  String newBundlePath = file.getAbsolutePath();
+    			  if(file == null)  return;
+    		      if(!newBundlePath.endsWith(".sikuli") )
+    		    	  newBundlePath += ".sikuli";
+    		      newBundlePath = Utils.slashify(newBundlePath, true);
+    		      Debug.error("PATH::: " + newBundlePath);
+    			  
+    			  //and copy the Block bundle to a new Python bundle
+    			  Utils.xcopy(Utils.slashify(blockPane.getSrcBundle(), true), newBundlePath);
+    			  
+    			  //Then write the Python file in the bundle
+    			  String name = new File(newBundlePath).getName();
+    		      name = name.substring(0, name.lastIndexOf("."));
+    		      File pythonSourceFile = new File(newBundlePath, name + ".py");
+    		      Debug.error("PYTHON FILE::: " + pythonSourceFile.toString());
+    		      BufferedWriter writer = new BufferedWriter(new FileWriter(pythonSourceFile));
+    		      writer.write(python);
+    		      writer.close();
+    					  
     			  //make a new text document
     			  doNew(ae);
     			  
-    			  //now, the current code pane should be the text pane
-    			  SikuliTextPane textPane = (SikuliTextPane)(SikuliIDE.getInstance().getCurrentCodePane().getComponent());
-    			  textPane.insertString(python);
+    			  //and load in the new bundle
+                  codePane = SikuliIDE.getInstance().getCurrentCodePane();
+                  codePane.loadFile(newBundlePath);
+                  SikuliIDE.getInstance().setCurrentFilename(newBundlePath);
     		  }
     	  }
     	  catch(Exception ex){
