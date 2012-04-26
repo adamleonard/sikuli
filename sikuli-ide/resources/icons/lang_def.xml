@@ -344,7 +344,7 @@ BlockGenuses are first loaded.
 		<BlockGenus name="screenshot-block" kind="screenshot" initlabel="" is-starter="yes" is-terminator="yes" color="40 100 175">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 			</description>
 			<BlockConnectors>
@@ -388,10 +388,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="find" kind="screenshot" initlabel="find" color="34 87 87">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="screenshot">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -407,10 +407,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="find-all" kind="screenshot" initlabel="find all" color="34 87 87"> <!-- FIXME: return screenshot array -->
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="screenshot">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -426,10 +426,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="wait" kind="command" initlabel="wait until appears" color="34 87 87">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="screenshot">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -445,10 +445,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="wait-vanish" kind="command" initlabel="wait until disappears" color="34 87 87">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="screenshot">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -484,10 +484,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="double-click" kind="command" initlabel="double-click" color="34 87 87">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="screenshot">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -503,10 +503,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="right-click" kind="command" initlabel="right click" color="34 87 87">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="screenshot">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -522,10 +522,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="hover" kind="command" initlabel="hover" color="34 87 87">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="screenshot">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -541,13 +541,13 @@ BlockGenuses are first loaded.
 		<BlockGenus name="drag-drop" kind="command" initlabel="drag and drop" color="34 87 87">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="screenshot-from">
-					FIXME
+					
 				</arg-description>
 				<arg-description n="2" name="screenshot-to">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -567,10 +567,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="type" kind="command" initlabel="type" color="34 87 87">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="text">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -586,13 +586,13 @@ BlockGenuses are first loaded.
 		<BlockGenus name="type-in" kind="command" initlabel="type" color="34 87 87">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="screenshot">
-					FIXME
+					
 				</arg-description>
 				<arg-description n="2" name="text">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -611,13 +611,13 @@ BlockGenuses are first loaded.
 		<BlockGenus name="type-modifiers" kind="command" initlabel="type" color="34 87 87">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="text">
-					FIXME
+					
 				</arg-description>
 				<arg-description n="2" name="modifiers">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -634,10 +634,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="paste" kind="command" initlabel="paste" color="34 87 87">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="text">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -653,13 +653,13 @@ BlockGenuses are first loaded.
 		<BlockGenus name="paste-in" kind="command" initlabel="paste" color="34 87 87">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="screenshot">
-					FIXME
+					
 				</arg-description>
 				<arg-description n="2" name="text">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -992,13 +992,13 @@ BlockGenuses are first loaded.
 		<BlockGenus name="popup" kind="command" initlabel="show popup" color="34 87 87">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="text">
-					FIXME
+					
 				</arg-description>
 				<arg-description n="2" name="title">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -1017,13 +1017,13 @@ BlockGenuses are first loaded.
 		<BlockGenus name="input" kind="function" initlabel="ask question" color="34 87 87">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="text">
-					FIXME
+					
 				</arg-description>
 				<arg-description n="2" name="default">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -1045,10 +1045,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="open-app" kind="command" initlabel="open app" color="34 87 87">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="text">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -1064,10 +1064,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="switch-app" kind="command" initlabel="switch to app" color="34 87 87">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="text">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -1083,10 +1083,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="close-app" kind="command" initlabel="close app" color="34 87 87">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="text">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -1102,10 +1102,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="run-command" kind="command" initlabel="run command" color="34 87 87">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="text">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -1332,7 +1332,7 @@ BlockGenuses are first loaded.
 		<BlockGenus name="break" kind="command" initlabel="break out of loop" color="34 76 117">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 			</description>
 			<BlockConnectors>
@@ -1345,7 +1345,7 @@ BlockGenuses are first loaded.
 		<BlockGenus name="continue" kind="command" initlabel="continue" color="34 76 117"> <!--  FIXME: better label -->
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 			</description>
 			<BlockConnectors>
@@ -2116,10 +2116,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="call-function" kind="function" initlabel="call" color="34 76 117">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" doc-name="function">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2137,13 +2137,13 @@ BlockGenuses are first loaded.
 		<BlockGenus name="call-function-import" kind="function" initlabel="call" color="34 76 117">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" doc-name="function">
-					FIXME
+					
 				</arg-description>
 				<arg-description n="2" doc-name="import">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2164,10 +2164,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="define-function" kind="procedure" initlabel="define" color="19 46 81">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" doc-name="function">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2186,10 +2186,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="get-argument" kind="function" initlabel="get" color="34 76 118">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="argument">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2223,10 +2223,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="on-appear-procedure" kind="procedure" initlabel="on appear" label-unique="yes" is-starter="yes" is-terminator="yes" color="19 46 81">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" doc-name="number">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2244,10 +2244,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="on-vanish-procedure" kind="procedure" initlabel="on vanish" label-unique="yes" is-starter="yes" is-terminator="yes" color="19 46 81">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" doc-name="number">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2265,10 +2265,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="on-change-procedure" kind="procedure" initlabel="on change" label-unique="yes" is-starter="yes" is-terminator="yes" color="19 46 81">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" doc-name="number">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2286,10 +2286,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="observe" kind="command" initlabel="observe" color="34 76 118">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="seconds">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2404,13 +2404,13 @@ BlockGenuses are first loaded.
 		<BlockGenus name="set-variable" kind="command" initlabel="set" color="34 76 118">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="variable">
-					FIXME
+					
 				</arg-description>
 				<arg-description n="1" name="value">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2428,10 +2428,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="get-variable" kind="function" initlabel="get" color="34 76 118">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="variable">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2448,10 +2448,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="get-screenshot" kind="function" initlabel="get screenshot" color="34 76 118">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="variable">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2468,13 +2468,13 @@ BlockGenuses are first loaded.
 		<BlockGenus name="set-screenshot" kind="command" initlabel="set screenshot" color="34 76 118">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="variable">
-					FIXME
+					
 				</arg-description>
 				<arg-description n="1" name="value">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2493,10 +2493,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="get-screenshot" kind="function" initlabel="get screenshot" color="34 76 118">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="variable">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2513,13 +2513,13 @@ BlockGenuses are first loaded.
 		<BlockGenus name="set-string" kind="command" initlabel="set text" color="34 76 117">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="variable">
-					FIXME
+					
 				</arg-description>
 				<arg-description n="2" name="value">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2538,10 +2538,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="get-string" kind="function" initlabel="get text" color="34 76 117">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="variable">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2558,13 +2558,13 @@ BlockGenuses are first loaded.
 		<BlockGenus name="set-number" kind="command" initlabel="set number" color="34 76 117">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="variable">
-					FIXME
+					
 				</arg-description>
 				<arg-description n="2" name="value">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2583,10 +2583,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="get-number" kind="function" initlabel="get number" color="34 76 117">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="variable">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2603,13 +2603,13 @@ BlockGenuses are first loaded.
 		<BlockGenus name="set-boolean" kind="command" initlabel="set boolean" color="34 76 117">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="variable">
-					FIXME
+					
 				</arg-description>
 				<arg-description n="2" name="value">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2628,10 +2628,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="get-boolean" kind="function" initlabel="get boolean" color="34 76 117">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" name="variable">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2783,10 +2783,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="python-expression" kind="function" initlabel="python expression" editable-label="yes" is-label-value="yes" color="34 76 117">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" doc-name="arg">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -2801,10 +2801,10 @@ BlockGenuses are first loaded.
 		<BlockGenus name="python-statement" kind="command" initlabel="python statement" editable-label="yes" is-label-value="yes" color="34 76 117">
 			<description>
 				<text>
-					FIXME
+					
 				</text>
 				<arg-description n="1" doc-name="arg">
-					FIXME
+					
 				</arg-description>
 			</description>
 			<BlockConnectors>
