@@ -361,7 +361,7 @@ BlockGenuses are first loaded.
 		
 
 		<!-- FIND -->
-		<BlockGenus name="exists" kind="function" initlabel="exists" color="34 76 118">
+		<BlockGenus name="exists" kind="function" initlabel="exists" color="34 87 87">
 			<description>
 				<text>
 					If <arg n="1"/> exists on the screen, the agent will run the blocks attached to <arg n="2"/>
@@ -385,7 +385,7 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
-		<BlockGenus name="find" kind="screenshot" initlabel="find" color="34 76 118">
+		<BlockGenus name="find" kind="screenshot" initlabel="find" color="34 87 87">
 			<description>
 				<text>
 					FIXME
@@ -404,7 +404,7 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
-		<BlockGenus name="find-all" kind="screenshot" initlabel="find all" color="34 76 118"> <!-- FIXME: return screenshot array -->
+		<BlockGenus name="find-all" kind="screenshot" initlabel="find all" color="34 87 87"> <!-- FIXME: return screenshot array -->
 			<description>
 				<text>
 					FIXME
@@ -423,7 +423,7 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
-		<BlockGenus name="wait" kind="command" initlabel="wait until appears" color="34 76 118">
+		<BlockGenus name="wait" kind="command" initlabel="wait until appears" color="34 87 87">
 			<description>
 				<text>
 					FIXME
@@ -442,7 +442,7 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
-		<BlockGenus name="wait-vanish" kind="command" initlabel="wait until disappears" color="34 76 118">
+		<BlockGenus name="wait-vanish" kind="command" initlabel="wait until disappears" color="34 87 87">
 			<description>
 				<text>
 					FIXME
@@ -462,7 +462,7 @@ BlockGenuses are first loaded.
 		</BlockGenus>
 		
 		<!-- MOUSE -->
-		<BlockGenus name="click" kind="command" initlabel="click" color="34 76 118">
+		<BlockGenus name="click" kind="command" initlabel="click" color="34 87 87">
 			<description>
 				<text>
 					Click on <arg n="1"/>
@@ -481,7 +481,7 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
-		<BlockGenus name="double-click" kind="command" initlabel="double-click" color="34 76 118">
+		<BlockGenus name="double-click" kind="command" initlabel="double-click" color="34 87 87">
 			<description>
 				<text>
 					FIXME
@@ -500,7 +500,7 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
-		<BlockGenus name="right-click" kind="command" initlabel="right click" color="34 76 118">
+		<BlockGenus name="right-click" kind="command" initlabel="right click" color="34 87 87">
 			<description>
 				<text>
 					FIXME
@@ -519,7 +519,7 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
-		<BlockGenus name="hover" kind="command" initlabel="hover" color="34 76 118">
+		<BlockGenus name="hover" kind="command" initlabel="hover" color="34 87 87">
 			<description>
 				<text>
 					FIXME
@@ -538,7 +538,7 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
-		<BlockGenus name="drag-drop" kind="command" initlabel="drag and drop" color="34 76 118">
+		<BlockGenus name="drag-drop" kind="command" initlabel="drag and drop" color="34 87 87">
 			<description>
 				<text>
 					FIXME
@@ -564,7 +564,7 @@ BlockGenuses are first loaded.
 		</BlockGenus>
 		
 		<!-- KEYBOARD -->
-		<BlockGenus name="type" kind="command" initlabel="type" color="34 76 118">
+		<BlockGenus name="type" kind="command" initlabel="type" color="34 87 87">
 			<description>
 				<text>
 					FIXME
@@ -583,7 +583,7 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
-		<BlockGenus name="type-in" kind="command" initlabel="type" color="34 76 118">
+		<BlockGenus name="type-in" kind="command" initlabel="type" color="34 87 87">
 			<description>
 				<text>
 					FIXME
@@ -608,7 +608,7 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
-		<BlockGenus name="type-modifiers" kind="command" initlabel="type" color="34 76 118">
+		<BlockGenus name="type-modifiers" kind="command" initlabel="type" color="34 87 87">
 			<description>
 				<text>
 					FIXME
@@ -631,7 +631,7 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
-		<BlockGenus name="paste" kind="command" initlabel="paste" color="34 76 118">
+		<BlockGenus name="paste" kind="command" initlabel="paste" color="34 87 87">
 			<description>
 				<text>
 					FIXME
@@ -650,7 +650,7 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
-		<BlockGenus name="paste-in" kind="command" initlabel="paste" color="34 76 118">
+		<BlockGenus name="paste-in" kind="command" initlabel="paste" color="34 87 87">
 			<description>
 				<text>
 					FIXME
@@ -989,7 +989,7 @@ BlockGenuses are first loaded.
 
 		
 		<!-- USER CONTROL -->
-		<BlockGenus name="popup" kind="command" initlabel="show popup" color="34 76 118">
+		<BlockGenus name="popup" kind="command" initlabel="show popup" color="34 87 87">
 			<description>
 				<text>
 					FIXME
@@ -1014,7 +1014,7 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
-		<BlockGenus name="input" kind="function" initlabel="ask question" color="34 76 118">
+		<BlockGenus name="input" kind="function" initlabel="ask question" color="34 87 87">
 			<description>
 				<text>
 					FIXME
@@ -1042,7 +1042,7 @@ BlockGenuses are first loaded.
 		
 		<!-- APPLICATIONS -->
 		
-		<BlockGenus name="open-app" kind="command" initlabel="open app" color="34 76 118">
+		<BlockGenus name="open-app" kind="command" initlabel="open app" color="34 87 87">
 			<description>
 				<text>
 					FIXME
@@ -1061,7 +1061,7 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
-		<BlockGenus name="switch-app" kind="command" initlabel="switch to app" color="34 76 118">
+		<BlockGenus name="switch-app" kind="command" initlabel="switch to app" color="34 87 87">
 			<description>
 				<text>
 					FIXME
@@ -1080,7 +1080,7 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
-		<BlockGenus name="close-app" kind="command" initlabel="close app" color="34 76 118">
+		<BlockGenus name="close-app" kind="command" initlabel="close app" color="34 87 87">
 			<description>
 				<text>
 					FIXME
@@ -1099,7 +1099,7 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
-		<BlockGenus name="run-command" kind="command" initlabel="run command" color="34 76 118">
+		<BlockGenus name="run-command" kind="command" initlabel="run command" color="34 87 87">
 			<description>
 				<text>
 					FIXME
@@ -1121,7 +1121,7 @@ BlockGenuses are first loaded.
 		
 		<!-- TESTING -->
 		
-		<BlockGenus name="comment" kind="command" initlabel="comment" editable-label="yes" is-label-value="yes" color="255 255 150">
+		<BlockGenus name="comment" kind="command" initlabel="comment" editable-label="yes" is-label-value="yes" color="230 230 18">
 			<description>
 				<text>
 					A comment that describes or documents blocks. Has no effect when run.
@@ -3080,28 +3080,26 @@ BlockGenuses are first loaded.
 
 	<BlockDrawerSets>	
 		<BlockDrawerSet name="factory" type="stack" location="southwest" window-per-drawer="no" drawer-draggable="no" >
-			<BlockDrawer name="Find" type="factory" button-color="34 76 118">
+			<BlockDrawer name="Find" type="factory" button-color="34 87 87">
 				<BlockGenusMember>exists</BlockGenusMember>
 				<BlockGenusMember>find</BlockGenusMember>
 				<BlockGenusMember>find-all</BlockGenusMember>
 				<BlockGenusMember>wait</BlockGenusMember>
 				<BlockGenusMember>wait-vanish</BlockGenusMember>
 			</BlockDrawer>
-			<BlockDrawer name="Mouse" type="factory" button-color="34 76 118">
+			<BlockDrawer name="Mouse" type="factory" button-color="34 87 87">
 				<BlockGenusMember>click</BlockGenusMember>
 				<BlockGenusMember>double-click</BlockGenusMember>
 				<BlockGenusMember>right-click</BlockGenusMember>
 				<BlockGenusMember>hover</BlockGenusMember>
 				<BlockGenusMember>drag-drop</BlockGenusMember>
 			</BlockDrawer>
-			<BlockDrawer name="Keyboard" type="factory" button-color="34 76 118">
+			<BlockDrawer name="Keyboard" type="factory" button-color="34 87 87">
 				<BlockGenusMember>type</BlockGenusMember>
 				<BlockGenusMember>type-in</BlockGenusMember>
 				<BlockGenusMember>type-modifiers</BlockGenusMember>
 				<BlockGenusMember>paste</BlockGenusMember>
 				<BlockGenusMember>paste-in</BlockGenusMember>
-			</BlockDrawer>
-			<BlockDrawer name="Special Keys" type="factory" button-color="34 76 118">
 				<BlockGenusMember>control-key</BlockGenusMember>
 				<BlockGenusMember>shift-key</BlockGenusMember>
 				<BlockGenusMember>alt-key</BlockGenusMember>
@@ -3125,22 +3123,17 @@ BlockGenuses are first loaded.
 				<BlockGenusMember>page-down-key</BlockGenusMember>
 				<BlockGenusMember>page-up-key</BlockGenusMember>
 			</BlockDrawer>
-			<BlockDrawer name="Applications" type="factory" button-color="34 76 118">
+			<BlockDrawer name="Applications" type="factory" button-color="34 87 87">
 				<BlockGenusMember>open-app</BlockGenusMember>
 				<BlockGenusMember>switch-app</BlockGenusMember>
 				<BlockGenusMember>close-app</BlockGenusMember>
 				<BlockGenusMember>run-command</BlockGenusMember>
 			</BlockDrawer>
-			<BlockDrawer name="User Control" type="factory" button-color="34 76 118">
+			<BlockDrawer name="User Control" type="factory" button-color="34 87 87">
 				<BlockGenusMember>popup</BlockGenusMember>
 				<BlockGenusMember>input</BlockGenusMember>
 			</BlockDrawer>
-			<BlockDrawer name="Variables" type="factory" button-color="34 76 117">
-				<BlockGenusMember>get-variable</BlockGenusMember>
-				<BlockGenusMember>set-variable</BlockGenusMember>
-				<BlockGenusMember>variable</BlockGenusMember>
-			</BlockDrawer>
-			<BlockDrawer name="Procedure" type="factory" button-color="34 76 117">
+			<BlockDrawer name="Procedure" type="factory" button-color="34 87 87">
 				<BlockGenusMember>define-function</BlockGenusMember>
 				<BlockGenusMember>argument</BlockGenusMember>
 				<BlockGenusMember>get-argument</BlockGenusMember>
@@ -3152,7 +3145,12 @@ BlockGenuses are first loaded.
 				<BlockGenusMember>on-change-procedure</BlockGenusMember>
 				<BlockGenusMember>observe</BlockGenusMember>
 			</BlockDrawer>
-			<BlockDrawer name="Setup and Run" type="factory" is-open="yes" button-color="34 76 117">
+			<BlockDrawer name="Variables" type="factory" button-color="34 76 117">
+				<BlockGenusMember>get-variable</BlockGenusMember>
+				<BlockGenusMember>set-variable</BlockGenusMember>
+				<BlockGenusMember>variable</BlockGenusMember>
+			</BlockDrawer>
+			<BlockDrawer name="Run" type="factory" is-open="yes" button-color="34 76 117">
 				<BlockGenusMember>runforsometime</BlockGenusMember>
 				<BlockGenusMember>runonce</BlockGenusMember>
 			</BlockDrawer>
@@ -3212,7 +3210,7 @@ BlockGenuses are first loaded.
 				<BlockGenusMember>python-expression</BlockGenusMember>
 				<BlockGenusMember>python-statement</BlockGenusMember>
 			</BlockDrawer>
-			<BlockDrawer name="Testing" type="factory" button-color="34 76 117">
+			<BlockDrawer name="Debug and Notes" type="factory" button-color="34 76 117">
 				<BlockGenusMember>comment</BlockGenusMember>
 				<BlockGenusMember>print</BlockGenusMember>
 				<BlockGenusMember>assert</BlockGenusMember>
