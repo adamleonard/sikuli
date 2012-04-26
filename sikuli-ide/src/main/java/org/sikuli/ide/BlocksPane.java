@@ -320,15 +320,40 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
         }
         this.loadWorkspaceFrom(null, langDefRoot);
         
+    	Page p = this.getBlockCanvas().getPages().get(0);
+        
+        //add a run once block to the workspace
     	Block runonceBlock = new Block(this, "runonce", "run once", true);
     	RenderableBlock runonceRenderableBlock = BlockUtilities.cloneBlock(runonceBlock);
         this.getBlockCanvas().getCanvas().add(runonceRenderableBlock, 0);
-        runonceRenderableBlock.setLocation(50, 25);
-        
-    	Page p = this.getBlockCanvas().getPages().get(0); //FIXME: this won't work with multiple pages.
-    	//add this block to that page.
+        runonceRenderableBlock.setLocation(50, 25);        
     	p.blockDropped(runonceRenderableBlock);
-    	
+
+        
+        //also add a comment connected to the run once block explaining where to add blocks
+    	Block commentBlock = new Block(this, "comment", "Drag blocks here", true);
+    	RenderableBlock commentRenderableBlock = BlockUtilities.cloneBlock(commentBlock);
+        this.getBlockCanvas().getCanvas().add(commentRenderableBlock, 0);
+
+		BlockLink link = BlockLink.getBlockLink(this, runonceRenderableBlock.getBlock(),
+				commentRenderableBlock.getBlock(),
+				runonceRenderableBlock.getBlock().getSocketAt(0), 
+				commentRenderableBlock.getBlock().getBeforeConnector());
+		link.connect();
+        
+        this.notifyListeners(new WorkspaceEvent(
+                this, 
+                getEnv().getRenderableBlock(link.getPlugBlockID()).getParentWidget(),
+                link, WorkspaceEvent.BLOCKS_CONNECTED));
+        getEnv().getRenderableBlock(link.getSocketBlockID()).moveConnectedBlocks();
+        getEnv().getRenderableBlock(link.getSocketBlockID()).repaintBlock();
+        getEnv().getRenderableBlock(link.getSocketBlockID()).repaint();
+
+    	p.blockDropped(commentRenderableBlock);
+
+    	//highlight the run once block
+    	getFocusManager().setFocus(runonceRenderableBlock.getBlockID());
+
         workspaceLoaded = true;    	
     }
     
