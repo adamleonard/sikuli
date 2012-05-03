@@ -225,15 +225,6 @@ public class SikuliTextPane extends JTextPane implements SikuliCodePane, KeyList
    }
 
    public File getCurrentFile(){
-      if(_editingFile == null && isDirty()){
-         try{
-            saveAsFile();
-            return _editingFile;
-         }
-         catch(IOException e){
-            e.printStackTrace();
-         }
-      }
       return _editingFile;
    }
 
