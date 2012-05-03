@@ -8,8 +8,6 @@ ELSEIF(WIN32)
    SET(OS_EXTRA_SOURCE_FILES org/sikuli/ide/NativeLayerForWindows.java)
 ENDIF()
 
-SET(CMAKE_OSX_ARCHITECTURES x86_64)
-
 SET(JAVA_SOURCE_FILES 
          ${OS_EXTRA_SOURCE_FILES}
          org/sikuli/ide/AutoUpdater.java

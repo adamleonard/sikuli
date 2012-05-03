@@ -1274,7 +1274,7 @@ public class SikuliIDE extends JFrame {
       }
 
       public void openAsk(ActionEvent ae){
-         openURL("http://answers.launchpad.net/sikuli");
+         openURL("https://answers.launchpad.net/sikuli");
       }
 
       public void openBugReport(ActionEvent ae){
