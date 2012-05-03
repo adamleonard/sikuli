@@ -859,7 +859,16 @@ public class SikuliTextPane extends JTextPane implements SikuliCodePane, KeyList
 	public boolean supportsTextCommands() {
 		return true;
 	}
-
+	
+	@Override
+	public boolean supportsSearch() {
+		return true;
+	}
+	
+	@Override
+	public boolean supportsMultipleSelection() {
+		return true;
+	}
 
 }
 

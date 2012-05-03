@@ -28,6 +28,16 @@ public interface SikuliCodePane <T extends JComponent> {
 	 */
 	public boolean supportsTextCommands();
 	
+	/**
+	 * Returns True if this editor supports searching within a document
+	 */
+	public boolean supportsSearch();
+	
+	/**
+	 * Returns True if this editor supports multiple selection commands such as "Select All"
+	 */
+	public boolean supportsMultipleSelection();
+		
 	
 	/**
 	 * Writes the Python representation of this code pane to the given Writer

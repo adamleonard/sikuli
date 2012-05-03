@@ -83,6 +83,7 @@ public class SikuliIDE extends JFrame {
    private JMenuItem _menuItemConvertToPython;
    private JMenuItem _menuItemIndent;
    private JMenuItem _menuItemUnindent;
+   private JMenuItem _menuItemSelectAll;
 
    private JCheckBoxMenuItem _chkShowUnitTest;
    private UnitTestRunner _testRunner;
@@ -264,9 +265,11 @@ public class SikuliIDE extends JFrame {
       _editMenu.add( createMenuItem(_I("menuEditPaste"), 
                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, scMask),
                new EditAction(EditAction.PASTE)));
-      _editMenu.add( createMenuItem(_I("menuEditSelectAll"), 
-               KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, scMask),
-               new EditAction(EditAction.SELECT_ALL)));
+      _menuItemSelectAll = createMenuItem(_I("menuEditSelectAll"), 
+              KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, scMask),
+              new EditAction(EditAction.SELECT_ALL));
+      _editMenu.add(_menuItemSelectAll);
+
       _editMenu.addSeparator();
 
       JMenu findMenu = new JMenu(_I("menuFind"));
@@ -678,10 +681,12 @@ public class SikuliIDE extends JFrame {
 	   SikuliCodePane codePane = getCurrentCodePane();
 	   
 	   if(codePane != null) {
-		   _btnSubregion.setEnabled(codePane.supportsRegions());	 
+		   _btnSubregion.setEnabled(codePane.supportsRegions());
+		   _searchField.setEnabled(codePane.supportsSearch());
 		   _menuItemConvertToPython.setEnabled(codePane.supportsPythonConversion());
 		   _menuItemIndent.setEnabled(codePane.supportsTextCommands());
 		   _menuItemUnindent.setEnabled(codePane.supportsTextCommands());
+		   _menuItemSelectAll.setEnabled(codePane.supportsMultipleSelection());
 	   }
    }
    

@@ -1286,5 +1286,15 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
 	public boolean supportsTextCommands() {
 		return false;
 	}
+	
+	@Override
+	public boolean supportsSearch() {
+		return false;
+	}
+	
+	@Override
+	public boolean supportsMultipleSelection() {
+		return false;
+	}
 
 }
