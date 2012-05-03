@@ -341,7 +341,7 @@ BlockGenuses are first loaded.
 		</BlockGenus>
 		
 		<!-- SCREENSHOT -->
-		<BlockGenus name="screenshot-block" kind="screenshot" initlabel="" is-starter="yes" is-terminator="yes" color="40 100 175">
+		<BlockGenus name="screenshot-block" kind="screenshot" initlabel="" is-starter="yes" is-terminator="yes" color="48 140 140">
 			<description>
 				<text>
 					

@@ -492,26 +492,31 @@ public class BlocksPane extends Workspace implements Observer, WorkspaceListener
 				}
 			}
 			if(addedBlock.getGenusName().equals("screenshot-block")) {
-				BufferedImage placeholderImageAsBuffered = null;
-				try {
-					placeholderImageAsBuffered = ImageIO.read(SikuliIDE.class.getResourceAsStream("/icons/capture-small.png"));
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-				String placeholderPath = Utils.saveTmpImage(placeholderImageAsBuffered);
+				//if we added an empty screenshot block, set the screenshot's image to a placeholder icon
+				if(addedBlock.getProperty("screenshot-path") == null) { //if the screenshot block is empty
 				
-				ImageIcon placeholderImage = new ImageIcon(placeholderPath);
-		    	URL placeholderURL = null;
-		    	try {
-		    		placeholderURL = new File(placeholderPath).toURL();
-		    	} catch(MalformedURLException e) {
-		    		throw new RuntimeException(e);
-		    	}
-		    	
-		    	BlockImageIcon blockImage = new BlockImageIcon(placeholderImage, placeholderURL, BlockImageIcon.ImageLocation.CENTER, false, false);
-		    	Map<BlockImageIcon.ImageLocation, BlockImageIcon> blockImageMap = new HashMap<BlockImageIcon.ImageLocation, BlockImageIcon>();
-		    	blockImageMap.put(BlockImageIcon.ImageLocation.CENTER, blockImage);
-    			changeScreenshotImages(addedBlock, placeholderPath, blockImageMap);
+					//write the placeholder to a temporary file so we can get a path
+					BufferedImage placeholderImageAsBuffered = null;
+					try {
+						placeholderImageAsBuffered = ImageIO.read(SikuliIDE.class.getResourceAsStream("/icons/capture-small.png"));
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
+					String placeholderPath = Utils.saveTmpImage(placeholderImageAsBuffered);
+
+					ImageIcon placeholderImage = new ImageIcon(placeholderPath);
+					URL placeholderURL = null;
+					try {
+						placeholderURL = new File(placeholderPath).toURL();
+					} catch(MalformedURLException e) {
+						throw new RuntimeException(e);
+					}
+
+					BlockImageIcon blockImage = new BlockImageIcon(placeholderImage, placeholderURL, BlockImageIcon.ImageLocation.CENTER, false, false);
+					Map<BlockImageIcon.ImageLocation, BlockImageIcon> blockImageMap = new HashMap<BlockImageIcon.ImageLocation, BlockImageIcon>();
+					blockImageMap.put(BlockImageIcon.ImageLocation.CENTER, blockImage);
+					changeScreenshotImages(addedBlock, placeholderPath, blockImageMap);
+				}
 			}
     	}
     	else if(event.getEventType() == WorkspaceEvent.BLOCK_STACK_COMPILED) {
