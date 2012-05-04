@@ -3,7 +3,7 @@
 <!-- 
 
 
-This describes every BlockGenus, BlockDrawer, BlockFamilies in Starlogo-TNG.
+This describes every BlockGenus, BlockDrawer, BlockFamilies in Sikuli.
 
 Note: For BlockGenus, if genus A relies on another genus B, that genus B must be 
 specified in the xml file before genus A is specified.  We impose this requirement so 
@@ -190,71 +190,6 @@ BlockGenuses are first loaded.
 	</BlockConnectorShapes>
 	
 	<BlockGenuses>
-		<!-- Stub Genuses 
-			Do not remove unless you would like to remove the stub feature all together
-		-->
-		
-		<BlockGenus name="getter" kind="data" initlabel="" color="34 76 117" >
-			<description>
-				<text>
-					Reports the value of the variable.
-				</text>
-			</description>
-			<BlockConnectors>
-				<BlockConnector connector-kind="plug" connector-type="poly" position-type="mirror"></BlockConnector>
-			</BlockConnectors>
-			<LangSpecProperties>
-				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
-			</LangSpecProperties>	
-		</BlockGenus>
-		
-		<BlockGenus name="setter" kind="command" initlabel="" color="34 76 117" label-prefix="set ">
-			<description>
-				<text>
-					Sets the value of the variable.
-				</text>
-			</description>
-			<BlockConnectors>
-				<BlockConnector connector-kind="socket" connector-type="poly" position-type="single"></BlockConnector>
-			</BlockConnectors>
-		</BlockGenus>
-		
-		<BlockGenus name="caller" kind="command" initlabel="" color="34 76 117">
-			<description>
-				<text>
-					Calls the procedure of the specified name.
-				</text>
-			</description>
-		</BlockGenus>
-
-		<BlockGenus name="inc" kind="command" initlabel="" color="34 76 117" label-prefix="inc ">
-			<description>
-				<text>
-					Increments the value of the variable number.
-				</text>
-			</description>
-			<BlockConnectors>
-				<BlockConnector connector-kind="socket" connector-type="number" position-type="single"></BlockConnector>
-			</BlockConnectors>		
-		</BlockGenus>
-		
-		<BlockGenus name="agent" kind="function" initlabel="" color="34 76 117" label-suffix=" of" is-starter="yes" is-terminator="yes">
-			<description>
-				<text>
-					Gets the value of the variable of the agent ID.
-				</text>
-			</description>
-			<BlockConnectors>
-			    <BlockConnector connector-kind="plug" connector-type="poly" position-type="single"></BlockConnector>
-				<BlockConnector label="ID" connector-kind="socket" connector-type="number" position-type="single"></BlockConnector>
-			</BlockConnectors>	
-			<LangSpecProperties>
-				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
-			</LangSpecProperties>			
-		</BlockGenus>
-		
-		<!-- End of Stub Genuses -->
-	
 		<BlockGenus name="number" kind="data" initlabel="1" editable-label="yes" is-label-value="yes" color="40 100 175">
 			<description>
 				<text>
@@ -1395,52 +1330,6 @@ BlockGenuses are first loaded.
 		
 		<!-- String Functions or Commands -->
 		
-		<BlockGenus name="say" kind="command" initlabel="say" color="34 76 117">
-			<description>
-				<text>
-					Causes this agent to "say" the supplied text by popping up a speech bubble in SpaceLand.
-				</text>
-			</description>
-			<BlockConnectors>
-				<BlockConnector connector-kind="socket" connector-type="poly"></BlockConnector>
-			</BlockConnectors>
-			<LangSpecProperties>
-				<LangSpecProperty key="command-type" value="say"></LangSpecProperty>
-				<LangSpecProperty key="stack-type" value="breed"></LangSpecProperty>
-			</LangSpecProperties>
-		</BlockGenus>
-		
-		<BlockGenus name="set-status" kind="command" initlabel="set status" color="34 76 117">
-			<description>
-				<text>
-					Displays the text attached to this block in the bottom panel of Spaceland.  
-				</text>
-			</description>
-			<BlockConnectors>
-				<BlockConnector connector-kind="socket" connector-type="string"></BlockConnector>
-			</BlockConnectors>
-			<LangSpecProperties>
-				<LangSpecProperty key="command-type" value="set-status"></LangSpecProperty>
-			</LangSpecProperties>
-		</BlockGenus>
-		
-		<BlockGenus name="play" kind="command" initlabel="play sound" color="150 255 107">
-			<description>
-				<text>
-					Causes agent to play a sound with the following <arg n="1"/>.  Select a sound from the Sounds drawer and attach to this block.  
-				</text>
-				<arg-description n="1" name="name">
-					The text name of the sound to play.
-				</arg-description>
-			</description>
-			<BlockConnectors>
-				<BlockConnector connector-kind="socket" connector-type="string"></BlockConnector>
-			</BlockConnectors>
-			<LangSpecProperties>
-				<LangSpecProperty key="command-type" value="play"></LangSpecProperty>
-			</LangSpecProperties>
-		</BlockGenus>	
-		
 		<BlockGenus name="number-to-string" kind="function" initlabel="to text" color="34 76 117">
 			<description>
 				<text>
@@ -2095,16 +1984,6 @@ BlockGenuses are first loaded.
 			<BlockConnectors>
 				<BlockConnector connector-kind="socket" connector-type="poly" is-expandable="yes"></BlockConnector>
 			</BlockConnectors>
-			<Stubs>
-				<Stub stub-genus="caller">
-					<LangSpecProperties>
-						<LangSpecProperty key="command-type" value="eval-procedure"></LangSpecProperty>
-						<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
-						<LangSpecProperty key="is-breed-set-by-canvas" value="yes"></LangSpecProperty>
-						<LangSpecProperty key="stack-type" value="breed"></LangSpecProperty>
-					</LangSpecProperties>
-				</Stub>
-			</Stubs>
 			<LangSpecProperties>
 				<LangSpecProperty key="command-type" value="eval-procedure"></LangSpecProperty>
 				<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
@@ -2301,102 +2180,6 @@ BlockGenuses are first loaded.
 			<LangSpecProperties>
 				<LangSpecProperty key="command-type" value="observe"></LangSpecProperty>
 			</LangSpecProperties>
-		</BlockGenus>
-		
-		<BlockGenus name="proc-param-number" kind="param" initlabel="number param" editable-label="yes" label-unique="yes" is-starter="yes" is-terminator="yes" color="34 76 117">
-			<description>
-				<text>
-					Adds a number parameter to a procedure.
-				</text>
-			</description>
-			<BlockConnectors>
-				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
-			</BlockConnectors>
-			<Stubs>
-				<Stub stub-genus="getter">
-					<LangSpecProperties>
-						<LangSpecProperty key="command-type" value="eval-local"></LangSpecProperty>
-						<LangSpecProperty key="scope" value="local"></LangSpecProperty>
-						<LangSpecProperty key="stack-type" value="breed-procedure"></LangSpecProperty>
-					</LangSpecProperties>	
-				</Stub>
-			</Stubs>
-			<LangSpecProperties>
-				<LangSpecProperty key="type" value="number"></LangSpecProperty>
-				<LangSpecProperty key="stack-type" value="breed-procedure"></LangSpecProperty>
-			</LangSpecProperties>	
-		</BlockGenus>
-		
-		<BlockGenus name="proc-param-boolean" kind="param" initlabel="boolean param" editable-label="yes" label-unique="yes" is-starter="yes" is-terminator="yes" color="34 76 117">
-			<description>
-				<text>
-					Adds a boolean parameter to a procedure.
-				</text>
-			</description>
-			<BlockConnectors>
-				<BlockConnector connector-kind="plug" connector-type="boolean"></BlockConnector>
-			</BlockConnectors>
-			<Stubs>
-				<Stub stub-genus="getter">
-					<LangSpecProperties>
-						<LangSpecProperty key="command-type" value="eval-local"></LangSpecProperty>
-						<LangSpecProperty key="scope" value="local"></LangSpecProperty>
-						<LangSpecProperty key="stack-type" value="breed-procedure"></LangSpecProperty>
-					</LangSpecProperties>	
-				</Stub>
-			</Stubs>
-			<LangSpecProperties>
-				<LangSpecProperty key="type" value="boolean"></LangSpecProperty>
-				<LangSpecProperty key="stack-type" value="breed-procedure"></LangSpecProperty>
-			</LangSpecProperties>	
-		</BlockGenus>
-		
-		<BlockGenus name="proc-param-string" kind="param" initlabel="text param" editable-label="yes" label-unique="yes" is-starter="yes" is-terminator="yes" color="34 76 117">
-			<description>
-				<text>
-					Adds a text parameter to a procedure.
-				</text>
-			</description>
-			<BlockConnectors>
-				<BlockConnector connector-kind="plug" connector-type="string"></BlockConnector>
-			</BlockConnectors>
-			<Stubs>
-				<Stub stub-genus="getter">
-					<LangSpecProperties>
-						<LangSpecProperty key="command-type" value="eval-local"></LangSpecProperty>
-						<LangSpecProperty key="scope" value="local"></LangSpecProperty>
-						<LangSpecProperty key="stack-type" value="breed-procedure"></LangSpecProperty>
-					</LangSpecProperties>	
-				</Stub>
-			</Stubs>
-			<LangSpecProperties>
-				<LangSpecProperty key="type" value="string"></LangSpecProperty>
-				<LangSpecProperty key="stack-type" value="breed-procedure"></LangSpecProperty>
-			</LangSpecProperties>	
-		</BlockGenus>
-		
-		<BlockGenus name="proc-param-list" kind="param" initlabel="list param" editable-label="yes" label-unique="yes" is-starter="yes" is-terminator="yes" color="34 76 117">
-			<description>
-				<text>
-					Adds a list parameter to a procedure.
-				</text>
-			</description>
-			<BlockConnectors>
-				<BlockConnector connector-kind="plug" connector-type="poly-list"></BlockConnector>
-			</BlockConnectors>
-			<Stubs>
-				<Stub stub-genus="getter">
-					<LangSpecProperties>
-						<LangSpecProperty key="command-type" value="eval-local"></LangSpecProperty>
-						<LangSpecProperty key="scope" value="local"></LangSpecProperty>
-						<LangSpecProperty key="stack-type" value="breed-procedure"></LangSpecProperty>
-					</LangSpecProperties>	
-				</Stub>
-			</Stubs>
-			<LangSpecProperties>
-				<LangSpecProperty key="type" value="list"></LangSpecProperty>
-				<LangSpecProperty key="stack-type" value="breed-procedure"></LangSpecProperty>
-			</LangSpecProperties>	
 		</BlockGenus>
 		
 		<!--  VARIABLES  -->
@@ -2647,43 +2430,6 @@ BlockGenuses are first loaded.
 		
 		<!-- SETUP AND RUNTIME BLOCKS -->
 		
-		<!-- NOTE: The genus names "forever", "runonce", and "runforsometime" is duplicated in RunBlockManager.java, 
-			if you change this name, make sure to change it there too.  -->
-		<BlockGenus name="forever" kind="command" initlabel="forever" editable-label="yes" label-unique="yes" is-starter="yes" is-terminator="yes" color="19 46 81">
-			<description>
-				<text>
-					When switched on, agents do commands over and over. <note>There are different commands for each breed.</note>
-				</text>
-				<arg-description n="1" name="agents" doc-name="breed">
-					The breed of the agents performing the commands attached here.
-				</arg-description>
-			</description>
-			<BlockConnectors>
-				<BlockConnector label="" connector-kind="socket" connector-type="cmd"></BlockConnector>
-			</BlockConnectors>
-			<Images>
-				<Image block-location="southwest" image-editable="yes" width="15" height="15">
-					<FileLocation>support/forever_switch_on.png</FileLocation>
-				</Image>
-			</Images>
-			<LangSpecProperties>
-				<LangSpecProperty key="command-type" value="forever"></LangSpecProperty>
-				<LangSpecProperty key="is-root-block" value="yes"></LangSpecProperty>
-			</LangSpecProperties>
-		</BlockGenus>
-		
-		<BlockGenus name="runtime-forever" kind="command" initlabel="forever" is-starter="yes" is-terminator="yes" color="19 46 81">
-			<description>
-				<text>
-					When switched on, agents do commands over and over. <note>There are different commands for each breed.</note>
-				</text>
-			</description>
-			<LangSpecProperties>
-				<LangSpecProperty key="command-type" value="forever"></LangSpecProperty>
-				<LangSpecProperty key="is-root-block" value="yes"></LangSpecProperty>
-			</LangSpecProperties>
-		</BlockGenus>
-		
 		<BlockGenus name="runonce" kind="command" initlabel="run once" editable-label="yes" label-unique="yes" is-starter="yes" is-terminator="yes" color="19 46 81">
 			<description>
 				<text>
@@ -2705,18 +2451,6 @@ BlockGenuses are first loaded.
 				<LangSpecProperty key="command-type" value="runOnce"></LangSpecProperty>
 				<LangSpecProperty key="is-root-block" value="yes"></LangSpecProperty>
 				<LangSpecProperty key="yields-top-level-code" value="yes"></LangSpecProperty>
-			</LangSpecProperties>
-		</BlockGenus>
-		
-		<BlockGenus name="runtime-once" kind="command" initlabel="run once" is-starter="yes" is-terminator="yes" color="19 46 81">
-			<description>
-				<text>
-					When switched on, agents do commands once. <note>There are different commands for each breed.</note>
-				</text>
-			</description>
-			<LangSpecProperties>
-				<LangSpecProperty key="command-type" value="runOnce"></LangSpecProperty>
-				<LangSpecProperty key="is-root-block" value="yes"></LangSpecProperty>
 			</LangSpecProperties>
 		</BlockGenus>
 		
@@ -2744,18 +2478,6 @@ BlockGenuses are first loaded.
 					<FileLocation>support/forever_switch_on.png</FileLocation>
 				</Image>
 			</Images>
-			<LangSpecProperties>
-				<LangSpecProperty key="command-type" value="runForSometime"></LangSpecProperty>
-				<LangSpecProperty key="is-root-block" value="yes"></LangSpecProperty>
-			</LangSpecProperties>
-		</BlockGenus>
-		
-		<BlockGenus name="runtime-sometime" kind="command" initlabel="run" is-starter="yes" is-terminator="yes" color="19 46 81">
-			<description>
-				<text>
-					When switched on, agents do commands over and over for a number of seconds. <note>There are different commands for each breed.</note>
-				</text>
-			</description>
 			<LangSpecProperties>
 				<LangSpecProperty key="command-type" value="runForSometime"></LangSpecProperty>
 				<LangSpecProperty key="is-root-block" value="yes"></LangSpecProperty>
@@ -2813,223 +2535,7 @@ BlockGenuses are first loaded.
 			<LangSpecProperties>
 				<LangSpecProperty key="command-type" value="pythonStatement"></LangSpecProperty>
 			</LangSpecProperties>
-		</BlockGenus>
-		
-		<!-- BREED SPECIFIC BLOCKS -->
-		
-		<BlockGenus name="create-agents" kind="command" initlabel="" label-prefix="create " color="34 76 117">
-			<description>
-				<text>
-				Creates <arg n="1"/> number of agents of the given breed.
-				</text>
-				<arg-description n="1" name="num">
-					The number of agents to create.
-				</arg-description>
-			</description>
-			<BlockConnectors>
-				<BlockConnector label="num" connector-kind="socket" connector-type="number">
-					<DefaultArg genus-name="number" label="10" />
-				</BlockConnector>
-			</BlockConnectors>
-			<LangSpecProperties>
-				<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="command-type" value="crt-breed"></LangSpecProperty>
-				<LangSpecProperty key="is-setup-block" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="include-breed" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="include-breed-shape" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="stack-type" value="setup"></LangSpecProperty>
-			</LangSpecProperties>
-		</BlockGenus>
-		
-		<BlockGenus name="create-and-do" kind="command" initlabel="" label-prefix="create " color="34 76 117">
-			<description>
-				<text>
-				Creates <arg n="1"/> number of agents of the given breed and has each do the specified commands.
-				</text>
-				<arg-description n="1" name="num">
-					The number of agents to create.
-				</arg-description>
-				<arg-description n="2" name="cmd">
-					The commands for each agent to do.
-				</arg-description>
-			</description>
-			<BlockConnectors>
-				<BlockConnector label="num" connector-kind="socket" connector-type="number">
-					<DefaultArg genus-name="number" label="10" />
-				</BlockConnector>
-				<BlockConnector label="do" connector-kind="socket" connector-type="cmd"></BlockConnector>
-			</BlockConnectors>
-			<LangSpecProperties>
-				<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="command-type" value="crt-breed-do"></LangSpecProperty>
-				<LangSpecProperty key="is-setup-block" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="inline-arg" value="1"></LangSpecProperty>
-				<LangSpecProperty key="include-breed" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="include-breed-shape" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="stack-type" value="setup"></LangSpecProperty>
-				<LangSpecProperty key="inline-stack-type" value="breed-forever"></LangSpecProperty>
-				<LangSpecProperty key="ask-arg" value="1"></LangSpecProperty>
-			</LangSpecProperties>
-		</BlockGenus>
-		
-		<BlockGenus name="breed-string" kind="function" initlabel="" label-prefix="breed: "  color="34 76 117">
-			<description>
-				<text>
-				  	Reports the name of the given breed.
-				</text>
-			</description>
-			<BlockConnectors>
-				<BlockConnector connector-kind="plug" connector-type="string" position-type="mirror">
-				</BlockConnector>
-			</BlockConnectors>
-			<LangSpecProperties>
-				<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="command-type" value="nop"></LangSpecProperty>
-				<LangSpecProperty key="include-breed" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
-			</LangSpecProperties>
-		</BlockGenus>
-		
-		<BlockGenus name="count-breeds" kind="function" initlabel="" label-prefix="count "  color="128 30 255">
-			<description>
-				<text>
-				  	Reports the number agents of this breed.
-				</text>
-			</description>
-			<BlockConnectors>
-				<BlockConnector connector-kind="plug" connector-type="number" position-type="mirror">
-				</BlockConnector>
-			</BlockConnectors>
-			<LangSpecProperties>
-				<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="command-type" value="count-breeds"></LangSpecProperty>
-				<LangSpecProperty key="include-breed" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
-			</LangSpecProperties>
-		</BlockGenus>
-		
-		<BlockGenus name="count-breeds-with" kind="function" initlabel="" label-prefix="count "  label-suffix=" with" color="128 30 255">
-			<description>
-				<text>
-				  	Reports the number agents of this breed that satisfy the given condition.
-				</text>
-				<arg-description n="1" doc-name="condition">
-					A condition that must be true of the counted agents.
-				</arg-description>
-			</description>
-			<BlockConnectors>
-				<BlockConnector connector-kind="plug" connector-type="number"></BlockConnector>
-				<BlockConnector label="condition" connector-kind="socket" connector-type="boolean"></BlockConnector>
-			</BlockConnectors>
-			<LangSpecProperties>
-				<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="command-type" value="count-breeds-with"></LangSpecProperty>
-				<LangSpecProperty key="include-breed" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="is-monitorable" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="inline-arg" value="0"></LangSpecProperty>
-				<LangSpecProperty key="inline-stack-type" value="breed"></LangSpecProperty>
-				<LangSpecProperty key="ask-arg" value="0"></LangSpecProperty>
-			</LangSpecProperties>
-		</BlockGenus>
-		
-		<BlockGenus name="scatter-breeds" kind="command" initlabel="" label-prefix="scatter "  color="34 76 117">
-			<description>
-				<text>
-				  	Scatters agents of this breed across SpaceLand.
-				</text>
-			</description>
-			<LangSpecProperties>
-				<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="command-type" value="scatter-agents"></LangSpecProperty>
-				<LangSpecProperty key="include-breed" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="stack-type" value="setup"></LangSpecProperty>
-			</LangSpecProperties>
-		</BlockGenus>
-		
-		<BlockGenus name="clear-breeds" kind="command" initlabel="" label-prefix="clear "  color="34 76 117">
-			<description>
-				<text>
-				  	Clears all agents of this breed.
-				</text>
-			</description>
-			<LangSpecProperties>
-				<LangSpecProperty key="is-owned-by-breed" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="command-type" value="clear-breeds"></LangSpecProperty>
-				<LangSpecProperty key="include-breed" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="stack-type" value="setup"></LangSpecProperty>
-			</LangSpecProperties>
-		</BlockGenus>
-		
-		<BlockGenus name="collision" kind="command" initlabel="Collision" color="34 76 118" is-starter="yes" is-terminator="yes" page-label-enabled="yes">
-			<description>
-				<text>Constantly checks for collisions between agents.  If a collision occurs, causes the collider to run the <arg n="1"/> code, and the collidee to run the <arg n="2"/> code.  Which agent is the collidee and which is the collider depends on the block.  For example, if a Turtle and Frog collide, the collision block with "Turtles" as the first port and "Frogs" as the second port will assume that the Turtle is the collider and the Frog is the collidee.</text>
-				<arg-description n="1" name="me">
-				This is the code that the collider runs.
-				</arg-description>
-				
-				<arg-description n="2" name="agents">
-					This is the code that the collidee runs.  The label of this port determines which breed will be assumed to be collidee.
-				</arg-description>
-			</description>
-			<BlockConnectors>
-				<BlockConnector connector-kind="socket" connector-type="cmd"></BlockConnector>
-				<BlockConnector connector-kind="socket" connector-type="cmd"></BlockConnector>
-			</BlockConnectors>
-			<LangSpecProperties>
-				<LangSpecProperty key="is-collision" value="yes"></LangSpecProperty>
-				<LangSpecProperty key="stack-type" value="breed-collision"></LangSpecProperty>
-			</LangSpecProperties>
-		</BlockGenus>
-		
-
-		<!-- SHAPES (see ShapeBlocksGenerator) -->
-		
-		<BlockGenus name="random-shape" kind="function" initlabel="random shape" color="255 252 138">
-			<description>
-				<text>
-					Selects a random shape.
-				</text>
-			</description>
-			<BlockConnectors>
-				<BlockConnector connector-kind="plug" connector-type="string"></BlockConnector>
-			</BlockConnectors>
-			<LangSpecProperties>
-				<LangSpecProperty key="command-type" value="random-shape"></LangSpecProperty>
-			</LangSpecProperties>
-		</BlockGenus>
-		
-		<!-- DYNAMIC BLOCKS -->
-		
-		<BlockGenus name="ashape" kind="data" initlabel="" color="255 252 138">
-			<BlockConnectors>
-				<BlockConnector connector-kind="plug" connector-type="string"></BlockConnector>
-			</BlockConnectors>
-			<Images>
-				<Image width="64" height="64">
-					<FileLocation>/models/animals/turtle/default_icon.png</FileLocation>
-				</Image>
-			</Images>
-			<LangSpecProperties>
-				<LangSpecProperty key="command-type" value="eval-num"></LangSpecProperty>
-				<LangSpecProperty key="special-value" value="animals/turtle-default"></LangSpecProperty>
-			</LangSpecProperties>
-		</BlockGenus>
-		
-		<BlockGenus name="bshape" kind="data" initlabel="" color="255 252 138">
-			<BlockConnectors>
-				<BlockConnector connector-kind="plug" connector-type="string"></BlockConnector>
-			</BlockConnectors>
-			<Images>
-				<Image width="64" height="64">
-					<FileLocation>/models/animals/sonic/sonic_icon.png</FileLocation>
-				</Image>
-			</Images>
-			<LangSpecProperties>
-				<LangSpecProperty key="command-type" value="eval-num"></LangSpecProperty>
-				<LangSpecProperty key="special-value" value="animals/sonic-sonic"></LangSpecProperty>
-			</LangSpecProperties>
-		</BlockGenus>
-		
+		</BlockGenus>		
 	</BlockGenuses>
 	
 	<BlockFamilies>
@@ -3216,32 +2722,11 @@ BlockGenuses are first loaded.
 				<BlockGenusMember>assert</BlockGenusMember>
 			</BlockDrawer>
 			
-			<!-- Shapes are automatically loaded as blocks in the Shapes drawer
-				 (see slcodeblocks.ShapeBlocksGenerator for details)  -->
-			<!-- Sound blocks reside in the auto-generated String drawer.  
-				 (see slcodeblocks.SoundBlocksGenerator for details)  -->
 		</BlockDrawerSet>
 	</BlockDrawerSets>
 
 	<Pages drawer-with-page="yes">
 		<Page page-name="" page-width="400"></Page>
-		<!-- 
-		<Page page-name="Everyone" page-width="400"></Page>
-		<Page page-name="Setup" page-width="400"></Page>
-		<Page page-name="Runtime" page-width="400"></Page>
-		 -->
 	</Pages>
-
-	<TrashCan>
-		<OpenTrashImage>/support/images/trash_open.png</OpenTrashImage>
-		<ClosedTrashImage>/support/images/trash.png</ClosedTrashImage>
-	</TrashCan>
-	
-	<BreedShapeMappings>
-		<BtoSMapping>
-			<BreedName>Turtles</BreedName>
-			<BreedShape>animals/turtle-default</BreedShape>
-		</BtoSMapping>
-	</BreedShapeMappings>
 	
 </BlockLangDef>
